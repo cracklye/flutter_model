@@ -22,6 +22,7 @@ import 'package:uuid/uuid.dart';
 part 'modeldao/model_state.dart';
 
 part 'model/imodel.dart';
+part 'model/imodel_child.dart';
 part 'modeldao/model_bloc.dart';
 part 'modeldao/model_event.dart';
 

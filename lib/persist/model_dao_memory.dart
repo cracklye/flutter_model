@@ -1,7 +1,4 @@
-
-
-part of flutter_model; 
-
+part of flutter_model;
 
 /// This provides an in memory API that can be used for testing purposes
 /// The data is held within a list in the class so will be lost as soon
@@ -82,19 +79,25 @@ abstract class IInMemoryAPI<T extends IModel> extends IModelAPI<T>
   }
 
   @override
-  Stream<List<T>> list() {
-// for (OrderBy ob in orderBy) {
-//         if (!(ob is OrderByFunction)) {
-//           rtn = rtn.orderBy(ob.name, descending: ob.descending);
-//         }
-//       }
-
+  Stream<List<T>> list({String? parentId}) {
     if (controller != null) {
       controller!.close();
     }
-    controller = StreamController<List<T>>();
-    controller!.sink.add([...items]);
 
+    var itemsToUse = items;
+    if (parentId != null) {
+      try {
+        itemsToUse = items
+            .where((element) => (element as IModelChild).parentId == parentId)
+            .toList();
+      } catch (e) {
+        print("Unable to process $e");
+      }
+      //Unable to do it...
+
+    }
+    controller = StreamController<List<T>>();
+    controller!.sink.add([...itemsToUse]);
     return controller!.stream;
   }
 
@@ -140,7 +143,7 @@ abstract class IInMemoryAPI<T extends IModel> extends IModelAPI<T>
       //       StreamController<T?>? _listByIdStream;
       // String _listByIdKey;
       _saveToFiles();
-      
+
       return Future.value(model);
     } catch (e) {
       return createModel(model);

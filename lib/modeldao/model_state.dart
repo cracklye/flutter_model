@@ -47,6 +47,10 @@ class ModelsLoaded<T extends IModel> with ModelsState<T> {
   //     this.id,
   //     this.parameters,
   //     this.selected]);
+@override
+  String toString(){
+return "[ModelsLoaded \n id:$id \n selected: $selected \n mode: $mode \n models:$models \n parameters: $parameters";
+  }
 }
 
 class ModelsNotLoaded<T extends IModel> extends ModelsState<T> {}

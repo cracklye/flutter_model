@@ -15,7 +15,8 @@ class ModelSelect<T extends IModel> extends ModelsEvent<T> {
 class LoadModels<T extends IModel> extends ModelsEvent<T> {
   final dynamic parentId;
   final dynamic id;
-  const LoadModels({this.parentId, this.id});
+  final bool clear; 
+  const LoadModels({this.parentId, this.id, this.clear = false});
 }
 
 class UpdateParameters<T extends IModel> extends ModelsEvent<T> {
