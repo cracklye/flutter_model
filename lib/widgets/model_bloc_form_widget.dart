@@ -73,7 +73,9 @@ abstract class ModelFormState<T extends IModel> extends State<ModelForm<T>> {
       },
       child: SingleChildScrollView(
           controller: ScrollController(),
-          child: Column(children: buildFormFields(context))),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: buildFormFields(context))),
     );
   }
 }

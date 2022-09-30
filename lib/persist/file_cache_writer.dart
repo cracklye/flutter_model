@@ -7,7 +7,7 @@ class FileSystemWriter<T extends IModel> extends ModelCacheProvider<T> {
 
   Future<String> get _localPath async {
     final directory = await getApplicationSupportDirectory();
-
+print("App Directory: $directory");
     return directory.path;
   }
 

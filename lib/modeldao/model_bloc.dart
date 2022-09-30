@@ -18,7 +18,7 @@ class ModelsBloc<T extends IModel> extends Bloc<ModelsEvent<T>, ModelsState<T>>
         super(ModelsLoading<T>()) {
     if (parentBloc != null) {
       _parentBlocSubscription = parentBloc.stream.listen((stateB) {
-        loggy.debug("_parentBlocSubscription.listen State $stateB");
+        loggy.debug("_parentBlocSubscription.listen State ");
         if (stateB is ModelsLoaded) {
           loggy.debug("_parentBlocSubscription.listen is is a models loaded");
           if (stateB.selected != null) {
@@ -125,6 +125,7 @@ class ModelsBloc<T extends IModel> extends Bloc<ModelsEvent<T>, ModelsState<T>>
 
     add(ModelSelect(newModel, ModelStateMode.edit));
   }
+
 
   
 
@@ -239,7 +240,7 @@ class ModelsBloc<T extends IModel> extends Bloc<ModelsEvent<T>, ModelsState<T>>
           (models) {
             loggy.warning(
                 "_doLoadModels, called the modesl subscription ${models.length}");
-            loggy.warning("_doLoadModels, called the modesl subscription ");
+            loggy.warning("_doLoadModels, called the modesl subscription $parentId");
 
             //We want to load
 

@@ -175,7 +175,8 @@ abstract class IInMemoryAPI<T extends IModel> extends IModelAPI<T>
       });
 
       if (controller != null) {
-        controller!.sink.add([...items]);
+       List<T> itemsToUse = queryItems();
+        controller!.sink.add([...itemsToUse]);
       }
 
       if (model.id == _listByIdKey && _listByIdStream != null) {

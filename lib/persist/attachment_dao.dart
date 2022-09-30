@@ -2,35 +2,64 @@ part of flutter_model;
 
 class AttachmentDAO {
 
-  final String path = "D:\\Temp\\NotTakingApp\\attachments\\";
+  Future init([String? rootPath]) async {
+    if(rootPath!=null){
+      _rootPath = rootPath; 
+    } else {
+      var file = await getApplicationSupportDirectory();
+      _rootPath = file.path; 
+    }
+    Directory f =Directory('$_rootPath\\$subdir');
+    if(!f.existsSync()){
+      f.createSync();
+    }
 
-  static String getPath(String input){
-    return input; 
   }
 
 
+
+
+  static String _rootPath = "";
+
+final String subdir="attachments";
+
+ // final String path = "D:\\Temp\\NotTakingApp\\attachments\\";
+
+  static String getPath(String input) {
+    return '${_rootPath}\\$input';
+    
+  }
+
   Future<Map<String, dynamic>?> savePath(
       String fieldName, String srcPath) async {
+
     String uid = Uuid().v4();
-    var src = File(srcPath);
     var ext = extension(srcPath);
-    var newf = await src.copy(path + "\\" + uid + ext);
+    String relativeURI = '${subdir}\\${uid}${ext}';
+    String fullUri = '${_rootPath}\\${relativeURI}';
+
+    var src = File(srcPath);
+    var newf = await src.copy(fullUri);
 
     return Future.value({
-      "${fieldName}Uri": newf.absolute.path,
+      "${fieldName}Uri": relativeURI,
       "${fieldName}ThumbnailUri": "/thumbnail/jpg"
     });
   }
 
   Future<Map<String, dynamic>?> saveContent(
       String fieldName, Uint8List data, String? ext) async {
-    String uid = Uuid().v4();
+       String uid = Uuid().v4();
 
-    var newf = File(path + "\\" + uid + (ext ?? ""));
+    
+    String relativeURI = '${subdir}\\${uid}${ext}';
+    String fullUri = '${_rootPath}\\${relativeURI}';
+
+    var newf = File(fullUri);
     var sink = await newf.writeAsBytes(data);
 
     return Future.value({
-      "${fieldName}Uri": newf.absolute.path,
+      "${fieldName}Uri": relativeURI,
       "${fieldName}ThumbnailUri": "/thumbnail/jpg"
     });
   }
