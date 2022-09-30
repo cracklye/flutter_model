@@ -10,13 +10,13 @@ abstract class IModelAPI<T extends IModel> {
   ///
   /// Returns the ID of the model (this should match the model passed in unless the model hasn't been saved previously)
   Future<dynamic> updateModel(T model);
-  Future<dynamic> update(String id, Map<String, dynamic> values);
+  Future<dynamic> update(dynamic id, Map<String, dynamic> values);
 
   /// Creates a new record for the
-  Future<dynamic> createModel(T model);
+  Future<T> createModel(T model);
 
   ///Creates a new record based on the values passed in [values]
-  Future<dynamic> create(Map<String, dynamic> values);
+  Future<T> create(Map<String, dynamic> values);
 
   /// Delete the record for the model passed in.
   Future<dynamic> deleteModel(T model);
@@ -34,7 +34,9 @@ abstract class IModelAPI<T extends IModel> {
   /// Returns the object that matches the [id] passed through (and [parentId] if the model is a child)
   Future<T?> getById(dynamic id);
 
-  T createNewModel({String? parentId});
+  /// Create a new type, if this has multiple sub types then pass in the type in S, otherwise this can 
+  /// be ignored.
+  T createNewModel<S>({String? parentId});
 
  
 }

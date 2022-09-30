@@ -15,7 +15,8 @@ dependencies:
   freezed_annotation:
   flutter_bloc: 8.0.1
   path_provider:
-
+  woue_components:
+    path: ../woue_components/
 
 dev_dependencies:
   flutter_test:

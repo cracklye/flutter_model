@@ -11,6 +11,7 @@ abstract class IInMemoryAPI<T extends IModel> extends IModelAPI<T>
   List<T> items = [];
 
   StreamController<List<T>>? controller;
+  String? activeParentId;
 
   /// stores the next ID that can be used when creating a new model in this API.
   // int _id = 0;
@@ -49,9 +50,9 @@ abstract class IInMemoryAPI<T extends IModel> extends IModelAPI<T>
   T createFromMap(Map<String, dynamic> values);
 
   @override
-  Future<dynamic> create(Map<String, dynamic> values) async {
+  Future<T> create(Map<String, dynamic> values) async {
     //Add the defaults...
-
+    loggy.debug("IInMemoryAPI.create $values");
     //values.putIfAbsent("id", () => getNextId());
 
     T model = createFromMap(values);
@@ -68,27 +69,23 @@ abstract class IInMemoryAPI<T extends IModel> extends IModelAPI<T>
   }
 
   @override
-  Future<dynamic> createModel(T model) {
+  Future<T> createModel(T model) {
     T nw = model.copyWithId(getNextId()) as T;
     items.add(nw);
-    if (controller != null) controller!.sink.add(items);
+    if (controller != null) controller!.sink.add(queryItems());
 
     _saveToFiles();
 
-    return Future.value(nw.id);
+    return Future.value(nw);
   }
 
-  @override
-  Stream<List<T>> list({String? parentId}) {
-    if (controller != null) {
-      controller!.close();
-    }
-
+  List<T> queryItems() {
     var itemsToUse = items;
-    if (parentId != null) {
+    if (activeParentId != null) {
       try {
         itemsToUse = items
-            .where((element) => (element as IModelChild).parentId == parentId)
+            .where((element) =>
+                (element as IModelChild).parentId == activeParentId)
             .toList();
       } catch (e) {
         print("Unable to process $e");
@@ -96,6 +93,17 @@ abstract class IInMemoryAPI<T extends IModel> extends IModelAPI<T>
       //Unable to do it...
 
     }
+    return itemsToUse;
+  }
+
+  @override
+  Stream<List<T>> list({String? parentId}) {
+    if (controller != null) {
+      controller!.close();
+    }
+    activeParentId = parentId;
+    List<T> itemsToUse = queryItems();
+
     controller = StreamController<List<T>>();
     controller!.sink.add([...itemsToUse]);
     return controller!.stream;
@@ -108,7 +116,15 @@ abstract class IInMemoryAPI<T extends IModel> extends IModelAPI<T>
 
   @override
   Future<dynamic> update(dynamic id, Map<String, dynamic> values) async {
-    T model = createFromMap(values);
+    //Get the current model...
+    T? model = await getById(id);
+    if (model == null) {
+      throw Exception("Unable to find the model with id of $id");
+    }
+
+    var map = model.toJson();
+    map.addAll(values);
+    model = createFromMap(map);
 
     var rtn = await updateModel(model);
 
@@ -134,7 +150,8 @@ abstract class IInMemoryAPI<T extends IModel> extends IModelAPI<T>
       // items = [...items];
 
       if (controller != null) {
-        controller!.sink.add([...items]);
+        List<T> itemsToUse = queryItems();
+        controller!.sink.add([...itemsToUse]);
       }
 
       if (model.id == _listByIdKey && _listByIdStream != null) {
@@ -209,7 +226,8 @@ abstract class IInMemoryAPI<T extends IModel> extends IModelAPI<T>
 
       return Future.value(rtn);
     } catch (e) {
-      // throw new Exception("Unable to find the entry with the id=$id   $e");
+      // throw new Exception
+      print("Unable to find the entry with the id=$id   $e");
       return Future.value(null);
     }
   }

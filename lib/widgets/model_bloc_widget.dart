@@ -21,7 +21,7 @@ abstract class ModelBlocWidget<T extends IModel> extends StatelessWidget {
   Widget buildStateLoaded(BuildContext context, ModelsLoaded<T> state);
 
   Widget buildStateLoading(BuildContext context, ModelsLoading<T> state) {
-    return const CircularProgressIndicator();
+    return const Text("loading....");
   }
 
   Widget buildStateNotLoaded(BuildContext context, ModelsNotLoaded<T> state) {

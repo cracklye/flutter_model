@@ -1,6 +1,4 @@
-
- part of flutter_model; 
-
+part of flutter_model;
 
 abstract class ModelsEvent<T extends IModel> {
   const ModelsEvent();
@@ -15,7 +13,7 @@ class ModelSelect<T extends IModel> extends ModelsEvent<T> {
 class LoadModels<T extends IModel> extends ModelsEvent<T> {
   final dynamic parentId;
   final dynamic id;
-  final bool clear; 
+  final bool clear;
   const LoadModels({this.parentId, this.id, this.clear = false});
 }
 
@@ -31,28 +29,46 @@ class RefreshLoadModel<T extends IModel> extends ModelsEvent<T> {
 
 class AddModel<T extends IModel> extends ModelsEvent<T> {
   final Map<String, dynamic> values;
+  final bool editMode;
 
-  const AddModel(this.values);
+  final Uint8List? attachmentContent;
+  final String? attachmentFieldName;
+  final String? attachmentPath;
+  final String? attachmentExtension;
+
+  const AddModel(this.values,
+      {this.editMode = false,
+      this.attachmentContent,
+      this.attachmentFieldName,
+      this.attachmentPath,
+      this.attachmentExtension});
 }
 
 class UpdateModel<T extends IModel> extends ModelsEvent<T> {
   final Map<String, dynamic> values;
   final dynamic id;
 
-  const UpdateModel(this.id, this.values);
+  final Uint8List? attachmentContent;
+  final String? attachmentFieldName;
+  final String? attachmentPath;
+  final String? attachmentExtension;
+
+  const UpdateModel(this.id, this.values,
+      {this.attachmentContent,
+      this.attachmentFieldName,
+      this.attachmentPath,
+      this.attachmentExtension});
 }
 
 class UpdateSelected<T extends IModel> extends ModelsEvent<T> {
- 
   const UpdateSelected();
 }
+
 class UpdateModelValue<T extends IModel> extends ModelsEvent<T> {
- final T model; 
+  final T model;
 
   const UpdateModelValue(this.model);
 }
-
-
 
 class DeleteModel<T extends IModel> extends ModelsEvent<T> {
   final T model;
@@ -60,12 +76,9 @@ class DeleteModel<T extends IModel> extends ModelsEvent<T> {
   const DeleteModel(this.model);
 }
 
-
 class CreateNewModel<T extends IModel> extends ModelsEvent<T> {
- 
   const CreateNewModel();
 }
-
 
 class ModelsUpdated<T extends IModel> extends ModelsEvent<T> {
   final List<T> models;
@@ -73,6 +86,12 @@ class ModelsUpdated<T extends IModel> extends ModelsEvent<T> {
 
   const ModelsUpdated(this.models, [this.id]);
 }
+
+class SetEditMode<T extends IModel> extends ModelsEvent<T> {
+  final bool editMode;
+  const SetEditMode(this.editMode);
+}
+
 
 // abstract class ModelsEvent<T extends IModel> {
 //   const ModelsEvent();

@@ -8,22 +8,24 @@ class ModelsBloc<T extends IModel> extends Bloc<ModelsEvent<T>, ModelsState<T>>
 
   StreamSubscription? _modelsSubscription;
   StreamSubscription? _parentBlocSubscription;
+  final AttachmentDAO? attachmentDao;
 
   ModelsBloc({
     required IModelAPI<T> modelsRepository,
     ModelsBloc? parentBloc,
+    this.attachmentDao,
   })  : _modelsRepository = modelsRepository,
         super(ModelsLoading<T>()) {
     if (parentBloc != null) {
       _parentBlocSubscription = parentBloc.stream.listen((stateB) {
-         loggy.debug("_parentBlocSubscription.listen State $stateB");
+        loggy.debug("_parentBlocSubscription.listen State $stateB");
         if (stateB is ModelsLoaded) {
           loggy.debug("_parentBlocSubscription.listen is is a models loaded");
           if (stateB.selected != null) {
-            loggy.debug("_parentBlocSubscription.listen Selected is not null loading id: ${stateB.selected!.id}");
-            add(LoadModels(parentId: stateB.selected!.id)); 
+            loggy.debug(
+                "_parentBlocSubscription.listen Selected is not null loading id: ${stateB.selected!.id}");
+            add(LoadModels(parentId: stateB.selected!.id));
             return;
-            
           }
         }
         add(LoadModels(clear: true));
@@ -39,9 +41,21 @@ class ModelsBloc<T extends IModel> extends Bloc<ModelsEvent<T>, ModelsState<T>>
     on<UpdateSelected<T>>(_onUpdateSelected);
     on<UpdateModelValue<T>>(_onUpdateModelValue);
     on<RefreshLoadModel<T>>(_onRefreshLoadModel);
-
+    on<SetEditMode<T>>(_onSetEditMode);
     on<ModelSelect<T>>(_onModelSelect);
   }
+
+  void _onSetEditMode(
+      SetEditMode<T> event, Emitter<ModelsState<T>> emit) async {
+    loggy.debug("_onSetEditMode<$T> started ${event.editMode}");
+    var state2 = state as ModelsLoaded<T>;
+    if (event.editMode) {
+      emit(state2.copyWith(mode: ModelStateMode.edit));
+    } else {
+      emit(state2.copyWith(mode: ModelStateMode.view));
+    }
+  }
+
   void _onUpdateModelValue(
       UpdateModelValue<T> event, Emitter<ModelsState<T>> emit) async {
     var state2 = state as ModelsLoaded<T>;
@@ -52,15 +66,10 @@ class ModelsBloc<T extends IModel> extends Bloc<ModelsEvent<T>, ModelsState<T>>
   void _onUpdateSelected(
       UpdateSelected<T> event, Emitter<ModelsState<T>> emit) async {
     var state2 = state as ModelsLoaded<T>;
-    //var rtn = null;
     if (state2.selected != null && state2.selected!.id == null) {
-      //var a =
       await _modelsRepository.createModel(state2.selected!);
-      //  rtn = state2.selected!.copyWith(id: a);
     } else {
-      //var a =
       await _modelsRepository.updateModel(state2.selected!);
-      //  rtn = state2.selected!.copyWith(id: a);
     }
 
     emit(state2.copyWith(
@@ -80,8 +89,13 @@ class ModelsBloc<T extends IModel> extends Bloc<ModelsEvent<T>, ModelsState<T>>
   void _onModelSelect(
       ModelSelect<T> event, Emitter<ModelsState<T>> emit) async {
     var state2 = state as ModelsLoaded<T>;
-
-    emit(state2.copyWith(selected: event.model, mode: event.mode));
+    loggy.debug("_onModelSelect select model ${event.model} $T");
+    if (event.model == null) {
+      emit(ModelsLoaded<T>(
+          id: state2.id, models: state2.models, parameters: state2.parameters));
+    } else {
+      emit(state2.copyWith(selected: event.model, mode: event.mode));
+    }
   }
 
   void _onLoadModels(LoadModels<T> event, Emitter<ModelsState<T>> emit) async {
@@ -90,14 +104,79 @@ class ModelsBloc<T extends IModel> extends Bloc<ModelsEvent<T>, ModelsState<T>>
   }
 
   void _onAddModel(AddModel<T> event, Emitter<ModelsState<T>> emit) async {
-    loggy.debug("_onAddModel Returning models update $T");
-    _modelsRepository.create(event.values);
+    loggy.debug("_onAddModel Returning models update $T (${event.editMode})");
+
+    var values = event.values;
+    var attachmentKey = await _handleAttachment(
+        event.attachmentContent,
+        event.attachmentFieldName,
+        event.attachmentPath,
+        event.attachmentExtension);
+
+    if (attachmentKey != null) {
+        for (var key in attachmentKey.keys) {
+        values.update(key, (value) => attachmentKey[key], ifAbsent: () => attachmentKey[key],);
+      }
+      //values.update(event.attachmentFieldName!, (value) => attachmentKey);
+    }
+    var newModel = await _modelsRepository.create(values);
+
+    loggy.debug("_onAddModel Returning models new model= $newModel");
+
+    add(ModelSelect(newModel, ModelStateMode.edit));
+  }
+
+  
+
+
+  Future<Map<String, dynamic>?> _handleAttachment(
+      Uint8List? attachmentContent,
+      String? attachmentFieldName,
+      String? attachmentPath,
+      String? attachmentExtension) async {
+    loggy.debug("_handleAttachment attachmentFieldName= $attachmentFieldName");
+    loggy.debug("_handleAttachment RattachmentPath= $attachmentPath");
+    loggy.debug("_handleAttachment contentSet?= ${attachmentContent != null}");
+
+    if (attachmentFieldName != null &&
+        (attachmentContent != null || attachmentPath != null)) {
+      //TODO need to delete if already in existance....
+      loggy.debug("_handleAttachment Have content to save");
+      
+      if (attachmentDao == null)
+        throw ("Trying to save attachments with no attachmentDAO configured");
+
+      if (attachmentPath != null) {
+        loggy.debug("_handleAttachment Saving from path");
+        return await attachmentDao!
+            .savePath(attachmentFieldName, attachmentPath);
+      } else {
+        loggy.debug("_handleAttachment Saving from content");
+        return attachmentDao!.saveContent(
+            attachmentFieldName, attachmentContent!, attachmentExtension);
+      }
+    }
+
+    return null;
   }
 
   void _onUpdateModel(
       UpdateModel<T> event, Emitter<ModelsState<T>> emit) async {
     loggy.debug("_onUpdateModel Returning models update $T");
-    _modelsRepository.update(event.id, event.values);
+    var values = event.values;
+    var attachmentKey =await _handleAttachment(
+        event.attachmentContent,
+        event.attachmentFieldName,
+        event.attachmentPath,
+        event.attachmentExtension);
+
+    if (attachmentKey != null) {
+      for (var key in attachmentKey.keys) {
+        values.update(key, (value) => attachmentKey[key], ifAbsent: () => attachmentKey[key]);
+      }
+    }
+
+    _modelsRepository.update(event.id, values);
   }
 
   void _onDeleteModel(
@@ -109,8 +188,20 @@ class ModelsBloc<T extends IModel> extends Bloc<ModelsEvent<T>, ModelsState<T>>
   void _onModelsUpdated(
       ModelsUpdated<T> event, Emitter<ModelsState<T>> emit) async {
     loggy.debug("_onModelsUpdated Returning models update $T event");
+    //Selected...
+    T? selectedModel = null;
+
+    if (state is ModelsLoaded<T>) {
+      var state2 = state as ModelsLoaded<T>;
+      var selected = state2.selected;
+      if (selected != null) {
+        selectedModel = await _modelsRepository.getById(selected.id);
+      }
+    }
+
     emit(ModelsLoading<T>());
-    emit(ModelsLoaded<T>(models: event.models, id: event.id));
+    emit(ModelsLoaded<T>(
+        models: event.models, id: event.id, selected: selectedModel));
 
     loggy.debug("_onModelsUpdated Completed emit");
   }
@@ -131,11 +222,9 @@ class ModelsBloc<T extends IModel> extends Bloc<ModelsEvent<T>, ModelsState<T>>
     _modelsSubscription?.cancel();
 
     if (clear) {
-       loggy.debug("_doLoadModels Clear is true so updating to empty list");
-       
-add(ModelsUpdated<T>(
-                []));
+      loggy.debug("_doLoadModels Clear is true so updating to empty list");
 
+      add(ModelsUpdated<T>([]));
     } else {
       if (id != null) {
         loggy.debug("_doLoadModels ID is not null");
@@ -145,11 +234,11 @@ add(ModelsUpdated<T>(
               )),
             );
       } else {
-        loggy.debug("_doLoadModels ID is null");
+        loggy.debug("_doLoadModels ID is null $parentId");
         _modelsSubscription = _modelsRepository.list(parentId: parentId).listen(
           (models) {
             loggy.warning(
-                "_doLoadModels, called the modesl subscription $models");
+                "_doLoadModels, called the modesl subscription ${models.length}");
             loggy.warning("_doLoadModels, called the modesl subscription ");
 
             //We want to load
