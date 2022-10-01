@@ -28,7 +28,7 @@ class ModelsBloc<T extends IModel> extends Bloc<ModelsEvent<T>, ModelsState<T>>
             return;
           }
         }
-        add(LoadModels(clear: true));
+        add(const LoadModels(clear: true));
       });
     }
 
@@ -144,8 +144,9 @@ class ModelsBloc<T extends IModel> extends Bloc<ModelsEvent<T>, ModelsState<T>>
       //TODO need to delete if already in existance....
       loggy.debug("_handleAttachment Have content to save");
       
-      if (attachmentDao == null)
+      if (attachmentDao == null){
         throw ("Trying to save attachments with no attachmentDAO configured");
+      }
 
       if (attachmentPath != null) {
         loggy.debug("_handleAttachment Saving from path");
@@ -190,7 +191,7 @@ class ModelsBloc<T extends IModel> extends Bloc<ModelsEvent<T>, ModelsState<T>>
       ModelsUpdated<T> event, Emitter<ModelsState<T>> emit) async {
     loggy.debug("_onModelsUpdated Returning models update $T event");
     //Selected...
-    T? selectedModel = null;
+    T? selectedModel ;
 
     if (state is ModelsLoaded<T>) {
       var state2 = state as ModelsLoaded<T>;

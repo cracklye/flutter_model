@@ -6,7 +6,7 @@ part of flutter_model;
 class FormNotify extends Form {
   final Function() onSaved;
 
-  FormNotify({
+  const FormNotify({
     Key? key,
     @required child,
     autovalidate = false,
@@ -43,13 +43,15 @@ abstract class ModelForm<T extends IModel> extends StatefulWidget {
   final void Function(Map<String, dynamic>) onSave;
   final void Function()? onChanged;
 
-  ModelForm(
-      {required this.model,
+  const ModelForm(
+      {Key? key,
+      required this.model,
       this.isEditing = true,
       required this.formKey,
       required this.onSave,
       this.onChanged,
-      this.parentId});
+      this.parentId})
+      : super(key: key);
 }
 
 abstract class ModelFormState<T extends IModel> extends State<ModelForm<T>> {
@@ -60,7 +62,7 @@ abstract class ModelFormState<T extends IModel> extends State<ModelForm<T>> {
   List<Widget> buildFormFields(BuildContext context);
 
   Map<String, dynamic> getValues();
-
+  final ScrollController _scrollController = ScrollController();
   @override
   Widget build(BuildContext context) {
     return FormNotify(
@@ -72,10 +74,10 @@ abstract class ModelFormState<T extends IModel> extends State<ModelForm<T>> {
         }
       },
       child: SingleChildScrollView(
-          controller: ScrollController(),
+          controller: _scrollController,
           child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: buildFormFields(context))),
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: buildFormFields(context))),
     );
   }
 }

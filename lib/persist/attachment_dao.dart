@@ -1,45 +1,38 @@
 part of flutter_model;
 
 class AttachmentDAO {
-
   Future init([String? rootPath]) async {
-    if(rootPath!=null){
-      _rootPath = rootPath; 
+    if (rootPath != null) {
+      _rootPath = rootPath;
     } else {
       var file = await getApplicationSupportDirectory();
-      _rootPath = file.path; 
+      _rootPath = file.path;
     }
-    Directory f =Directory('$_rootPath\\$subdir');
-    if(!f.existsSync()){
+    Directory f = Directory('$_rootPath\\$subdir');
+    if (!f.existsSync()) {
       f.createSync();
     }
-
   }
-
-
-
 
   static String _rootPath = "";
 
-final String subdir="attachments";
+  final String subdir = "attachments";
 
- // final String path = "D:\\Temp\\NotTakingApp\\attachments\\";
+  // final String path = "D:\\Temp\\NotTakingApp\\attachments\\";
 
   static String getPath(String input) {
-    return '${_rootPath}\\$input';
-    
+    return '$_rootPath\\$input';
   }
 
   Future<Map<String, dynamic>?> savePath(
       String fieldName, String srcPath) async {
-
-    String uid = Uuid().v4();
+    String uid =const Uuid().v4();
     var ext = extension(srcPath);
-    String relativeURI = '${subdir}\\${uid}${ext}';
-    String fullUri = '${_rootPath}\\${relativeURI}';
+    String relativeURI = '$subdir\\$uid$ext';
+    String fullUri = '$_rootPath\\$relativeURI';
 
     var src = File(srcPath);
-    var newf = await src.copy(fullUri);
+    await src.copy(fullUri);
 
     return Future.value({
       "${fieldName}Uri": relativeURI,
@@ -49,14 +42,14 @@ final String subdir="attachments";
 
   Future<Map<String, dynamic>?> saveContent(
       String fieldName, Uint8List data, String? ext) async {
-       String uid = Uuid().v4();
+    String uid = const Uuid().v4();
 
-    
-    String relativeURI = '${subdir}\\${uid}${ext}';
-    String fullUri = '${_rootPath}\\${relativeURI}';
+    String relativeURI = '$subdir\\$uid$ext';
+    String fullUri = '$_rootPath\\$relativeURI';
 
     var newf = File(fullUri);
-    var sink = await newf.writeAsBytes(data);
+    //var sink =
+    await newf.writeAsBytes(data);
 
     return Future.value({
       "${fieldName}Uri": relativeURI,
