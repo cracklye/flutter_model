@@ -1,7 +1,7 @@
 part of flutter_model;
 
 class ModelSinglePage<T extends IModel> extends StatelessWidget {
-  const ModelSinglePage({Key? key}) : super(key: key);
+  ModelSinglePage({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -137,13 +137,24 @@ class ModelSinglePage<T extends IModel> extends StatelessWidget {
       // crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
         buildActionBar(context, [
+          // ElevatedButton(
+          //     onPressed: () => BlocProvider.of<ModelsBloc<T>>(context)
+          //         .add(UpdateSelected<T>()),
+          //     child: const Text("Save")),
           ElevatedButton(
-              onPressed: () => BlocProvider.of<ModelsBloc<T>>(context)
-                  .add(UpdateSelected<T>()),
+              onPressed: () {
+                if (formKey.currentState!.validate()) {
+                  // BlocProvider.of<ModelsBloc<T>>(context)
+
+                  //     .add(UpdateModel<T>(state.selected!.id,  ));
+                  formKey.currentState!.save();
+                }
+              },
               child: const Text("Save")),
+
           ElevatedButton(
               onPressed: () => BlocProvider.of<ModelsBloc<T>>(context)
-                  .add(ModelSelect<T>(null)),
+                  .add(SetEditMode<T>(false)),
               child: const Text("Cancel"))
         ]),
         // Expanded(
@@ -152,15 +163,26 @@ class ModelSinglePage<T extends IModel> extends StatelessWidget {
             context,
             state,
             state.selected!,
-            (val) => BlocProvider.of<ModelsBloc<T>>(context)
-                .add(UpdateModelValue<T>(val))),
+            formKey,
+            (values) => BlocProvider.of<ModelsBloc<T>>(context)
+                .add(UpdateModel<T>(state.selected!.id, values)))
+
+        // (val) => BlocProvider.of<ModelsBloc<T>>(context)
+        //     .add(UpdateModelValue<T>(val))),
         // )
       ],
     );
   }
 
-  Widget buildForm(BuildContext context, ModelsLoaded<T> state, T model,
-      Function(T model) onUpdate) {
+  final GlobalKey<FormState> formKey = GlobalKey<FormState>();
+
+  Widget buildForm(
+    BuildContext context,
+    ModelsLoaded<T> state,
+    T model,
+    GlobalKey<FormState> formKey,
+    void Function(Map<String, dynamic>) onSave, //Function(T model) onUpdate
+  ) {
     return Column(
       children: const [
         Text("No form has been provided"),
