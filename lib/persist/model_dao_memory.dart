@@ -70,7 +70,10 @@ abstract class IInMemoryAPI<T extends IModel> extends IModelAPI<T>
 
   @override
   Future<T> createModel(T model) {
-    T nw = model.copyWithId(getNextId()) as T;
+    T nw = model.copyWithId(
+        id: getNextId(),
+        createdDate: DateTime.now(),
+        modifiedDate: DateTime.now()) as T;
     items.add(nw);
     if (controller != null) controller!.sink.add(queryItems());
 
@@ -121,7 +124,7 @@ abstract class IInMemoryAPI<T extends IModel> extends IModelAPI<T>
     if (model == null) {
       throw Exception("Unable to find the model with id of $id");
     }
-
+    model = model.copyWithId(modifiedDate: DateTime.now()) as T;
     var map = model.toJson();
     map.addAll(values);
     model = createFromMap(map);
@@ -129,6 +132,7 @@ abstract class IInMemoryAPI<T extends IModel> extends IModelAPI<T>
     var rtn = await updateModel(model);
 
     return rtn;
+    
   }
 
   @override
@@ -141,6 +145,7 @@ abstract class IInMemoryAPI<T extends IModel> extends IModelAPI<T>
       int idx = items.indexOf(itmToRemove);
       items.replaceRange(idx, idx + 1, [model]);
       items.removeAt(idx);
+      model = model.copyWithId(modifiedDate: DateTime.now()) as T;
       items.insert(idx, model);
 
       // items.removeWhere((itm) {
@@ -175,7 +180,7 @@ abstract class IInMemoryAPI<T extends IModel> extends IModelAPI<T>
       });
 
       if (controller != null) {
-       List<T> itemsToUse = queryItems();
+        List<T> itemsToUse = queryItems();
         controller!.sink.add([...itemsToUse]);
       }
 

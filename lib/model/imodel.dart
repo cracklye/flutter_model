@@ -16,7 +16,11 @@ abstract class IModel {
   /// This will be displayed by default for all drop downs or lists if no override has been provided.
   String get displayLabel;
 
-  IModel copyWithId(id);
-
+  IModel copyWithId({dynamic id, DateTime? createdDate, DateTime? modifiedDate});
+  //IModel copyWithDates({DateTime? createdDate, DateTime? modifiedDate});
   
+  DateTime? get createdDate; 
+  DateTime? get modifiedDate; 
+
+
 }
