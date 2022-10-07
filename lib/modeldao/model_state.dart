@@ -8,12 +8,21 @@ class ModelsLoading<T extends IModel> extends ModelsState<T> {
   ModelsLoading();
 }
 
+class HierarchyEntry<T> {
+  final T item;
+  final List<HierarchyEntry<T>> children = [];
+  HierarchyEntry(this.item, 
+  //[this.children = const [] as List<HierarchyEntry<T>>]
+  );
+}
+
 enum ModelStateMode { view, edit }
 
 class ModelsLoaded<T extends IModel> with ModelsState<T> {
   //@Default(ModelStateMode.view)
   final ModelStateMode mode;
   final List<T> models;
+  final List<HierarchyEntry<T>> hierarchy;
   final String? id;
   final T? selected;
   final Map<String, dynamic>? parameters;
@@ -21,6 +30,7 @@ class ModelsLoaded<T extends IModel> with ModelsState<T> {
   ModelsLoaded({
     this.mode = ModelStateMode.view,
     this.models = const [],
+    this.hierarchy = const [],
     this.id,
     this.selected,
     this.parameters,
@@ -32,12 +42,14 @@ class ModelsLoaded<T extends IModel> with ModelsState<T> {
     String? id,
     T? selected,
     Map<String, dynamic>? parameters,
+    List<HierarchyEntry<T>>? hierarchy,
   }) {
     return ModelsLoaded<T>(
         id: id ?? this.id,
         mode: mode ?? this.mode,
         models: models ?? this.models,
         selected: selected ?? this.selected,
+        hierarchy: hierarchy ?? this.hierarchy,
         parameters: parameters ?? this.parameters);
   }
 
@@ -47,9 +59,9 @@ class ModelsLoaded<T extends IModel> with ModelsState<T> {
   //     this.id,
   //     this.parameters,
   //     this.selected]);
-@override
-  String toString(){
-return "[ModelsLoaded \n id:$id \n selected: $selected \n mode: $mode \n models:$models \n parameters: $parameters";
+  @override
+  String toString() {
+    return "[ModelsLoaded \n    id:$id     \n selected: $selected \n     mode: $mode \n     models:$models \n     parameters: $parameters\n     hierarchy:$hierarchy \n] ";
   }
 }
 

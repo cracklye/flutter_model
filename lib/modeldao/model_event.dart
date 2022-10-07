@@ -59,10 +59,13 @@ class UpdateModel<T extends IModel> extends ModelsEvent<T> {
       this.attachmentPath,
       this.attachmentExtension});
 }
-
+/// Saves the selected model that is in the state.  (if the id is null then it creates a new model, if 
+  /// not then the matching model is updated)
 class UpdateSelected<T extends IModel> extends ModelsEvent<T> {
   const UpdateSelected();
 }
+
+
 
 class UpdateModelValue<T extends IModel> extends ModelsEvent<T> {
   final T model;
@@ -76,6 +79,7 @@ class DeleteModel<T extends IModel> extends ModelsEvent<T> {
   const DeleteModel(this.model);
 }
 
+/// Creates a new empty model and sets it to the state.selected property
 class CreateNewModel<T extends IModel> extends ModelsEvent<T> {
   const CreateNewModel();
 }
@@ -91,6 +95,7 @@ class SetEditMode<T extends IModel> extends ModelsEvent<T> {
   final bool editMode;
   const SetEditMode(this.editMode);
 }
+
 
 
 // abstract class ModelsEvent<T extends IModel> {

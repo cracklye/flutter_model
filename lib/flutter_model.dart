@@ -16,6 +16,7 @@ import 'package:woue_components/woue_components.dart';
 part 'modeldao/model_state.dart';
 part 'model/imodel.dart';
 part 'model/imodel_child.dart';
+part 'model/ihierarchy.dart';
 part 'modeldao/model_bloc.dart';
 part 'modeldao/model_event.dart';
 part 'persist/file_cache_provider.dart';

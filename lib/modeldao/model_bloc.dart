@@ -39,7 +39,7 @@ class ModelsBloc<T extends IModel> extends Bloc<ModelsEvent<T>, ModelsState<T>>
     on<ModelsUpdated<T>>(_onModelsUpdated);
     on<CreateNewModel<T>>(_onCreateNewModel);
     on<UpdateSelected<T>>(_onUpdateSelected);
-    on<UpdateModelValue<T>>(_onUpdateModelValue);
+    //on<UpdateModelValue<T>>(_onUpdateModelValue);
     on<RefreshLoadModel<T>>(_onRefreshLoadModel);
     on<SetEditMode<T>>(_onSetEditMode);
     on<ModelSelect<T>>(_onModelSelect);
@@ -56,13 +56,14 @@ class ModelsBloc<T extends IModel> extends Bloc<ModelsEvent<T>, ModelsState<T>>
     }
   }
 
-  void _onUpdateModelValue(
-      UpdateModelValue<T> event, Emitter<ModelsState<T>> emit) async {
-    var state2 = state as ModelsLoaded<T>;
+  // void _onUpdateModelValue(
+  //     UpdateModelValue<T> event, Emitter<ModelsState<T>> emit) async {
+  //   var state2 = state as ModelsLoaded<T>;
+  //   emit(state2.copyWith(selected: event.model));
+  // }
 
-    emit(state2.copyWith(selected: event.model));
-  }
-
+  /// Saves the selected model that is in the state.  (if the id is null then it creates a new model, if
+  /// not then the matching model is updated)
   void _onUpdateSelected(
       UpdateSelected<T> event, Emitter<ModelsState<T>> emit) async {
     var state2 = state as ModelsLoaded<T>;
@@ -77,6 +78,7 @@ class ModelsBloc<T extends IModel> extends Bloc<ModelsEvent<T>, ModelsState<T>>
     ));
   }
 
+  /// Creates a new empty model and sets it to the state.selected property
   void _onCreateNewModel(
       CreateNewModel<T> event, Emitter<ModelsState<T>> emit) async {
     var state2 = state as ModelsLoaded<T>;
@@ -92,7 +94,10 @@ class ModelsBloc<T extends IModel> extends Bloc<ModelsEvent<T>, ModelsState<T>>
     loggy.debug("_onModelSelect select model ${event.model} $T");
     if (event.model == null) {
       emit(ModelsLoaded<T>(
-          id: state2.id, models: state2.models, parameters: state2.parameters));
+          id: state2.id,
+          models: state2.models,
+          hierarchy: state2.hierarchy,
+          parameters: state2.parameters));
     } else {
       emit(state2.copyWith(selected: event.model, mode: event.mode));
     }
@@ -114,8 +119,12 @@ class ModelsBloc<T extends IModel> extends Bloc<ModelsEvent<T>, ModelsState<T>>
         event.attachmentExtension);
 
     if (attachmentKey != null) {
-        for (var key in attachmentKey.keys) {
-        values.update(key, (value) => attachmentKey[key], ifAbsent: () => attachmentKey[key],);
+      for (var key in attachmentKey.keys) {
+        values.update(
+          key,
+          (value) => attachmentKey[key],
+          ifAbsent: () => attachmentKey[key],
+        );
       }
       //values.update(event.attachmentFieldName!, (value) => attachmentKey);
     }
@@ -125,10 +134,6 @@ class ModelsBloc<T extends IModel> extends Bloc<ModelsEvent<T>, ModelsState<T>>
 
     add(ModelSelect(newModel, ModelStateMode.edit));
   }
-
-
-  
-
 
   Future<Map<String, dynamic>?> _handleAttachment(
       Uint8List? attachmentContent,
@@ -143,8 +148,8 @@ class ModelsBloc<T extends IModel> extends Bloc<ModelsEvent<T>, ModelsState<T>>
         (attachmentContent != null || attachmentPath != null)) {
       //TODO need to delete if already in existance....
       loggy.debug("_handleAttachment Have content to save");
-      
-      if (attachmentDao == null){
+
+      if (attachmentDao == null) {
         throw ("Trying to save attachments with no attachmentDAO configured");
       }
 
@@ -166,7 +171,7 @@ class ModelsBloc<T extends IModel> extends Bloc<ModelsEvent<T>, ModelsState<T>>
       UpdateModel<T> event, Emitter<ModelsState<T>> emit) async {
     loggy.debug("_onUpdateModel Returning models update $T");
     var values = event.values;
-    var attachmentKey =await _handleAttachment(
+    var attachmentKey = await _handleAttachment(
         event.attachmentContent,
         event.attachmentFieldName,
         event.attachmentPath,
@@ -174,7 +179,8 @@ class ModelsBloc<T extends IModel> extends Bloc<ModelsEvent<T>, ModelsState<T>>
 
     if (attachmentKey != null) {
       for (var key in attachmentKey.keys) {
-        values.update(key, (value) => attachmentKey[key], ifAbsent: () => attachmentKey[key]);
+        values.update(key, (value) => attachmentKey[key],
+            ifAbsent: () => attachmentKey[key]);
       }
     }
 
@@ -191,7 +197,7 @@ class ModelsBloc<T extends IModel> extends Bloc<ModelsEvent<T>, ModelsState<T>>
       ModelsUpdated<T> event, Emitter<ModelsState<T>> emit) async {
     loggy.debug("_onModelsUpdated Returning models update $T event");
     //Selected...
-    T? selectedModel ;
+    T? selectedModel;
 
     if (state is ModelsLoaded<T>) {
       var state2 = state as ModelsLoaded<T>;
@@ -202,10 +208,52 @@ class ModelsBloc<T extends IModel> extends Bloc<ModelsEvent<T>, ModelsState<T>>
     }
 
     emit(ModelsLoading<T>());
+    List<HierarchyEntry<T>> hierarchy = [];
+
+    //Compute the hierarchy...
+    if (event.models.isNotEmpty && event.models[0] is IHierarchy) {
+      //
+      hierarchy = _computeHierarchy(event.models);
+    }
+
     emit(ModelsLoaded<T>(
-        models: event.models, id: event.id, selected: selectedModel));
+        models: event.models,
+        id: event.id,
+        selected: selectedModel,
+        hierarchy: hierarchy));
 
     loggy.debug("_onModelsUpdated Completed emit");
+  }
+
+  List<HierarchyEntry<T>> _computeHierarchy(List<T> models) {
+    //Select the root ones....
+    loggy.debug(
+        "_computeHierarchy Started computation for ${models.length} models");
+
+    var root = models.where((element) =>
+        (element as IHierarchy).hierarchyParentId == null ||
+        (element as IHierarchy).hierarchyParentId == "");
+    List<HierarchyEntry<T>> rtn = [];
+
+    for (var rootModel in root) {
+      var h = HierarchyEntry<T>(rootModel);
+      _computeHierarchyChild(models, h);
+      rtn.add(h);
+    }
+    loggy.debug(
+        "_computeHierarchy Returning hierarchy ${rtn.length} root models");
+
+    return rtn;
+  }
+
+  void _computeHierarchyChild(List<T> models, HierarchyEntry<T> parent) {
+    var matches = models.where((element) =>
+        (element as IHierarchy).hierarchyParentId == parent.item.id);
+    for (var model in matches) {
+      var h = HierarchyEntry<T>(model);
+      _computeHierarchyChild(models, h);
+      parent.children.add(h);
+    }
   }
 
   void _onRefreshLoadModel(
@@ -241,7 +289,8 @@ class ModelsBloc<T extends IModel> extends Bloc<ModelsEvent<T>, ModelsState<T>>
           (models) {
             loggy.warning(
                 "_doLoadModels, called the modesl subscription ${models.length}");
-            loggy.warning("_doLoadModels, called the modesl subscription $parentId");
+            loggy.warning(
+                "_doLoadModels, called the modesl subscription $parentId");
 
             //We want to load
 
