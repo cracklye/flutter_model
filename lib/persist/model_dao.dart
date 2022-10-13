@@ -22,12 +22,12 @@ abstract class IModelAPI<T extends IModel> {
   Future<dynamic> deleteModel(T model);
 
   /// Returns a alist of models based on the search parameters provided
-  Future<List<T>> listModels();
+  Future<List<T>> listModels({String? parentId, String? searchText,  List<SortOrderBy>? orderBy, List<Filter>? filters});
 
   /// Returns a stream of models based on the search parameters provided
-  Stream<List<T>> list({String? parentId});
+  Future<Stream<List<T>>> list({String? parentId, String? searchText, List<SortOrderBy>? orderBy, List<Filter>? filters});
 
-  Stream<T?> listById(
+  Future<Stream<T?>> listById(
     dynamic id,
   );
 

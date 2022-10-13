@@ -213,7 +213,7 @@ class ModelsBloc<T extends IModel> extends Bloc<ModelsEvent<T>, ModelsState<T>>
     //Compute the hierarchy...
     if (event.models.isNotEmpty && event.models[0] is IHierarchy) {
       //
-      hierarchy = _computeHierarchy(event.models);
+      hierarchy = HierarchyHelper.computeHierarchy(event.models);
     }
 
     emit(ModelsLoaded<T>(
@@ -225,36 +225,6 @@ class ModelsBloc<T extends IModel> extends Bloc<ModelsEvent<T>, ModelsState<T>>
     loggy.debug("_onModelsUpdated Completed emit");
   }
 
-  List<HierarchyEntry<T>> _computeHierarchy(List<T> models) {
-    //Select the root ones....
-    loggy.debug(
-        "_computeHierarchy Started computation for ${models.length} models");
-
-    var root = models.where((element) =>
-        (element as IHierarchy).hierarchyParentId == null ||
-        (element as IHierarchy).hierarchyParentId == "");
-    List<HierarchyEntry<T>> rtn = [];
-
-    for (var rootModel in root) {
-      var h = HierarchyEntry<T>(rootModel);
-      _computeHierarchyChild(models, h);
-      rtn.add(h);
-    }
-    loggy.debug(
-        "_computeHierarchy Returning hierarchy ${rtn.length} root models");
-
-    return rtn;
-  }
-
-  void _computeHierarchyChild(List<T> models, HierarchyEntry<T> parent) {
-    var matches = models.where((element) =>
-        (element as IHierarchy).hierarchyParentId == parent.item.id);
-    for (var model in matches) {
-      var h = HierarchyEntry<T>(model);
-      _computeHierarchyChild(models, h);
-      parent.children.add(h);
-    }
-  }
 
   void _onRefreshLoadModel(
       RefreshLoadModel<T> event, Emitter<ModelsState<T>> emit) async {
@@ -278,14 +248,14 @@ class ModelsBloc<T extends IModel> extends Bloc<ModelsEvent<T>, ModelsState<T>>
     } else {
       if (id != null) {
         loggy.debug("_doLoadModels ID is not null");
-        _modelsSubscription = _modelsRepository.listById(id).listen(
+        _modelsSubscription = (await _modelsRepository.listById(id)).listen(
               (model) => add(ModelsUpdated<T>(
                 [model!],
               )),
             );
       } else {
         loggy.debug("_doLoadModels ID is null $parentId");
-        _modelsSubscription = _modelsRepository.list(parentId: parentId).listen(
+        _modelsSubscription = (await _modelsRepository.list(parentId: parentId)).listen(
           (models) {
             loggy.warning(
                 "_doLoadModels, called the modesl subscription ${models.length}");

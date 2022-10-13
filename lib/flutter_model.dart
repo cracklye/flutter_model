@@ -10,15 +10,34 @@ import 'package:loggy/loggy.dart';
 import 'dart:convert';
 import 'dart:io';
 import 'package:path_provider/path_provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:uuid/uuid.dart';
 import 'package:woue_components/woue_components.dart';
 
-part 'modeldao/model_state.dart';
+import 'package:flutter/material.dart' as m;
+
+
+part 'bloc/filtered/model_filter_bloc.dart';
+
+
+part 'model/orderby/order_by.dart';
+
+part 'model/filters/filter.dart';
+part 'model/filters/functional_filter.dart';
+part 'model/filters/query_filter.dart';
+
+part 'bloc/modelbloc/model_state.dart';
 part 'model/imodel.dart';
 part 'model/imodel_child.dart';
 part 'model/ihierarchy.dart';
-part 'modeldao/model_bloc.dart';
-part 'modeldao/model_event.dart';
+part 'bloc/modelbloc/model_bloc.dart';
+part 'bloc/modelbloc/model_event.dart';
+
+
+part 'bloc/models_list_bloc/models_list_bloc.dart';
+part 'bloc/models_list_bloc/models_list_event.dart';
+part 'bloc/models_list_bloc/models_list_state.dart';
+
 part 'persist/file_cache_provider.dart';
 part 'persist/file_cache_writer.dart';
 part 'persist/model_dao_memory.dart';
@@ -27,3 +46,7 @@ part 'persist/model_dao.dart';
 part 'widgets/model_bloc_widget.dart';
 part 'widgets/model_single_page.dart';
 part 'widgets/model_bloc_form_widget.dart';
+
+part 'widgets/ui/extended_list_view.dart'; 
+part 'widgets/ui/model_extendedlist_view.dart'; 
+

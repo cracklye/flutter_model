@@ -1,5 +1,4 @@
-part of flutter_model; 
-
+part of flutter_model;
 
 /// This is the base model for all data entities.
 abstract class IModel {
@@ -16,11 +15,22 @@ abstract class IModel {
   /// This will be displayed by default for all drop downs or lists if no override has been provided.
   String get displayLabel;
 
-  IModel copyWithId({dynamic id, DateTime? createdDate, DateTime? modifiedDate});
+  IModel copyWithId(
+      {dynamic id, DateTime? createdDate, DateTime? modifiedDate});
   //IModel copyWithDates({DateTime? createdDate, DateTime? modifiedDate});
-  
-  DateTime? get createdDate; 
-  DateTime? get modifiedDate; 
 
+  DateTime? get createdDate;
+  DateTime? get modifiedDate;
 
+  bool filter(String searchText) {
+    var map = toJson();
+    for (var val in map.values) {
+      if (val != null) {
+        if (val.toString().toLowerCase().contains(searchText.toLowerCase())) {
+          return true;
+        }
+      }
+    }
+    return false;
+  }
 }

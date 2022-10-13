@@ -100,7 +100,11 @@ abstract class IInMemoryAPI<T extends IModel> extends IModelAPI<T>
   }
 
   @override
-  Stream<List<T>> list({String? parentId}) {
+  Future<Stream<List<T>>> list(
+      {String? parentId,
+      String? searchText,
+      List<SortOrderBy>? orderBy,
+      List<Filter>? filters}) async {
     if (controller != null) {
       controller!.close();
     }
@@ -109,13 +113,14 @@ abstract class IInMemoryAPI<T extends IModel> extends IModelAPI<T>
 
     controller = StreamController<List<T>>();
     controller!.sink.add([...itemsToUse]);
+
+    if (searchText != null && searchText != "") {
+      //Filter based on the text as we're not handling it elsewhere....
+      return controller!.stream.map((event) =>
+          event.where((element) => element.filter(searchText)).toList());
+    }
     return controller!.stream;
   }
-
-  // int convertIdToInt(dynamic id) {
-  //   if (id is String) return int.parse(id);
-  //   return id;
-  // }
 
   @override
   Future<dynamic> update(dynamic id, Map<String, dynamic> values) async {
@@ -132,7 +137,6 @@ abstract class IInMemoryAPI<T extends IModel> extends IModelAPI<T>
     var rtn = await updateModel(model);
 
     return rtn;
-    
   }
 
   @override
@@ -197,7 +201,11 @@ abstract class IInMemoryAPI<T extends IModel> extends IModelAPI<T>
   }
 
   @override
-  Future<List<T>> listModels() {
+  Future<List<T>> listModels(
+      {String? parentId,
+      String? searchText,
+      List<SortOrderBy>? orderBy,
+      List<Filter>? filters}) {
     return Future.value([...items]);
   }
 
@@ -206,9 +214,9 @@ abstract class IInMemoryAPI<T extends IModel> extends IModelAPI<T>
   String? _listByIdKey;
 
   @override
-  Stream<T?> listById(
+  Future<Stream<T?>> listById(
     dynamic id,
-  ) {
+  ) async {
     if (_listByIdStream != null) {
       _listByIdStream!.sink.close();
     }
