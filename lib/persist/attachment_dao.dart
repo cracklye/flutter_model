@@ -21,6 +21,9 @@ class AttachmentDAO {
   // final String path = "D:\\Temp\\NotTakingApp\\attachments\\";
 
   static String getPath(String input) {
+    if(input.startsWith("http")){
+      return input;
+    }
     return '$_rootPath\\$input';
   }
 

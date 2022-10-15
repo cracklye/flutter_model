@@ -91,7 +91,7 @@ class ModelsBloc<T extends IModel> extends Bloc<ModelsEvent<T>, ModelsState<T>>
   void _onModelSelect(
       ModelSelect<T> event, Emitter<ModelsState<T>> emit) async {
     var state2 = state as ModelsLoaded<T>;
-    loggy.debug("_onModelSelect select model ${event.model} $T");
+    loggy.debug("_onModelSelect select model  $T");
     if (event.model == null) {
       emit(ModelsLoaded<T>(
           id: state2.id,
@@ -104,7 +104,7 @@ class ModelsBloc<T extends IModel> extends Bloc<ModelsEvent<T>, ModelsState<T>>
   }
 
   void _onLoadModels(LoadModels<T> event, Emitter<ModelsState<T>> emit) async {
-    loggy.debug("_onLoadModels Returning models update $T");
+    loggy.debug("_onLoadModels Returning models update $T $event");
     await _doLoadModels(event.parentId, event.id, emit, event.clear);
   }
 
@@ -195,7 +195,7 @@ class ModelsBloc<T extends IModel> extends Bloc<ModelsEvent<T>, ModelsState<T>>
 
   void _onModelsUpdated(
       ModelsUpdated<T> event, Emitter<ModelsState<T>> emit) async {
-    loggy.debug("_onModelsUpdated Returning models update $T event");
+    loggy.debug("_onModelsUpdated Returning models update $T count: ${event.models.length} $event ");
     //Selected...
     T? selectedModel;
 

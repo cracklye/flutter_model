@@ -14,5 +14,5 @@ class FilterField<T extends IModel>  extends Filter<T>{
   final String key;
   final bool isString; 
 final FilterComparison comparison;
-  FilterField(this.key, this.fieldName, this.value, this.comparison, this.isString);
+  FilterField(this.key, this.fieldName, this.value, this.comparison, this.isString, {required String field});
 }
