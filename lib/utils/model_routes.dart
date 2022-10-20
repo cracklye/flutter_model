@@ -67,15 +67,58 @@ class ModelRouter with UiLoggy {
     return '/$model/list';
   }
 
-/// Sets up all the CRUD routes in the router based on the handlers passed to the function.
-/// 
-/// [list] the handler to execute when the list URI is triggered
-/// [detail] the handler to execute when the detail URI is triggered
-/// [edit] the edit handler to execute when the edit URI is triggered
-/// [add] the add handler to execute when the add URI is triggered
+  static routeEditByTypeName(String typeName, dynamic id, [parentId]) {
+    logDebug("ModelRouter.Route Edit");
+
+    if (parentId != null) {
+      return '/$typeName/edit/$id/$parentId';
+    } else {
+      return '/$typeName/edit/$id';
+    }
+  }
+
+  ///Creates the router URI for model with [id] and (optionally) the [parentId]
+  static routeDetailByTypeName(String typeName, dynamic id, [parentId]) {
+    logDebug("ModelRouter.routeDetail id=$id, parentId=$parentId");
+
+    if (parentId != null) {
+      logDebug("routeDetail() Returning : /$typeName/detail/$id/$parentId");
+      return '/${typeName.toLowerCase()}/detail/$id/$parentId';
+    } else {
+      logDebug("routeDetail() Returning : /$typeName/detail/$id");
+      return '/${typeName.toLowerCase()}/detail/$id';
+    }
+  }
+
+  ///Creates the router URI for adding a new model with (optionally) the [parentId]
+  static routeAddByTypeName(String typeName, [dynamic parentId]) {
+    logDebug("ModelRouter.routeAdd  parentId=$parentId");
+
+    if (parentId != null) {
+      return '/${typeName.toLowerCase()}/create/$parentId';
+    } else {
+      return '/${typeName.toLowerCase()}/create';
+    }
+  }
+
+
+  /// Creates the default router URI for the list page for the model.
+  static routeListByTypeName(
+    String typeName,
+  ) {
+    logDebug("ModelRouter.routeList  ");
+
+    return '/${typeName.toLowerCase()}/list';
+  }
+
+  /// Sets up all the CRUD routes in the router based on the handlers passed to the function.
+  ///
+  /// [list] the handler to execute when the list URI is triggered
+  /// [detail] the handler to execute when the detail URI is triggered
+  /// [edit] the edit handler to execute when the edit URI is triggered
+  /// [add] the add handler to execute when the add URI is triggered
   static routeSetupCRUD<T extends IModel>(FluroRouter router,
       {Handler? list, Handler? detail, Handler? edit, Handler? add}) {
-
     if (list != null) {
       logDebug("**** Adding list ${ModelRouter.routeList<T>()}");
       router.define(ModelRouter.routeList<T>(), handler: list);
@@ -101,13 +144,14 @@ class ModelRouter with UiLoggy {
       );
     }
   }
-/// Sets up all the CRUD routes for a child model in
-///  the router based on the handlers passed to the function.
-/// 
-/// [list] the handler to execute when the list URI is triggered
-/// [detail] the handler to execute when the detail URI is triggered
-/// [edit] the edit handler to execute when the edit URI is triggered
-/// [add] the add handler to execute when the add URI is triggered
+
+  /// Sets up all the CRUD routes for a child model in
+  ///  the router based on the handlers passed to the function.
+  ///
+  /// [list] the handler to execute when the list URI is triggered
+  /// [detail] the handler to execute when the detail URI is triggered
+  /// [edit] the edit handler to execute when the edit URI is triggered
+  /// [add] the add handler to execute when the add URI is triggered
   static routeSetupCRUDChild<T extends IModel, IModelChild>(FluroRouter router,
       {Handler? list, Handler? detail, Handler? edit, Handler? add}) {
     if (list != null) {
