@@ -51,12 +51,14 @@ class ExtendedListView<T extends IModel> extends StatefulWidget {
     this.buildTreeItem,
     this.buildListItem,
     this.buildTableColumn,
+    this.buildToolbarSub,
     this.onOrderByChange,
     this.onFilterByChange,
     this.onSearchChange,
     this.onTap,
     this.onDoubleTap,
     this.onLongTap,
+    this.isLoading = false,
     this.enableSearch = true,
     this.listTypesIcons = const {
       ListViewType.grid: m.Icons.grid_3x3,
@@ -64,7 +66,7 @@ class ExtendedListView<T extends IModel> extends StatefulWidget {
       ListViewType.tree: m.Icons.thermostat_rounded,
       ListViewType.table: m.Icons.table_bar,
     },
-    this.defaultSearchText, 
+    this.defaultSearchText,
     String? settingsKey,
     SettingsStorage? settings,
   }) : settingsStorer = (settings == null && settingsKey != null)
@@ -86,6 +88,8 @@ class ExtendedListView<T extends IModel> extends StatefulWidget {
   final List<FilterByItem<T>>? filterBy;
   final List<TableColumn>? tableColumns;
 
+  final bool isLoading;
+
   final Function(OrderByItem?)? onOrderByChange;
   final Function(FilterByItem<T>?)? onFilterByChange;
   final Function(String?)? onSearchChange;
@@ -97,6 +101,8 @@ class ExtendedListView<T extends IModel> extends StatefulWidget {
   final Widget Function(BuildContext, T)? buildGridItem;
   final Widget Function(BuildContext, T)? buildTreeItem;
   final Widget Function(BuildContext, T, TableColumn)? buildTableColumn;
+
+  final Widget Function(BuildContext)? buildToolbarSub;
 
   final SettingsStorage? settingsStorer;
 
@@ -176,7 +182,7 @@ class _ExtendedListViewState<T extends IModel>
     _listViewType = ListViewType.list;
     _gridColumns = 4;
     _searchController = TextEditingController();
-    _searchController.text= ( widget.defaultSearchText??""); 
+    _searchController.text = (widget.defaultSearchText ?? "");
 
     if (widget.settingsStorer != null) {
       //_listViewType =
@@ -195,7 +201,7 @@ class _ExtendedListViewState<T extends IModel>
 
       //_gridColumns =  widget.settingsStorer!.getGridColumns();
     } else {}
-    
+
     super.initState();
   }
 
@@ -204,8 +210,14 @@ class _ExtendedListViewState<T extends IModel>
     return Column(
       children: [
         buildToolbar(context),
-        Expanded(child: SingleChildScrollView(child: buildContent(context))),
-        buildFooter(context),
+        (widget.buildToolbarSub != null)
+            ? widget.buildToolbarSub!(context)
+            : Container(),
+        //Expanded(child: SingleChildScrollView(child: buildContent(context))),
+        Expanded(child:  buildContent(context)),
+        (_listViewType == ListViewType.grid)
+            ? buildFooter(context)
+            : Container(),
       ],
     );
   }
@@ -233,6 +245,15 @@ class _ExtendedListViewState<T extends IModel>
   }
 
   Widget buildContent(BuildContext context) {
+    if (widget.isLoading) {
+      //TODO need to add loading symbol
+      return Text("Loading");
+    }
+    if (widget.items.isEmpty) {
+      //TODO need to format this a bit better (make it customisable)
+      return Text("No matching entries");
+    }
+
     if (_listViewType == ListViewType.grid) {
       return buildContentGrid(context);
     } else if (_listViewType == ListViewType.list) {
@@ -244,27 +265,37 @@ class _ExtendedListViewState<T extends IModel>
   }
 
   Widget buildContentList(BuildContext context) {
-    return m.ListView.builder(
-        shrinkWrap: true,
+    return ListView.builder(
+      //  shrinkWrap: true,
+        //  physics: const NeverScrollableScrollPhysics(),
+
         itemCount: widget.items.length,
-        itemBuilder: ((context, index) => GestureDetector(
-            onTap: widget.onTap == null
-                ? null
-                : () => widget.onTap!(widget.items[index]),
-            onDoubleTap: widget.onDoubleTap == null
-                ? null
-                : () => widget.onDoubleTap!(widget.items[index]),
-            onLongPress: widget.onLongTap == null
-                ? null
-                : () => widget.onLongTap!(widget.items[index]),
-            child: widget.buildListItem == null
-                ? buildListItemDefault(context, widget.items[index])
-                : widget.buildListItem!(context, widget.items[index]))));
+        itemBuilder: ((context, index) =>
+            // widget.buildListItem == null
+            //         ? buildListItemDefault(context, widget.items[index])
+            //         : widget.buildListItem!(context, widget.items[index])
+
+            GestureDetector(
+                onTap: widget.onTap == null
+                    ? null
+                    : () => widget.onTap!(widget.items[index]),
+                onDoubleTap: widget.onDoubleTap == null
+                    ? null
+                    : () => widget.onDoubleTap!(widget.items[index]),
+                onLongPress: widget.onLongTap == null
+                    ? null
+                    : () => widget.onLongTap!(widget.items[index]),
+                child: widget.buildListItem == null
+                    ? buildListItemDefault(context, widget.items[index])
+                    : widget.buildListItem!(context, widget.items[index]))));
   }
 
   Widget buildListItemDefault(BuildContext context, T item) {
     return ListTile(
-        title: Text(item.displayLabel),
+        title: Text(
+          item.displayLabel,
+          overflow: TextOverflow.ellipsis,
+        ),
         leading: SizedBox(
           width: 2,
           child: Container(
@@ -277,7 +308,7 @@ class _ExtendedListViewState<T extends IModel>
   Widget buildContentGrid(BuildContext context) {
     return GridView.count(
       crossAxisCount: _gridColumns.toInt(),
-      shrinkWrap: true,
+     // shrinkWrap: true,
       children: widget.items
           .map((e) => GestureDetector(
               onTap: widget.onTap == null ? null : () => widget.onTap!(e),
@@ -294,15 +325,7 @@ class _ExtendedListViewState<T extends IModel>
   }
 
   Widget buildGridItemDefault(BuildContext context, T item) {
-    return ListTile(
-        title: Text(item.displayLabel),
-        leading: SizedBox(
-          width: 2,
-          child: Container(
-              color: widget.selected == item
-                  ? m.Colors.red
-                  : m.Colors.transparent),
-        ));
+    return GridCardDefault(title: item.displayLabel);
   }
 
   Widget buildContentTree(BuildContext context) {
@@ -364,9 +387,14 @@ class _ExtendedListViewState<T extends IModel>
 
   Widget buildToolbar(BuildContext context) {
     List<Widget> btns = [];
-    if (widget.onOrderByChange!=null && widget.orderBy != null) {
-      for (var ob in widget.orderBy!) {
-        btns.add(ElevatedButton(child: ob.label,onPressed: () => widget.onOrderByChange!(ob),));
+    if (widget.onOrderByChange != null && widget.orderBy != null) {
+      if (widget.orderBy!.length > 1) {
+        for (var ob in widget.orderBy!) {
+          btns.add(ElevatedButton(
+            child: ob.label,
+            onPressed: () => widget.onOrderByChange!(ob),
+          ));
+        }
       }
     }
 
@@ -375,7 +403,7 @@ class _ExtendedListViewState<T extends IModel>
         Expanded(
           child: buildSearchBox(context),
         ),
-        ...btns, 
+        ...btns,
         ...widget.enabledListTypes
             .map<Widget>(
               (e) =>
@@ -409,6 +437,15 @@ class _ExtendedListViewState<T extends IModel>
 
   Widget buildSelectViewButton(
       BuildContext context, ListViewType type, IconData? icon) {
+    if (type == ListViewType.table &&
+        (widget.tableColumns == null || widget.tableColumns!.isEmpty)) {
+      return Container();
+    }
+    if (type == ListViewType.tree &&
+        (widget.hierarchy == null || widget.hierarchy!.isEmpty)) {
+      return Container();
+    }
+
     if (widget.enabledListTypes.contains(type)) {
       if (_listViewType == type) {
         return Icon(icon);
@@ -422,8 +459,9 @@ class _ExtendedListViewState<T extends IModel>
   }
 
   _selectViewType(ListViewType viewType) async {
-    if (widget.settingsStorer != null)
+    if (widget.settingsStorer != null) {
       await widget.settingsStorer!.setGridListViewType(viewType);
+    }
     setState(() {
       _listViewType = viewType;
     });

@@ -1,6 +1,34 @@
 part of flutter_model;
 
-class AttachmentDAO {
+abstract class AttachmentDAO {
+  static late AttachmentDAO active;
+  static Future<ImageProvider> getImage(
+      IModel coverImage, Map<String, dynamic>? details, String field) {
+    //Return image...
+    return active.getImageProvider(coverImage, details, field);
+  }
+Future<Map<String, dynamic>?> removeContentPost(String fieldName,
+dynamic id);
+  
+
+
+  Future<Map<String, dynamic>?> saveContentPost(String fieldName,
+      Uint8List data, String? ext, dynamic id, String? mimeType);
+  Future init([String? rootPath]);
+
+  Future<void> savePathPost(
+      String fieldName, String srcPath, dynamic id, String? mimeType);
+
+  Future<Map<String, dynamic>?> saveContent(
+      String fieldName, Uint8List data, String? ext, String? mimeType);
+  Future<Map<String, dynamic>?> savePath(
+      String fieldName, String srcPath, String? mimeType);
+
+  Future<ImageProvider> getImageProvider(
+      IModel coverImage, Map<String, dynamic>? details, String field);
+}
+
+class AttachmentDaoFilesystem extends AttachmentDAO {
   Future init([String? rootPath]) async {
     if (rootPath != null) {
       _rootPath = rootPath;
@@ -14,6 +42,22 @@ class AttachmentDAO {
     }
   }
 
+
+Future<Map<String, dynamic>?> removeContentPost(String fieldName,
+dynamic id) async{
+  //Delete it and return null; 
+return null;
+}
+
+  Future<ImageProvider> getImageProvider(
+      IModel coverImage, Map<String, dynamic>? details, String field) async {
+    var f = FileImage(File(""));
+    return f;
+  }
+
+  Future<Map<String, dynamic>?> saveContentPost(String fieldName,
+      Uint8List data, String? ext, dynamic id, String? mimeType) async {}
+
   static String _rootPath = "";
 
   final String subdir = "attachments";
@@ -21,15 +65,15 @@ class AttachmentDAO {
   // final String path = "D:\\Temp\\NotTakingApp\\attachments\\";
 
   static String getPath(String input) {
-    if(input.startsWith("http")){
+    if (input.startsWith("http")) {
       return input;
     }
     return '$_rootPath\\$input';
   }
 
   Future<Map<String, dynamic>?> savePath(
-      String fieldName, String srcPath) async {
-    String uid =const Uuid().v4();
+      String fieldName, String srcPath, String? mimeType) async {
+    String uid = const Uuid().v4();
     var ext = extension(srcPath);
     String relativeURI = '$subdir\\$uid$ext';
     String fullUri = '$_rootPath\\$relativeURI';
@@ -44,7 +88,7 @@ class AttachmentDAO {
   }
 
   Future<Map<String, dynamic>?> saveContent(
-      String fieldName, Uint8List data, String? ext) async {
+      String fieldName, Uint8List data, String? ext, String? mimeType) async {
     String uid = const Uuid().v4();
 
     String relativeURI = '$subdir\\$uid$ext';
@@ -59,4 +103,8 @@ class AttachmentDAO {
       "${fieldName}ThumbnailUri": "/thumbnail/jpg"
     });
   }
+
+  @override
+  Future<void> savePathPost(
+      String fieldName, String srcPath, id, String? mimeType) async {}
 }

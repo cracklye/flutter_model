@@ -43,8 +43,20 @@ class ModelsBloc<T extends IModel> extends Bloc<ModelsEvent<T>, ModelsState<T>>
     on<RefreshLoadModel<T>>(_onRefreshLoadModel);
     on<SetEditMode<T>>(_onSetEditMode);
     on<ModelSelect<T>>(_onModelSelect);
+    on<ModelsDeleteAttachment<T>>(_onModelsDeleteAttachment);
   }
-
+  
+  
+  void _onModelsDeleteAttachment(
+      ModelsDeleteAttachment<T> event, Emitter<ModelsState<T>> emit) async {
+         loggy.debug("_onModelsDeleteAttachment<$T> started ${event.id} ${event.fieldName}");
+   
+        if(attachmentDao!=null) {
+          await attachmentDao!.removeContentPost(event.fieldName, event.id);
+        } else {
+          loggy.error("RmeoveAttachment event sent by attachmentDAO is null");
+        }
+      }
   void _onSetEditMode(
       SetEditMode<T> event, Emitter<ModelsState<T>> emit) async {
     loggy.debug("_onSetEditMode<$T> started ${event.editMode}");
@@ -130,6 +142,9 @@ class ModelsBloc<T extends IModel> extends Bloc<ModelsEvent<T>, ModelsState<T>>
     }
     var newModel = await _modelsRepository.create(values);
 
+    _handleAttachmentPost(event.attachmentContent, event.attachmentFieldName,
+        event.attachmentPath, event.attachmentExtension, newModel.id);
+
     loggy.debug("_onAddModel Returning models new model= $newModel");
 
     add(ModelSelect(newModel, ModelStateMode.edit));
@@ -154,17 +169,57 @@ class ModelsBloc<T extends IModel> extends Bloc<ModelsEvent<T>, ModelsState<T>>
       }
 
       if (attachmentPath != null) {
+        String? mimeType = lookupMimeType(attachmentPath);
+
         loggy.debug("_handleAttachment Saving from path");
         return await attachmentDao!
-            .savePath(attachmentFieldName, attachmentPath);
+            .savePath(attachmentFieldName, attachmentPath, mimeType);
       } else {
+        String? mimeType = lookupMimeType('', headerBytes: attachmentContent!);
+
         loggy.debug("_handleAttachment Saving from content");
-        return attachmentDao!.saveContent(
-            attachmentFieldName, attachmentContent!, attachmentExtension);
+        return attachmentDao!.saveContent(attachmentFieldName,
+            attachmentContent!, attachmentExtension, mimeType);
       }
     }
 
     return null;
+  }
+
+  Future<void> _handleAttachmentPost(
+      Uint8List? attachmentContent,
+      String? attachmentFieldName,
+      String? attachmentPath,
+      String? attachmentExtension,
+      dynamic id) async {
+    loggy.debug(
+        "_handleAttachmentPost attachmentFieldName= $attachmentFieldName");
+    loggy.debug("_handleAttachmentPost RattachmentPath= $attachmentPath");
+    loggy.debug(
+        "_handleAttachmentPost contentSet?= ${attachmentContent != null}");
+
+    if (attachmentFieldName != null &&
+        (attachmentContent != null || attachmentPath != null)) {
+      //TODO need to delete if already in existance....
+      loggy.debug("_handleAttachment Have content to save");
+
+      if (attachmentDao == null) {
+        throw ("Trying to save attachments with no attachmentDAO configured");
+      }
+
+      if (attachmentPath != null) {
+        String? mimeType = lookupMimeType(attachmentPath);
+
+        loggy.debug("_handleAttachment Saving from path");
+        return await attachmentDao!
+            .savePathPost(attachmentFieldName, attachmentPath, id, mimeType);
+      } else {
+        String? mimeType = lookupMimeType('', headerBytes: attachmentContent!);
+        loggy.debug("_handleAttachment Saving from content");
+        attachmentDao!.saveContentPost(attachmentFieldName, attachmentContent!,
+            attachmentExtension, id, mimeType);
+      }
+    }
   }
 
   void _onUpdateModel(
@@ -185,17 +240,22 @@ class ModelsBloc<T extends IModel> extends Bloc<ModelsEvent<T>, ModelsState<T>>
     }
 
     _modelsRepository.update(event.id, values);
+
+    _handleAttachmentPost(event.attachmentContent, event.attachmentFieldName,
+        event.attachmentPath, event.attachmentExtension, event.id);
   }
 
   void _onDeleteModel(
       DeleteModel<T> event, Emitter<ModelsState<T>> emit) async {
     loggy.debug("_onDeleteModel Returning models update $T");
     _modelsRepository.deleteModel(event.model);
+    
   }
 
   void _onModelsUpdated(
       ModelsUpdated<T> event, Emitter<ModelsState<T>> emit) async {
-    loggy.debug("_onModelsUpdated Returning models update $T count: ${event.models.length} $event ");
+    loggy.debug(
+        "_onModelsUpdated Returning models update $T count: ${event.models.length} $event ");
     //Selected...
     T? selectedModel;
 
@@ -225,7 +285,6 @@ class ModelsBloc<T extends IModel> extends Bloc<ModelsEvent<T>, ModelsState<T>>
     loggy.debug("_onModelsUpdated Completed emit");
   }
 
-
   void _onRefreshLoadModel(
       RefreshLoadModel<T> event, Emitter<ModelsState<T>> emit) async {
     loggy.debug("ModelsBloc.mapRefreshLoadModelToState Existing $state");
@@ -249,13 +308,14 @@ class ModelsBloc<T extends IModel> extends Bloc<ModelsEvent<T>, ModelsState<T>>
       if (id != null) {
         loggy.debug("_doLoadModels ID is not null");
         _modelsSubscription = (await _modelsRepository.listById(id)).listen(
-              (model) => add(ModelsUpdated<T>(
-                [model!],
-              )),
-            );
+          (model) => add(ModelsUpdated<T>(
+            [model!],
+          )),
+        );
       } else {
         loggy.debug("_doLoadModels ID is null $parentId");
-        _modelsSubscription = (await _modelsRepository.list(parentId: parentId)).listen(
+        _modelsSubscription =
+            (await _modelsRepository.list(parentId: parentId)).listen(
           (models) {
             loggy.warning(
                 "_doLoadModels, called the modesl subscription ${models.length}");

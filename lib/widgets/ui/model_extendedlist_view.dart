@@ -1,5 +1,6 @@
 part of flutter_model;
 
+@deprecated
 class ModelExtendedListView<T extends IModel> extends StatelessWidget {
   ModelExtendedListView({
     super.key,
@@ -51,47 +52,59 @@ class ModelExtendedListView<T extends IModel> extends StatelessWidget {
   Widget build(BuildContext context) {
     return BlocBuilder<ModelsListBloc<T>, ModelsListState<T>>(
       builder: ((context, state) {
+        bool isLoading = true;
+        List<T> items = [];
+        List<HierarchyEntry<T>>? hierarchy;
+
         if (state is ModelsListLoaded<T>) {
-          return ExtendedListView<T>(
-            items: state.models,
-            hierarchy: state.hierarchy,
-            enabledListTypes: enabledListTypes,
-            buildGridItem: buildGridItem,
-            buildListItem: buildListItem,
-            buildTableColumn: buildTableColumn,
-            buildTreeItem: buildTreeItem,
-            enableSearch: enableSearch,
-            filterBy: filterBy,
-            orderBy: orderBy,
-
-            // listTypesIcons: listTypesIcons,
-            onDoubleTap: onDoubleTap,
-            onLongTap: onLongTap,
-            onTap: onTap,
-
-            onOrderByChange: ((orderByChange) =>
-                BlocProvider.of<ModelsListBloc<T>>(context).add(
-                    ModelsListChangeOrderBy<T>(orderByChange != null
-                        ? orderByChange!.getSortOrders()
-                        : null))),
-            onSearchChange: ((searchString) =>
-                BlocProvider.of<ModelsListBloc<T>>(context)
-                    .add(ModelsListChangeSearchText<T>(searchString))),
-            onFilterByChange: ((filter) =>
-                BlocProvider.of<ModelsListBloc<T>>(context).add(
-                    ModelsListChangeFilter<T>(
-                        filter != null ? filter.getFilters() : null))),
-
-            selected: state.selected,
-            settings: settingsStorer,
-            settingsKey: settingsKey,
-            tableColumns: tableColumns,
-
-            defaultSearchText : state.searchText, 
-          );
+          items = state.models;
+          hierarchy = state.hierarchy;
+          isLoading = false;
         }
-        return Container();
-      }),
+        //TODO handle error
+
+        //if (state is ModelsListLoaded<T>) {
+        return ExtendedListView<T>(
+          items: items,
+          hierarchy: hierarchy,
+          enabledListTypes: enabledListTypes,
+          buildGridItem: buildGridItem,
+          buildListItem: buildListItem,
+          buildTableColumn: buildTableColumn,
+          buildTreeItem: buildTreeItem,
+          enableSearch: enableSearch,
+          filterBy: filterBy,
+          orderBy: orderBy,
+          isLoading : isLoading, 
+          // listTypesIcons: listTypesIcons,
+          onDoubleTap: onDoubleTap,
+          onLongTap: onLongTap,
+          onTap: onTap,
+
+          onOrderByChange: ((orderByChange) =>
+              BlocProvider.of<ModelsListBloc<T>>(context).add(
+                  ModelsListChangeOrderBy<T>(orderByChange != null
+                      ? orderByChange!.getSortOrders()
+                      : null))),
+          onSearchChange: ((searchString) =>
+              BlocProvider.of<ModelsListBloc<T>>(context)
+                  .add(ModelsListChangeSearchText<T>(searchString))),
+          onFilterByChange: ((filter) =>
+              BlocProvider.of<ModelsListBloc<T>>(context).add(
+                  ModelsListChangeFilter<T>(
+                      filter != null ? filter.getFilters() : null))),
+
+          selected: state.selected,
+          settings: settingsStorer,
+          settingsKey: settingsKey,
+          tableColumns: tableColumns,
+
+          defaultSearchText: state.searchText,
+        );
+      }
+          // return Container();
+          //}
+          ),
     );
   }
 }

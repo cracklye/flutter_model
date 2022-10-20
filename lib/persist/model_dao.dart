@@ -38,5 +38,7 @@ abstract class IModelAPI<T extends IModel> {
   /// be ignored.
   T createNewModel<S>({String? parentId});
 
+
+  Future<dynamic> deleteByParentId(dynamic parentId);
  
 }

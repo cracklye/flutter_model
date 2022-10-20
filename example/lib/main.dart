@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_model/flutter_model.dart';
-import 'package:flutter_model/widgets/ui/extended_list_view.dart';
 import 'package:woue_components/woue_components.dart' as w;
 import 'package:cbl/cbl.dart';
 import 'package:cbl_flutter/cbl_flutter.dart';

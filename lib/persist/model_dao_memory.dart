@@ -19,7 +19,13 @@ abstract class IInMemoryAPI<T extends IModel> extends IModelAPI<T>
   IInMemoryAPI({List<T>? initItems, this.fileCacheProvider}) {
     if (initItems != null) items = initItems;
   }
-
+  
+  @override
+  Future<dynamic> deleteByParentId(dynamic parentId) async {
+    loggy.debug("CouchbaseDAO.deleteByParentId $parentId");
+    loggy.error("Not implemented correctly");
+    
+  }
   @override
   Future<dynamic> init([dynamic props]) async {
     loggy.debug("IInMemoryAPI.connectStart <$props>");

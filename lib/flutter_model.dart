@@ -3,6 +3,9 @@ library flutter_model;
 import 'dart:async';
 import 'dart:typed_data';
 // ignore: depend_on_referenced_packages
+import 'package:fluro/fluro.dart';
+import 'package:flutter_model/widgets/ui/grid_card_default.dart';
+import 'package:mime/mime.dart';
 import 'package:path/path.dart'; // Used in attachment_dao
 import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -33,6 +36,11 @@ part 'model/ihierarchy.dart';
 part 'bloc/modelbloc/model_bloc.dart';
 part 'bloc/modelbloc/model_event.dart';
 
+part 'bloc/model_detail_bloc/models_detail_bloc.dart';
+part 'bloc/model_detail_bloc/models_detail_event.dart';
+part 'bloc/model_detail_bloc/models_detail_state.dart';
+
+
 
 part 'bloc/models_list_bloc/models_list_bloc.dart';
 part 'bloc/models_list_bloc/models_list_event.dart';
@@ -50,3 +58,6 @@ part 'widgets/model_bloc_form_widget.dart';
 part 'widgets/ui/extended_list_view.dart'; 
 part 'widgets/ui/model_extendedlist_view.dart'; 
 
+part 'utils/model_functions.dart'; 
+part 'utils/model_keys.dart'; 
+part 'utils/model_routes.dart'; 

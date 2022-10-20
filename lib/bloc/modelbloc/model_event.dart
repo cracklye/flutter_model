@@ -96,6 +96,12 @@ class SetEditMode<T extends IModel> extends ModelsEvent<T> {
   const SetEditMode(this.editMode);
 }
 
+class ModelsDeleteAttachment<T extends IModel> extends ModelsEvent<T> {
+  
+  final String id;
+  final String fieldName; 
+  const ModelsDeleteAttachment(this.id, this.fieldName);
+}
 
 
 // abstract class ModelsEvent<T extends IModel> {
