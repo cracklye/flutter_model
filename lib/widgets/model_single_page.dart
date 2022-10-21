@@ -165,7 +165,10 @@ class ModelSinglePage<T extends IModel> extends StatelessWidget {
             state.selected!,
             formKey,
             (values) => BlocProvider.of<ModelsBloc<T>>(context)
-                .add(UpdateModel<T>(state.selected!.id, values)))
+                .add(UpdateModel<T>(
+                  state.selected!.id, values)
+                  
+                  ))
 
         // (val) => BlocProvider.of<ModelsBloc<T>>(context)
         //     .add(UpdateModelValue<T>(val))),
