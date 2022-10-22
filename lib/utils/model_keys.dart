@@ -1,14 +1,11 @@
 part of flutter_model;
 
-
 class ModelKeys {
-
-  
   static Key detailFabEdit<T extends IModel>(T model) =>
       Key(getKeyModel<T>("detail_fab_edit", model.id ?? "new"));
   static Key detailListView<T extends IModel>(T model) =>
       Key(getKeyModel<T>("detail_listview", model.id ?? "new"));
-  
+
   static Key detailHeroTag<T extends IModel>(T model) =>
       Key(getKeyModel<T>("detail_hero_tag", model.id ?? "new"));
 
@@ -55,38 +52,37 @@ class ModelKeys {
   static Key listItemTile<T extends IModel>(T model) =>
       Key(getKeyModel<T>("listItemTile", model.id ?? "new"));
 
-  static Key viewForm<T extends IModel>(T model) => Key(getKeyModel<T>(
-      "listItemTile", model != null ? (model.id ?? "new") : "new"));
+  static Key viewForm<T extends IModel>(T model) =>
+      Key(getKeyModel<T>("listItemTile", (model.id ?? "new")));
 
-  static final addSettingScreen = const Key('__addSettingScreen__');
-  static final saveNewSettingFab = const Key('__saveNewSettingFab__');
-  static final editSettingFab = const Key('__editSettingFab__');
-  static final editSettingScreen = const Key('__editSettingScreen__');
-  static final settingDetailsScreen = const Key('__settingDetailsScreen__');
-  static final modelLoading = const Key('__modelLoading__');
+  static const addSettingScreen = Key('__addSettingScreen__');
+  static const saveNewSettingFab = Key('__saveNewSettingFab__');
+  static const editSettingFab = Key('__editSettingFab__');
+  static const editSettingScreen = Key('__editSettingScreen__');
+  static const settingDetailsScreen = Key('__settingDetailsScreen__');
+  static const modelLoading = Key('__modelLoading__');
 
-  static final deleteSettingButton = const Key('__deleteSettingButton__');
-  static final detailsSettingItemKey = const Key('__detailsSettingItemKey__');
-  static final detailsSettingItemValues =
-      const Key('__detailsSettingItemValues__');
-  static final detailsSettingItemDescription =
-      const Key('__detailsSettingItemDescription__');
+  static const deleteSettingButton = Key('__deleteSettingButton__');
+  static const detailsSettingItemKey = Key('__detailsSettingItemKey__');
+  static const detailsSettingItemValues = Key('__detailsSettingItemValues__');
+  static const detailsSettingItemDescription =
+      Key('__detailsSettingItemDescription__');
 
-  static final settingsLoading = const Key('__settingsLoading__');
-  static final settingList = const Key('__settingList__');
-  static final saveChangesToolTip = const Key('__saveChangesToolTip_');
+  static const settingsLoading = Key('__settingsLoading__');
+  static const settingList = Key('__settingList__');
+  static const saveChangesToolTip = Key('__saveChangesToolTip_');
   //static final snackbar = const Key('__snackbar__');
   static Key snackbarAction(dynamic id) => Key('__snackbar_action_${id}__');
 
   static final settingItemCheckbox =
       (dynamic id) => Key('settingitem__${id}__');
-  static final settingItem = (dynamic id) => Key('settingitem__${id}__');
-  static final settingItemKey = (dynamic id) => Key('settingitem_key__${id}__');
+  static final  settingItem = (dynamic id) => Key('settingitem__${id}__');
+  static final  settingItemKey = (dynamic id) => Key('settingitem_key__${id}__');
   static final settingItemValues =
       (dynamic id) => Key('settingitem__values_${id}__');
 
-  static final settingsFieldKey = const Key('__settingsFieldKey__');
-  static final settingsFieldValues = const Key('__settingsFieldValues__');
+  static const settingsFieldKey = Key('__settingsFieldKey__');
+  static const settingsFieldValues = Key('__settingsFieldValues__');
 
   static final settingsFieldDescription =
       const Key('__settingsFieldDescription__');
@@ -117,34 +113,33 @@ class ModelKeys {
     }
   }
 
-
-  static routeAdd<T extends IModel>( [dynamic parentId,Map<String,dynamic>? params]) {
+  static routeAdd<T extends IModel>(
+      [dynamic parentId, Map<String, dynamic>? params]) {
     String model = getModelKeyFromType<T>();
 
-    String rtn = ""; 
-
+    String rtn = "";
 
     if (parentId != null) {
-      rtn =  '/$model/create/$parentId';
+      rtn = '/$model/create/$parentId';
     } else {
-      rtn =  '/$model/create';
+      rtn = '/$model/create';
     }
 
-    if(params!=null){
-      bool isSet = false; 
+    if (params != null) {
+      bool isSet = false;
 
-      for(var key in params.keys){
-        if(isSet){
+      for (var key in params.keys) {
+        if (isSet) {
           rtn = rtn + "&";
         } else {
           rtn = rtn + "?";
         }
         rtn = rtn + key + "=" + params[key].toString();
-        isSet = true; 
+        isSet = true;
       }
     }
     print("routeAdd url $rtn");
-    return rtn; 
+    return rtn;
   }
 
   static routeList<T extends IModel>() {

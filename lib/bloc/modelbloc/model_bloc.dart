@@ -179,7 +179,7 @@ class ModelsBloc<T extends IModel> extends Bloc<ModelsEvent<T>, ModelsState<T>>
 
         loggy.debug("_handleAttachment Saving from content");
         return attachmentDao!.saveContent(attachmentFieldName,
-            attachmentContent!, attachmentExtension, mimeType);
+            attachmentContent, attachmentExtension, mimeType);
       }
     }
 
@@ -216,7 +216,7 @@ class ModelsBloc<T extends IModel> extends Bloc<ModelsEvent<T>, ModelsState<T>>
       } else {
         String? mimeType = lookupMimeType('', headerBytes: attachmentContent!);
         loggy.debug("_handleAttachment Saving from content");
-        attachmentDao!.saveContentPost(attachmentFieldName, attachmentContent!,
+        attachmentDao!.saveContentPost(attachmentFieldName, attachmentContent,
             attachmentExtension, id, mimeType);
       }
     }

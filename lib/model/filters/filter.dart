@@ -16,6 +16,7 @@ enum FilterComparison {
 class FilterField<T extends IModel> extends Filter<T> {
   final dynamic value;
   final String fieldName;
+  @override
   final String key;
   final bool isString;
   final String label;

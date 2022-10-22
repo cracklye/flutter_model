@@ -84,7 +84,7 @@ class ModelExtendedListView<T extends IModel> extends StatelessWidget {
           onOrderByChange: ((orderByChange) =>
               BlocProvider.of<ModelsListBloc<T>>(context).add(
                   ModelsListChangeOrderBy<T>(orderByChange != null
-                      ? orderByChange!.getSortOrders()
+                      ? orderByChange.getSortOrders()
                       : null))),
           onSearchChange: ((searchString) =>
               BlocProvider.of<ModelsListBloc<T>>(context)

@@ -35,13 +35,11 @@ class ModelsDetailBloc<T extends IModel>
 
     _modelsSubscription =
         (await _modelsRepository.listById(event.id)).listen((model) {
-      loggy.warning("_doLoadModels, called the modesl subscription ${model}");
-
-      loggy.debug("_doLoadModels loading");
+      loggy.warning("_doLoadModels, called the models subscription so loading");
       if (model == null) {
         //TODO throw an exception..
       } else {
-        add(ModelsDetailUpdateDetail<T>(model!));
+        add(ModelsDetailUpdateDetail<T>(model));
       }
     });
   }

@@ -5,7 +5,7 @@ import 'package:cbl/cbl.dart';
 import 'package:cbl_flutter/cbl_flutter.dart';
 
 void main() async {
-  w.Woue.init(provider: w.MaterialProvider());
+  w.Woue.init(provider: const w.MaterialProvider());
   await CouchbaseLiteFlutter.init();
   runApp(const MyApp());
 }
@@ -57,7 +57,7 @@ class _MyHomePageState extends State<MyHomePage> {
   @override
   void initState() {
     for (int i = 0; i < 25; i++) {
-      dynamic parent = null;
+      dynamic parent ;
       if (i > 6) {
         parent = ((i - 6 / 3)).toInt();
       }
@@ -121,22 +121,22 @@ class _MyHomePageState extends State<MyHomePage> {
               onPressed: () async {
                 await _runDatabaseTest();
               },
-              icon: Icon(Icons.data_array)),
+              icon: const Icon(Icons.data_array)),
           IconButton(
               onPressed: () async {
                 await _runDbSync();
               },
-              icon: Icon(Icons.sync))
+              icon: const Icon(Icons.sync))
         ],
       ),
       body: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
-            Text(
+           const  Text(
                 "To Do\n Tree view \n Multiple selections \n Property level on the column (although could still handle from the child) \n selecting grid count\n searching \n detailed searching by field\n sort order"),
             Row(children: [
-              Text("Data Type"),
+           const    Text("Data Type"),
               Radio(
                   groupValue: true,
                   value: _showTreeData,
@@ -151,7 +151,7 @@ class _MyHomePageState extends State<MyHomePage> {
                       }))
             ]),
             Row(children: [
-              Text("Show Search Bar"),
+            const   Text("Show Search Bar"),
               Checkbox(
                   value: _showSearchBar,
                   onChanged: (value) => setState(() {
@@ -160,26 +160,26 @@ class _MyHomePageState extends State<MyHomePage> {
             ]),
             Row(
               children: [
-                Text("Show Types:"),
-                Text("View: "),
+              const   Text("Show Types:"),
+               const  Text("View: "),
                 Checkbox(
                     value: _showTypeView,
                     onChanged: (value) => setState(() {
                           _showTypeView = value ?? false;
                         })),
-                Text("Grid: "),
+              const   Text("Grid: "),
                 Checkbox(
                     value: _showTypeGrid,
                     onChanged: (value) => setState(() {
                           _showTypeGrid = value ?? false;
                         })),
-                Text("List: "),
+               const  Text("List: "),
                 Checkbox(
                     value: _showTypeList,
                     onChanged: (value) => setState(() {
                           _showTypeList = value ?? false;
                         })),
-                Text("Tree: "),
+               const  Text("Tree: "),
                 Checkbox(
                     value: _showTypeTree,
                     onChanged: (value) => setState(() {
@@ -241,7 +241,7 @@ class _MyHomePageState extends State<MyHomePage> {
         });
       },
       onSearchChange: (value) => setState(() {
-        lastAction = "Search Changed : ${value}";
+        lastAction = "Search Changed : $value";
       }),
       tableColumns: possibleColumns,
     );
@@ -313,13 +313,18 @@ class _MyHomePageState extends State<MyHomePage> {
 }
 
 class Sample extends IModel with IHierarchy {
+  @override
   final dynamic id;
+  @override
   final DateTime createdDate;
+  @override
   final DateTime modifiedDate;
+  @override
   final String displayLabel;
   final String description;
   final String url;
   final int numericValue;
+  @override
   final dynamic hierarchyParentId;
 
   Sample(this.id, this.createdDate, this.modifiedDate, this.displayLabel,

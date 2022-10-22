@@ -241,17 +241,17 @@ class _ExtendedListViewState<T extends IModel>
 
     return SizedBox(
         height: 35,
-        child: Row(children: [Expanded(child: Text("Footer")), ...w]));
+        child: Row(children: [const Expanded(child: Text("Footer")), ...w]));
   }
 
   Widget buildContent(BuildContext context) {
     if (widget.isLoading) {
       //TODO need to add loading symbol
-      return Text("Loading");
+      return const Text("Loading");
     }
     if (widget.items.isEmpty) {
       //TODO need to format this a bit better (make it customisable)
-      return Text("No matching entries");
+      return const Text("No matching entries");
     }
 
     if (_listViewType == ListViewType.grid) {
@@ -329,7 +329,7 @@ class _ExtendedListViewState<T extends IModel>
   }
 
   Widget buildContentTree(BuildContext context) {
-    return Text("Need to implement Tree");
+    return const Text("Need to implement Tree");
   }
 
   Widget buildContentTable(BuildContext context) {
@@ -382,7 +382,7 @@ class _ExtendedListViewState<T extends IModel>
         rows: rows,
       ));
     }
-    return Text("No columns configured");
+    return const Text("No columns configured");
   }
 
   Widget buildToolbar(BuildContext context) {
