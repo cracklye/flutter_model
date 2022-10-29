@@ -76,8 +76,8 @@ class ModelKeys {
 
   static final settingItemCheckbox =
       (dynamic id) => Key('settingitem__${id}__');
-  static final  settingItem = (dynamic id) => Key('settingitem__${id}__');
-  static final  settingItemKey = (dynamic id) => Key('settingitem_key__${id}__');
+  static final settingItem = (dynamic id) => Key('settingitem__${id}__');
+  static final settingItemKey = (dynamic id) => Key('settingitem_key__${id}__');
   static final settingItemValues =
       (dynamic id) => Key('settingitem__values_${id}__');
 
@@ -130,11 +130,11 @@ class ModelKeys {
 
       for (var key in params.keys) {
         if (isSet) {
-          rtn = rtn + "&";
+          rtn = "$rtn&";
         } else {
-          rtn = rtn + "?";
+          rtn = "$rtn?";
         }
-        rtn = rtn + key + "=" + params[key].toString();
+        rtn = "$rtn$key=${params[key].toString()}";
         isSet = true;
       }
     }

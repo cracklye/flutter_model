@@ -19,9 +19,13 @@ abstract class IModel {
       {dynamic id, DateTime? createdDate, DateTime? modifiedDate});
   //IModel copyWithDates({DateTime? createdDate, DateTime? modifiedDate});
 
+  /// The date the model was created (saved)
   DateTime? get createdDate;
+
+  /// The date the model was last modified
   DateTime? get modifiedDate;
 
+  /// A quick method for filtering based on a search string.
   bool filter(String searchText) {
     var map = toJson();
     for (var val in map.values) {
