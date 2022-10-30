@@ -35,6 +35,7 @@ part 'model/imodel_child.dart';
 part 'model/ihierarchy.dart';
 part 'bloc/modelbloc/model_bloc.dart';
 part 'bloc/modelbloc/model_event.dart';
+part 'bloc/modeledit/model_edit_bloc.dart';
 
 part 'bloc/model_detail_bloc/models_detail_bloc.dart';
 part 'bloc/model_detail_bloc/models_detail_event.dart';

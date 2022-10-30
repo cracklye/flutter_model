@@ -5,6 +5,230 @@ class ModelSinglePage<T extends IModel> extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    return buildBlocProvider(context);
+  }
+
+  Widget buildBlocProvider(BuildContext context) {
+    return BlocProvider(
+      create: ((context) => ModelsListBloc(
+          modelsRepository: RepositoryProvider.of<IModelAPI<T>>(context))
+        ..add(ModelsListLoad(
+            orderBy: [SortOrderByFieldName("_name", "name", true)]))),
+      child: buildBlocProviderEdit(context),
+    );
+  }
+
+  Widget buildBlocProviderEdit(BuildContext context) {
+    return BlocProvider(
+      create: ((context) => ModelEditBloc<T>(
+          RepositoryProvider.of<IModelAPI<T>>(context),
+          ModelEditStateNotLoaded<T>())),
+      child: buildBlocBuilder(context),
+    );
+  }
+
+  Widget buildBlocBuilder(BuildContext context) {
+    return BlocBuilder<ModelsListBloc<T>, ModelsListState<T>>(
+        builder: (context, state) {
+      return Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          SizedBox(
+            width: 300,
+            child: buildList(context, state),
+          ),
+          Expanded(
+              child: SingleChildScrollView(
+                  controller: ScrollController(),
+                  //color: Colors.red,
+                  child: buildDetail(context, state)))
+        ],
+      );
+    });
+  }
+
+  Widget buildStateLoaded(BuildContext context, ModelsListLoaded<T> state) {
+    return Row(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        SizedBox(
+          width: 300,
+          child: buildList(context, state),
+        ),
+        Expanded(
+            child: SingleChildScrollView(
+                controller: ScrollController(),
+                //color: Colors.red,
+                child: buildDetail(context, state)))
+      ],
+    );
+  }
+
+  // Widget buildList(BuildContext context, ModelsListState<T> state) {
+  //   return buildListView(context, state);
+  //   return Column(
+  //     crossAxisAlignment: CrossAxisAlignment.start,
+  //     children: [
+  //       buildListHeader(context, state),
+  //       Expanded(flex: 1, child: buildListView(context, state)),
+  //     ],
+  //   );
+  // }
+
+  Widget buildListHeader(BuildContext context, ModelsListState<T> state) {
+    return SizedBox(
+      height: 30,
+      child: Row(crossAxisAlignment: CrossAxisAlignment.start, children: [
+        ElevatedButton(
+            onPressed: () => BlocProvider.of<ModelsBloc<T>>(context)
+                .add(CreateNewModel<T>()),
+            child: const Text("Create")),
+      ]),
+    );
+  }
+
+  Widget buildList(BuildContext context, ModelsListState<T> state) {
+    return ModelExtendedListView<T>(
+      enabledListTypes: [ListViewType.list],
+      onTap: ((model) => BlocProvider.of<ModelEditBloc<T>>(context)
+          .add(ModelEditEventSelect<T>(model, false))),
+    );
+  }
+
+  Widget buildDetail(BuildContext context, ModelsListState<T> state) {
+    return BlocBuilder<ModelEditBloc<T>, ModelEditState<T>>(
+      builder: buildDetailState,
+    );
+  }
+
+  Widget buildDetailState(BuildContext context, ModelEditState<T> state) {
+    if (state is ModelEditStateNotLoaded<T>) {
+      return buildDetailNotSelected(context, state) ;
+    } else if (state is ModelEditStateView<T>) {
+      return buildDetailDisplay(context, state, state.model);
+    } else if (state is ModelEditStateEdit<T>) {
+      return buildDetailEdit(context, state, state.model);
+    }
+    return Text("Unhandled state: $state > ${state.model}");
+  }
+
+
+  Widget buildDetailNotSelected(
+      BuildContext context, ModelEditStateNotLoaded<T> state) {
+    return Column(
+      // mainAxisSize: MainAxisSize.min,
+      // crossAxisAlignment: CrossAxisAlignment.stretch,
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        buildActionBar(context, [
+           ElevatedButton(
+            onPressed: () => BlocProvider.of<ModelEditBloc<T>>(context)
+                .add(ModelEditEventCreateNew<T>()),
+            child: const Text("Create")),
+       ]),
+        //Text(state.selected != null ? state.selected!.id ?? "" : "No Id"),
+        Center(child: Text(""),)
+      ],
+    );
+  }
+
+
+
+  Widget buildDetailDisplay(
+      BuildContext context, ModelEditStateView<T> state, T? model) {
+    return Column(
+      // mainAxisSize: MainAxisSize.min,
+      // crossAxisAlignment: CrossAxisAlignment.stretch,
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        buildActionBar(context, [
+           ElevatedButton(
+            onPressed: () => BlocProvider.of<ModelEditBloc<T>>(context)
+                .add(ModelEditEventCreateNew<T>()),
+            child: const Text("Create")),
+
+          ElevatedButton(
+              onPressed: () => BlocProvider.of<ModelEditBloc<T>>(context)
+                  .add(ModelEditEventMode<T>(true)),
+              child: const Text("Edit")),
+
+          ElevatedButton(
+              onPressed: () => BlocProvider.of<ModelEditBloc<T>>(context)
+                  .add(ModelEditEventDelete<T>()),
+              child: const Text("Delete"))
+        ]),
+        //Text(state.selected != null ? state.selected!.id ?? "" : "No Id"),
+        buildDetailDisplayForModel2(context, state, model)
+      ],
+    );
+  }
+
+  Widget buildDetailDisplayForModel2(
+      BuildContext context, ModelEditStateView<T> state, T? model) {
+    if (model == null) return Text("Model is null");
+    return Text(
+        "Display page ${model.displayLabel} ID = ${model.id}  -  No Detail Page Provided");
+  }
+
+  Widget buildActionBar(BuildContext context, List<Widget> actions) {
+    return SizedBox(
+        height: 30,
+        child: Row(
+          children: actions,
+        ));
+  }
+
+  Widget buildDetailEdit(
+      BuildContext context, ModelEditStateEdit<T> state, T? model) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        buildActionBar(context, [
+          ElevatedButton(
+              onPressed: () {
+                if (formKey.currentState!.validate()) {
+                  formKey.currentState!.save();
+                }
+              },
+              child: const Text("Save")),
+          ElevatedButton(
+              onPressed: () => BlocProvider.of<ModelEditBloc<T>>(context)
+                  .add(ModelEditEventMode<T>(false)),
+              child: const Text("Cancel"))
+        ]),
+        buildForm2(
+            context,
+            state,
+            model,
+            formKey,
+            (values) => BlocProvider.of<ModelEditBloc<T>>(context)
+                .add(ModelEditEventSave<T>(values , false)))
+      ],
+    );
+  }
+
+  final GlobalKey<FormState> formKey = GlobalKey<FormState>();
+
+  Widget buildForm2(
+    BuildContext context,
+    ModelEditStateEdit<T> state,
+    T? model,
+    GlobalKey<FormState> formKey,
+    void Function(Map<String, dynamic>) onSave, 
+  ) {
+    return Column(
+      children: const [
+        Text("No form has been provided"),
+      ],
+    );
+  }
+}
+
+class ModelSinglePageOld<T extends IModel> extends StatelessWidget {
+  ModelSinglePageOld({Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
     return BlocBuilder<ModelsBloc<T>, ModelsState<T>>(
         builder: (context, state) {
       if (state is ModelsLoaded<T>) {
@@ -165,10 +389,7 @@ class ModelSinglePage<T extends IModel> extends StatelessWidget {
             state.selected!,
             formKey,
             (values) => BlocProvider.of<ModelsBloc<T>>(context)
-                .add(UpdateModel<T>(
-                  state.selected!.id, values)
-                  
-                  ))
+                .add(UpdateModel<T>(state.selected!.id, values)))
 
         // (val) => BlocProvider.of<ModelsBloc<T>>(context)
         //     .add(UpdateModelValue<T>(val))),
@@ -286,7 +507,7 @@ class ModelSinglePage<T extends IModel> extends StatelessWidget {
 //       // crossAxisAlignment: CrossAxisAlignment.stretch,
 //       children: [
 //         buildActionBar(context, [
-          
+
 //           ElevatedButton(
 //               onPressed: () => BlocProvider.of<ModelsBloc<T>>(context)
 //                   .add(ModelSelect<T>(state.selected!, ModelStateMode.edit)),

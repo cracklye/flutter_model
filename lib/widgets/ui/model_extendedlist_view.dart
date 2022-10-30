@@ -89,6 +89,7 @@ class ModelExtendedListView<T extends IModel> extends StatelessWidget {
           onSearchChange: ((searchString) =>
               BlocProvider.of<ModelsListBloc<T>>(context)
                   .add(ModelsListChangeSearchText<T>(searchString))),
+                  
           onFilterByChange: ((filter) =>
               BlocProvider.of<ModelsListBloc<T>>(context).add(
                   ModelsListChangeFilter<T>(

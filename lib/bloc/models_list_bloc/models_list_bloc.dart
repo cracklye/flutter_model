@@ -86,7 +86,7 @@ class ModelsListBloc<T extends IModel>
 
     List<T> selected = [];
 
-    if (event.appendToSelection) {
+    if (!event.appendToSelection) {
       if (event.model != null) {
         selected = [event.model!];
       } else {
