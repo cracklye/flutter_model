@@ -61,10 +61,10 @@ class ExtendedListView<T extends IModel> extends StatefulWidget {
     this.isLoading = false,
     this.enableSearch = true,
     this.listTypesIcons = const {
-      ListViewType.grid: m.Icons.grid_3x3,
-      ListViewType.list: m.Icons.list,
-      ListViewType.tree: m.Icons.thermostat_rounded,
-      ListViewType.table: m.Icons.table_bar,
+      ListViewType.grid: FontAwesomeIcons.grip, //m.Icons.grid_3x3,
+      ListViewType.list: FontAwesomeIcons.list,// m.Icons.list,
+      ListViewType.tree: FontAwesomeIcons.folderTree,// m.Icons.thermostat_rounded,
+      ListViewType.table: FontAwesomeIcons.table// m.Icons.table_bar,
     },
     this.defaultSearchText,
     String? settingsKey,
@@ -214,7 +214,7 @@ class _ExtendedListViewState<T extends IModel>
             ? widget.buildToolbarSub!(context)
             : Container(),
         //Expanded(child: SingleChildScrollView(child: buildContent(context))),
-        Expanded(child:  buildContent(context)),
+        Expanded(child: buildContent(context)),
         (_listViewType == ListViewType.grid)
             ? buildFooter(context)
             : Container(),
@@ -266,7 +266,7 @@ class _ExtendedListViewState<T extends IModel>
 
   Widget buildContentList(BuildContext context) {
     return ListView.builder(
-      //  shrinkWrap: true,
+        //  shrinkWrap: true,
         //  physics: const NeverScrollableScrollPhysics(),
 
         itemCount: widget.items.length,
@@ -308,7 +308,7 @@ class _ExtendedListViewState<T extends IModel>
   Widget buildContentGrid(BuildContext context) {
     return GridView.count(
       crossAxisCount: _gridColumns.toInt(),
-     // shrinkWrap: true,
+      // shrinkWrap: true,
       children: widget.items
           .map((e) => GestureDetector(
               onTap: widget.onTap == null ? null : () => widget.onTap!(e),
@@ -389,12 +389,23 @@ class _ExtendedListViewState<T extends IModel>
     List<Widget> btns = [];
     if (widget.onOrderByChange != null && widget.orderBy != null) {
       if (widget.orderBy!.length > 1) {
-        for (var ob in widget.orderBy!) {
-          btns.add(ElevatedButton(
-            child: ob.label,
-            onPressed: () => widget.onOrderByChange!(ob),
-          ));
-        }
+        btns.add(DropDownButton<OrderByItem>(
+          title: Icon(FontAwesomeIcons.arrowDownAZ),
+          onPressed: (p0) => widget.onOrderByChange!(p0),
+          items: widget.orderBy!
+              .map((e) => DropDownItem<OrderByItem>(
+                    content: e.label,
+                    value: e,
+                  ))
+              .toList(),
+        ));
+
+        // for (var ob in widget.orderBy!) {
+        //   btns.add(ElevatedButton(
+        //     child: ob.label,
+        //     onPressed: () => widget.onOrderByChange!(ob),
+        //   ));
+        // }
       }
     }
 

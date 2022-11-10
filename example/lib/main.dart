@@ -5,7 +5,7 @@ import 'package:cbl/cbl.dart';
 import 'package:cbl_flutter/cbl_flutter.dart';
 
 void main() async {
-  w.Woue.init(provider: const w.MaterialProvider());
+  //w.Woue.init(provider: const w.MaterialProvider());
   await CouchbaseLiteFlutter.init();
   runApp(const MyApp());
 }

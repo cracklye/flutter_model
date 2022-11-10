@@ -20,6 +20,9 @@ dependencies:
   woue_components:
     path: ../woue_components/
   mime:
+  font_awesome_flutter:
+
+  
 dev_dependencies:
   flutter_test:
     sdk: flutter

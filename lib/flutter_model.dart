@@ -1,10 +1,11 @@
 library flutter_model;
-
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'dart:async';
 import 'dart:typed_data';
 // ignore: depend_on_referenced_packages
 import 'package:fluro/fluro.dart';
 import 'package:flutter_model/widgets/ui/grid_card_default.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:mime/mime.dart';
 import 'package:path/path.dart'; // Used in attachment_dao
 import 'package:flutter/widgets.dart';
