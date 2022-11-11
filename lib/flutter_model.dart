@@ -63,3 +63,4 @@ part 'widgets/ui/model_extendedlist_view.dart';
 part 'utils/model_functions.dart'; 
 part 'utils/model_keys.dart'; 
 part 'utils/model_routes.dart'; 
+part 'widgets/ui/model_list_searchbox.dart'; 
