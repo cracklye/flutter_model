@@ -10,6 +10,24 @@ abstract class ModelsDetailState<T extends IModel> {
   final dynamic id;
 }
 
+class ModelsDetailError<T extends IModel> extends ModelsDetailState<T> {
+  final String errorMessage;
+
+  ModelsDetailError({
+    super.id,
+    required this.errorMessage,
+  });
+
+  factory ModelsDetailError.fromState(
+      ModelsDetailState<T> state, String message,
+      {id}) {
+    return ModelsDetailError(
+      id: id ?? state.id,
+      errorMessage: message,
+    );
+  }
+}
+
 class ModelsDetailLoading<T extends IModel> extends ModelsDetailState<T> {
   ModelsDetailLoading({
     super.id,
@@ -38,7 +56,7 @@ class ModelsDetailLoaded<T extends IModel> extends ModelsDetailState<T> {
   }
 
   factory ModelsDetailLoaded.fromState(ModelsDetailState<T> state, T model) {
-    return ModelsDetailLoaded(id: state.id, model: model);
+    return ModelsDetailLoaded(id: model.id, model: model);
   }
 
   @override

@@ -2,23 +2,24 @@ part of flutter_model;
 
 class ModelsListBloc<T extends IModel>
     extends Bloc<ModelsListEvent<T>, ModelsListState<T>> with UiLoggy {
-  final IModelAPI<T> _modelsRepository;
+  final IModelAPI<T> modelsRepository;
   StreamSubscription? _modelsSubscription;
 
   ModelsListBloc({
-    required IModelAPI<T> modelsRepository,
-    ModelsBloc? parentBloc,
+    required this.modelsRepository,
+    //ModelsBloc? parentBloc,
     ModelsListState<T>? initialState, 
-  })  : _modelsRepository = modelsRepository,
+  })  : //_modelsRepository = modelsRepository,
         super(initialState??ModelsListLoading<T>()) {
+
     on<ModelsListLoad<T>>(_onLoadModels);
     on<ModelsListDelete<T>>(_onDeleteModel);
-
     on<ModelListSelect<T>>(_onModelSelect);
     on<ModelsListUpdateList<T>>(_onModelsListUpdateList);
     on<ModelsListChangeSearchText<T>>(_onModelsListChangeSearchText);
     on<ModelsListChangeOrderBy<T>>(_onModelsListChangeOrderBy);
     on<ModelsListChangeFilter<T>>(_onModelsListChangeFilter);
+
   }
 
   void _onModelsListChangeSearchText(ModelsListChangeSearchText<T> event,
@@ -109,17 +110,21 @@ class ModelsListBloc<T extends IModel>
       ModelsListLoad<T> event, Emitter<ModelsListState<T>> emit) async {
     loggy.debug("_onLoadModels Returning models update $T");
     _modelsSubscription?.cancel();
+
     emit(ModelsListLoading.fromState(state, parentId: event.parentId,
               searchText: event.searchtext,
               orderBy: event.orderBy,
               filters: event.filters ));
+
+              
     if (event.clear) {
       loggy.debug("_doLoadModels Clear is true so updating to empty list");
 
       add(ModelsListUpdateList<T>([]));
+
     } else {
       loggy.debug("_doLoadModels ID is null ${event.parentId}");
-      _modelsSubscription = (await _modelsRepository.list(
+      _modelsSubscription = (await modelsRepository.list(
               parentId: event.parentId,
               searchText: event.searchtext,
               orderBy: event.orderBy,
@@ -135,6 +140,7 @@ class ModelsListBloc<T extends IModel>
 
           loggy.debug("_doLoadModels loading");
           add(ModelsListUpdateList<T>(models));
+
         },
       );
     }
@@ -143,7 +149,7 @@ class ModelsListBloc<T extends IModel>
   void _onDeleteModel(
       ModelsListDelete<T> event, Emitter<ModelsListState<T>> emit) async {
     loggy.debug("_onDeleteModel Returning models update $T");
-    _modelsRepository.deleteModel(event.model);
+    modelsRepository.deleteModel(event.model);
   }
 
   @override

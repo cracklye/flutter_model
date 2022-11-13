@@ -40,5 +40,10 @@ abstract class IModelAPI<T extends IModel> {
 
 
   Future<dynamic> deleteByParentId(dynamic parentId);
+
+  Future<dynamic> deleteById(dynamic id);
  
+
+
+
 }

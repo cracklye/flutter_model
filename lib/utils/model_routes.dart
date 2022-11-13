@@ -71,9 +71,9 @@ class ModelRouter with UiLoggy {
     logDebug("ModelRouter.Route Edit");
 
     if (parentId != null) {
-      return '/$typeName/edit/$id/$parentId';
+      return '/${typeName.toLowerCase()}/edit/$id/$parentId';
     } else {
-      return '/$typeName/edit/$id';
+      return '/${typeName.toLowerCase()}/edit/$id';
     }
   }
 

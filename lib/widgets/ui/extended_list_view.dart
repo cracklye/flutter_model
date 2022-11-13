@@ -276,6 +276,7 @@ class _ExtendedListViewState<T extends IModel>
             //         : widget.buildListItem!(context, widget.items[index])
 
             GestureDetector(
+             
                 onTap: widget.onTap == null
                     ? null
                     : () => widget.onTap!(widget.items[index]),

@@ -1,70 +1,77 @@
 part of flutter_model;
 
 abstract class ModelEditState<T extends IModel> {
-  T? model;
-  ModelEditState([this.model]);
+  final T? model;
+  const ModelEditState([this.model]);
 }
 
 class ModelEditStateNotLoaded<T extends IModel> extends ModelEditState<T> {
-  ModelEditStateNotLoaded() : super(null);
+  const ModelEditStateNotLoaded() : super(null);
 }
 
 class ModelEditStateEdit<T extends IModel> extends ModelEditState<T> {
-  ModelEditStateEdit([super.model]);
+  const ModelEditStateEdit([super.model]);
 }
 
 class ModelEditStateChanged<T extends IModel> extends ModelEditStateEdit<T> {
-  ModelEditStateChanged([super.model]);
+  const ModelEditStateChanged([super.model]);
 }
 
 class ModelEditStateSaving<T extends IModel> extends ModelEditStateEdit<T> {
-  ModelEditStateSaving([super.model]);
+  const ModelEditStateSaving([super.model]);
 }
 
 class ModelEditStateView<T extends IModel> extends ModelEditState<T> {
-  ModelEditStateView([super.model]);
+  const ModelEditStateView([super.model]);
 }
 
 class ModelEditStateError<T extends IModel> extends ModelEditState<T> {
   final dynamic e;
   final String message;
-  ModelEditStateError(this.message, [this.e, super.model]);
+  const ModelEditStateError(this.message, [this.e, super.model]);
 }
 
-abstract class ModelEditEvent<T extends IModel> {}
+abstract class ModelEditEvent<T extends IModel> {
+  const ModelEditEvent();
+}
 
 class ModelEditEventDelete<T extends IModel> extends ModelEditEvent<T> {
-  ModelEditEventDelete();
+  const ModelEditEventDelete();
 }
 
 class ModelEditEventSave<T extends IModel> extends ModelEditEvent<T> {
   final Map<String, dynamic> values;
   final bool? isEditMode;
 
-  ModelEditEventSave(this.values, [this.isEditMode]);
+  const ModelEditEventSave(this.values, [this.isEditMode]);
 }
 
-class ModelEditEventChanged<T extends IModel> extends ModelEditEvent<T> {}
+class ModelEditEventChanged<T extends IModel> extends ModelEditEvent<T> {
+  const ModelEditEventChanged();
+}
 
-class ModelEditEventCreateNew<T extends IModel> extends ModelEditEvent<T> {}
+class ModelEditEventCreateNew<T extends IModel> extends ModelEditEvent<T> {
+  const ModelEditEventCreateNew();
+}
 
 class ModelEditEventMode<T extends IModel> extends ModelEditEvent<T> {
   final bool isEditMode;
-  ModelEditEventMode(this.isEditMode);
+  const ModelEditEventMode(this.isEditMode);
 }
 
 class ModelEditEventSelect<T extends IModel> extends ModelEditEvent<T> {
   final bool isEditMode;
   final T? model;
 
-  ModelEditEventSelect(this.model, this.isEditMode);
+  const ModelEditEventSelect(this.model, this.isEditMode);
 }
 
 class ModelEditBloc<T extends IModel>
     extends Bloc<ModelEditEvent<T>, ModelEditState<T>> {
   IModelAPI<T> dao;
 
-  ModelEditBloc(this.dao, super.initialState) {
+  ModelEditBloc(this.dao,
+      [super.initialState = const ModelEditStateNotLoaded()]) {
     on<ModelEditEventMode<T>>(_onModelEditEventMode);
     on<ModelEditEventSave<T>>(_onModelEditEventSave);
     on<ModelEditEventChanged<T>>(_onModelEditEventChanged);
@@ -82,8 +89,8 @@ class ModelEditBloc<T extends IModel>
 
   void _onModelEditEventDelete(
       ModelEditEventDelete<T> event, Emitter<ModelEditState<T>> emit) async {
-    await dao.deleteModel(state.model!);
-    emit(ModelEditStateNotLoaded());
+    await dao.deleteById(state.model!.id);
+    emit(ModelEditStateNotLoaded<T>());
   }
 
   void _onModelEditEventSelect(
@@ -97,6 +104,8 @@ class ModelEditBloc<T extends IModel>
       emit(ModelEditStateView<T>(event.model));
     }
   }
+
+
 
   void _onModelEditEventChanged(
       ModelEditEventChanged<T> event, Emitter<ModelEditState<T>> emit) async {
@@ -123,6 +132,7 @@ class ModelEditBloc<T extends IModel>
         await dao.update(state.model!.id, event.values);
         emit(ModelEditStateEdit<T>(state.model));
       }
+
       if (event.isEditMode != null) {
         add(ModelEditEventMode(event.isEditMode!));
       }

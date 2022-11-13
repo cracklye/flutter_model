@@ -19,13 +19,13 @@ abstract class IInMemoryAPI<T extends IModel> extends IModelAPI<T>
   IInMemoryAPI({List<T>? initItems, this.fileCacheProvider}) {
     if (initItems != null) items = initItems;
   }
-  
+
   @override
   Future<dynamic> deleteByParentId(dynamic parentId) async {
     loggy.debug("CouchbaseDAO.deleteByParentId $parentId");
     loggy.error("Not implemented correctly");
-    
   }
+
   @override
   Future<dynamic> init([dynamic props]) async {
     loggy.debug("IInMemoryAPI.connectStart <$props>");
@@ -184,9 +184,16 @@ abstract class IInMemoryAPI<T extends IModel> extends IModelAPI<T>
 
   @override
   Future<dynamic> deleteModel(T model) {
+    deleteById(model.id);
+
+    return Future.value(true);
+  }
+
+  @override
+  Future<dynamic> deleteById(dynamic id) {
     try {
       items.removeWhere((itm) {
-        return itm.id == model.id;
+        return itm.id == id;
       });
 
       if (controller != null) {
@@ -194,7 +201,7 @@ abstract class IInMemoryAPI<T extends IModel> extends IModelAPI<T>
         controller!.sink.add([...itemsToUse]);
       }
 
-      if (model.id == _listByIdKey && _listByIdStream != null) {
+      if (id == _listByIdKey && _listByIdStream != null) {
         _listByIdStream!.sink.add(null);
       }
 

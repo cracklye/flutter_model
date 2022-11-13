@@ -27,8 +27,6 @@ part 'bloc/filtered/model_filter_bloc.dart';
 part 'model/orderby/order_by.dart';
 
 part 'model/filters/filter.dart';
-part 'model/filters/functional_filter.dart';
-part 'model/filters/query_filter.dart';
 
 part 'bloc/modelbloc/model_state.dart';
 part 'model/imodel.dart';
