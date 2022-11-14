@@ -62,9 +62,10 @@ class ExtendedListView<T extends IModel> extends StatefulWidget {
     this.enableSearch = true,
     this.listTypesIcons = const {
       ListViewType.grid: FontAwesomeIcons.grip, //m.Icons.grid_3x3,
-      ListViewType.list: FontAwesomeIcons.list,// m.Icons.list,
-      ListViewType.tree: FontAwesomeIcons.folderTree,// m.Icons.thermostat_rounded,
-      ListViewType.table: FontAwesomeIcons.table// m.Icons.table_bar,
+      ListViewType.list: FontAwesomeIcons.list, // m.Icons.list,
+      ListViewType.tree:
+          FontAwesomeIcons.folderTree, // m.Icons.thermostat_rounded,
+      ListViewType.table: FontAwesomeIcons.table // m.Icons.table_bar,
     },
     this.defaultSearchText,
     String? settingsKey,
@@ -97,8 +98,10 @@ class ExtendedListView<T extends IModel> extends StatefulWidget {
   final Function(T)? onLongTap;
   final Function(T)? onDoubleTap;
 
-  final Widget Function(BuildContext, T)? buildListItem;
-  final Widget Function(BuildContext, T)? buildGridItem;
+  final Widget Function(BuildContext, T, Function()? onTap,
+      Function()? onDoubleTap, Function()? onLongPress)? buildListItem;
+  final Widget Function(BuildContext, T, Function()? onTap,
+      Function()? onDoubleTap, Function()? onLongPress)? buildGridItem;
   final Widget Function(BuildContext, T)? buildTreeItem;
   final Widget Function(BuildContext, T, TableColumn)? buildTableColumn;
 
@@ -276,7 +279,6 @@ class _ExtendedListViewState<T extends IModel>
             //         : widget.buildListItem!(context, widget.items[index])
 
             GestureDetector(
-             
                 onTap: widget.onTap == null
                     ? null
                     : () => widget.onTap!(widget.items[index]),
@@ -287,12 +289,40 @@ class _ExtendedListViewState<T extends IModel>
                     ? null
                     : () => widget.onLongTap!(widget.items[index]),
                 child: widget.buildListItem == null
-                    ? buildListItemDefault(context, widget.items[index])
-                    : widget.buildListItem!(context, widget.items[index]))));
+                    ? buildListItemDefault(
+                        context,
+                        widget.items[index],
+                        widget.onTap == null
+                            ? null
+                            : () => widget.onTap!(widget.items[index]),
+                        widget.onDoubleTap == null
+                            ? null
+                            : () => widget.onDoubleTap!(widget.items[index]),
+                        widget.onLongTap == null
+                            ? null
+                            : () => widget.onLongTap!(widget.items[index]),
+                      )
+                    : widget.buildListItem!(
+                        context,
+                        widget.items[index],
+                        widget.onTap == null
+                            ? null
+                            : () => widget.onTap!(widget.items[index]),
+                        widget.onDoubleTap == null
+                            ? null
+                            : () => widget.onDoubleTap!(widget.items[index]),
+                        widget.onLongTap == null
+                            ? null
+                            : () => widget.onLongTap!(widget.items[index]),
+                      ))));
   }
 
-  Widget buildListItemDefault(BuildContext context, T item) {
+  Widget buildListItemDefault(
+      BuildContext context, T item, onTap, onDoubleTap, onLongPress) {
     return ListTile(
+        onTap: onTap,
+        onDoubleTap: onDoubleTap,
+        onLongPress: onLongPress,
         title: Text(
           item.displayLabel,
           overflow: TextOverflow.ellipsis,
@@ -319,13 +349,34 @@ class _ExtendedListViewState<T extends IModel>
               onLongPress:
                   widget.onLongTap == null ? null : () => widget.onLongTap!(e),
               child: widget.buildGridItem == null
-                  ? buildGridItemDefault(context, e)
-                  : widget.buildGridItem!(context, e)))
+                  ? buildGridItemDefault(
+                      context,
+                      e,
+                      widget.onTap == null ? null : () => widget.onTap!(e),
+                      widget.onDoubleTap == null
+                          ? null
+                          : () => widget.onDoubleTap!(e),
+                      widget.onLongTap == null
+                          ? null
+                          : () => widget.onLongTap!(e),
+                    )
+                  : widget.buildGridItem!(
+                      context,
+                      e,
+                      widget.onTap == null ? null : () => widget.onTap!(e),
+                      widget.onDoubleTap == null
+                          ? null
+                          : () => widget.onDoubleTap!(e),
+                      widget.onLongTap == null
+                          ? null
+                          : () => widget.onLongTap!(e),
+                    )))
           .toList(),
     );
   }
 
-  Widget buildGridItemDefault(BuildContext context, T item) {
+  Widget buildGridItemDefault(
+      BuildContext context, T item, onTap, onDoubleTap, onLongPress) {
     return GridCardDefault(title: item.displayLabel);
   }
 
@@ -395,7 +446,7 @@ class _ExtendedListViewState<T extends IModel>
           onPressed: (p0) => widget.onOrderByChange!(p0),
           items: widget.orderBy!
               .map((e) => DropDownItem<OrderByItem>(
-                //TODO selected: 
+                    //TODO selected:
                     content: e.label,
                     value: e,
                   ))

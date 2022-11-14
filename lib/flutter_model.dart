@@ -57,6 +57,7 @@ part 'widgets/model_bloc_form_widget.dart';
 
 part 'widgets/ui/extended_list_view.dart'; 
 part 'widgets/ui/model_extendedlist_view.dart'; 
+part 'widgets/ui/model_list.dart'; 
 
 part 'utils/model_functions.dart'; 
 part 'utils/model_keys.dart'; 

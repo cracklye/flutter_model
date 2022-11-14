@@ -40,8 +40,10 @@ class ModelExtendedListView<T extends IModel> extends StatelessWidget {
   final Function(T)? onLongTap;
   final Function(T)? onDoubleTap;
 
-  final Widget Function(BuildContext, T)? buildListItem;
-  final Widget Function(BuildContext, T)? buildGridItem;
+  final Widget Function(BuildContext, T, Function()? onTap, Function()? 
+  onDoubleTap, Function()? onLongPress)? buildListItem;
+  final Widget Function(BuildContext, T, Function()? onTap, Function()? 
+  onDoubleTap, Function()? onLongPress)? buildGridItem;
   final Widget Function(BuildContext, T)? buildTreeItem;
   final Widget Function(BuildContext, T, TableColumn)? buildTableColumn;
 
