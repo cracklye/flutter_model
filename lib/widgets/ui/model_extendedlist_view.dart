@@ -1,8 +1,8 @@
 part of flutter_model;
 
-@deprecated
+@Deprecated("Replaced by the ModelList component")
 class ModelExtendedListView<T extends IModel> extends StatelessWidget {
-  ModelExtendedListView({
+  const ModelExtendedListView({
     super.key,
     this.enabledListTypes = ListViewType.values,
     this.orderBy,
@@ -69,6 +69,7 @@ class ModelExtendedListView<T extends IModel> extends StatelessWidget {
         return ExtendedListView<T>(
           items: items,
           hierarchy: hierarchy,
+          
           enabledListTypes: enabledListTypes,
           buildGridItem: buildGridItem,
           buildListItem: buildListItem,

@@ -89,7 +89,7 @@ class ModelSinglePage<T extends IModel> extends StatelessWidget {
 
   Widget buildList(BuildContext context, ModelsListState<T> state) {
     return ModelExtendedListView<T>(
-      enabledListTypes: [ListViewType.list],
+      enabledListTypes:const  [ListViewType.list],
       onTap: ((model) => BlocProvider.of<ModelEditBloc<T>>(context)
           .add(ModelEditEventSelect<T>(model, false))),
     );
@@ -127,7 +127,7 @@ class ModelSinglePage<T extends IModel> extends StatelessWidget {
             child: const Text("Create")),
        ]),
         //Text(state.selected != null ? state.selected!.id ?? "" : "No Id"),
-        Center(child: Text(""),)
+       const  Center(child: Text(""),)
       ],
     );
   }
@@ -165,7 +165,7 @@ class ModelSinglePage<T extends IModel> extends StatelessWidget {
 
   Widget buildDetailDisplayForModel2(
       BuildContext context, ModelEditStateView<T> state, T? model) {
-    if (model == null) return Text("Model is null");
+    if (model == null) return const Text("Model is null");
     return Text(
         "Display page ${model.displayLabel} ID = ${model.id}  -  No Detail Page Provided");
   }
@@ -288,9 +288,11 @@ class ModelSinglePageOld<T extends IModel> extends StatelessWidget {
     );
   }
 
+
   Widget buildListView(BuildContext context, ModelsLoaded<T> state) {
     return ListView.builder(
       itemBuilder: (ctx, index) => ListTile(
+        selected: state.models[index] == state.selected,
         title: Text(state.models[index].displayLabel),
         onTap: () => BlocProvider.of<ModelsBloc<T>>(context)
             .add(ModelSelect<T>(state.models[index])),

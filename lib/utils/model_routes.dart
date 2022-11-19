@@ -11,7 +11,7 @@ class ModelRouter with UiLoggy {
   static mapFromParams(Map<String, dynamic>? params) {
     if (params == null) return null;
     Map<String, dynamic> rtn = {};
-    print("mapFromparams: returning params");
+    logDebug("mapFromparams: returning params");
     for (var key in params.keys) {
       if (params[key] is List) {
         logDebug("MapFromParams: Key $key, is list");

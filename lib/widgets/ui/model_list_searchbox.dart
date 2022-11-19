@@ -15,7 +15,7 @@ class _ModelListSearchBoxState<T extends IModel>
   @override
   void initState() {
     _searchController = TextEditingController();
-    _searchController.text = (widget.defaultSearchText ?? "");
+    _searchController.text = (widget.defaultSearchText );
 
     super.initState();
   }
@@ -43,7 +43,7 @@ class _ModelListSearchBoxState<T extends IModel>
             IconButton(
                 onPressed: (() => BlocProvider.of<ModelsListBloc<T>>(context)
                     .add(ModelsListChangeSearchText<T>(""))),
-                icon: Icon(FontAwesomeIcons.xmark)),
+                icon: const Icon(FontAwesomeIcons.xmark)),
           ],
         );
       });

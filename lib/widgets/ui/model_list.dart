@@ -3,7 +3,7 @@ part of flutter_model;
 
 
 class ModelList<T extends IModel> extends StatelessWidget {
-  ModelList({
+  const ModelList({
     super.key,
     this.parentId,
     this.enabledListTypes = ListViewType.values,

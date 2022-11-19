@@ -14,9 +14,9 @@ class ModelKeys {
 
   static Key editFabSaveExisting<T extends IModel>(T model) =>
       Key(getKeyModel<T>(
-          "edit_fab_saveexisting", model == null ? "new" : model.id ?? "new"));
+          "edit_fab_saveexisting",  model.id ?? "new"));
   static Key editFabSaveNew<T extends IModel>(T model) => Key(getKeyModel<T>(
-      "edit_fab_savenew", model == null ? "new" : model.id ?? "new"));
+      "edit_fab_savenew", model.id ?? "new"));
 
   static Key filterTextbox<T extends IModel>() =>
       Key(getKey<T>("filter_textbox"));
@@ -74,18 +74,15 @@ class ModelKeys {
   //static final snackbar = const Key('__snackbar__');
   static Key snackbarAction(dynamic id) => Key('__snackbar_action_${id}__');
 
-  static final settingItemCheckbox =
-      (dynamic id) => Key('settingitem__${id}__');
-  static final settingItem = (dynamic id) => Key('settingitem__${id}__');
-  static final settingItemKey = (dynamic id) => Key('settingitem_key__${id}__');
-  static final settingItemValues =
-      (dynamic id) => Key('settingitem__values_${id}__');
+  static settingItemCheckbox(dynamic id) => Key('settingitem__${id}__');
+  static settingItem(dynamic id) => Key('settingitem__${id}__');
+  static settingItemKey(dynamic id) => Key('settingitem_key__${id}__');
+  static settingItemValues(dynamic id) => Key('settingitem__values_${id}__');
 
   static const settingsFieldKey = Key('__settingsFieldKey__');
   static const settingsFieldValues = Key('__settingsFieldValues__');
 
-  static final settingsFieldDescription =
-      const Key('__settingsFieldDescription__');
+  static const settingsFieldDescription = Key('__settingsFieldDescription__');
 
   // static final routeEdit = <T extends IModel>(Stridynamicng id) => ('/${getModelKeyFromType<T>()}/edit/$id');
   // static final routeDetail = <T extends IModel>(dynamic id) => ('/${getModelKeyFromType<T>()}/detail/$id');
@@ -102,13 +99,13 @@ class ModelKeys {
   }
 
   static routeDetail<T extends IModel>(dynamic id, [parentId]) {
-    print("routeDetail id=$id, parentId=$parentId");
+    logDebug("routeDetail id=$id, parentId=$parentId");
     String model = getModelKeyFromType<T>();
     if (parentId != null) {
-      print("routeDetail() Returning : /$model/detail/$id/$parentId");
+      logDebug("routeDetail() Returning : /$model/detail/$id/$parentId");
       return '/$model/detail/$id/$parentId';
     } else {
-      print("routeDetail() Returning : /$model/detail/$id");
+      logDebug("routeDetail() Returning : /$model/detail/$id");
       return '/$model/detail/$id';
     }
   }
@@ -138,7 +135,7 @@ class ModelKeys {
         isSet = true;
       }
     }
-    print("routeAdd url $rtn");
+    logDebug('routeAdd url $rtn');
     return rtn;
   }
 

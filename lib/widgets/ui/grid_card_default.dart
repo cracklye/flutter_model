@@ -2,17 +2,17 @@ import 'package:flutter/material.dart';
 import 'package:flutter_model/flutter_model.dart';
 
 class GridCardDefault<T extends IModel> extends StatelessWidget {
-  GridCardDefault(
+  const GridCardDefault(
       {super.key,
       this.backgroundImage,
       required this.title,
       this.colour,
       this.subtitle});
 
-  ImageProvider? backgroundImage;
-  String title;
-  String? subtitle;
-  Color? colour;
+  final ImageProvider? backgroundImage;
+  final String title;
+  final String? subtitle;
+  final Color? colour;
 
   @override
   Widget build(BuildContext context) {

@@ -97,7 +97,7 @@ abstract class IInMemoryAPI<T extends IModel> extends IModelAPI<T>
                 (element as IModelChild).parentId == activeParentId)
             .toList();
       } catch (e) {
-        print("Unable to process $e");
+         loggy.warning("Unable to process $e");
       }
       //Unable to do it...
 
@@ -254,7 +254,7 @@ abstract class IInMemoryAPI<T extends IModel> extends IModelAPI<T>
       return Future.value(rtn);
     } catch (e) {
       // throw new Exception
-      print("Unable to find the entry with the id=$id   $e");
+       loggy.warning("Unable to find the entry with the id=$id   $e");
       return Future.value(null);
     }
   }

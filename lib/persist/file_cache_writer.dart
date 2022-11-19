@@ -1,13 +1,13 @@
 part of flutter_model;
 
-class FileSystemWriter<T extends IModel> extends ModelCacheProvider<T> {
+class FileSystemWriter<T extends IModel> extends ModelCacheProvider<T> with UiLoggy{
   const FileSystemWriter(this.fromJson);
 
   final T Function(Map<String, dynamic>) fromJson;
 
   Future<String> get _localPath async {
     final directory = await getApplicationSupportDirectory();
-print("App Directory: $directory");
+ loggy.debug("App Directory: $directory");
     return directory.path;
   }
 

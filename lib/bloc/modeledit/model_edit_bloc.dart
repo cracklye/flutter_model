@@ -67,7 +67,7 @@ class ModelEditEventSelect<T extends IModel> extends ModelEditEvent<T> {
 }
 
 class ModelEditBloc<T extends IModel>
-    extends Bloc<ModelEditEvent<T>, ModelEditState<T>> {
+    extends Bloc<ModelEditEvent<T>, ModelEditState<T>> with UiLoggy {
   IModelAPI<T> dao;
 
   ModelEditBloc(this.dao,
@@ -137,7 +137,7 @@ class ModelEditBloc<T extends IModel>
         add(ModelEditEventMode(event.isEditMode!));
       }
     } catch (e) {
-      print(e);
+       loggy.info(e);
       emit(ModelEditStateError<T>(
           "Error saving the item ${e.toString()}", e, state.model));
     }

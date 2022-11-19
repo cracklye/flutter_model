@@ -4,7 +4,7 @@ import 'package:flutter_model/flutter_model.dart';
 
 
 @GenerateNiceMocks([MockSpec<IModel>(), MockSpec<IModelAPI<TestModel>>()])
-import 'model_api_mock.mocks.dart';
+//import 'model_api_mock.mocks.dart';
 
 import 'test_model.dart';
 

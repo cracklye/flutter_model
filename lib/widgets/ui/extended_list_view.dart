@@ -124,7 +124,7 @@ abstract class SettingsStorage {
   Future<void> setGridListViewType(ListViewType listViewType);
 }
 
-class SharedPreferencesSettings extends SettingsStorage {
+class SharedPreferencesSettings extends SettingsStorage  with UiLoggy{
   final String key;
   SharedPreferencesSettings(this.key);
 
@@ -144,7 +144,7 @@ class SharedPreferencesSettings extends SettingsStorage {
       return ListViewType.values
           .firstWhere((element) => element.toString() == lookup);
     } catch (e) {
-      print(e);
+       loggy.warning(e);
     }
     return defaultValue;
   }
@@ -175,7 +175,7 @@ class SharedPreferencesSettings extends SettingsStorage {
 }
 
 class _ExtendedListViewState<T extends IModel>
-    extends State<ExtendedListView<T>> {
+    extends State<ExtendedListView<T>> with UiLoggy{
   late ListViewType _listViewType;
   late TextEditingController _searchController;
   late double _gridColumns;
@@ -190,13 +190,13 @@ class _ExtendedListViewState<T extends IModel>
     if (widget.settingsStorer != null) {
       //_listViewType =
       widget.settingsStorer!.getListViewType().then((value) {
-        print("Updating the list view type from settings $value");
+         loggy.debug("Updating the list view type from settings $value");
         setState(() {
           _listViewType = value;
         });
       });
       widget.settingsStorer!.getGridColumns().then((value) {
-        print("Updating the grid columnsS from settings $value");
+         loggy.debug("Updating the grid columnsS from settings $value");
         setState(() {
           _gridColumns = value;
         });
@@ -319,7 +319,10 @@ class _ExtendedListViewState<T extends IModel>
 
   Widget buildListItemDefault(
       BuildContext context, T item, onTap, onDoubleTap, onLongPress) {
+     //   print("List tile $item = ${widget.selected?.first}");
+        
     return ListTile(
+        selected: item == widget.selected?.first,
         onTap: onTap,
         onDoubleTap: onDoubleTap,
         onLongPress: onLongPress,
@@ -442,7 +445,7 @@ class _ExtendedListViewState<T extends IModel>
     if (widget.onOrderByChange != null && widget.orderBy != null) {
       if (widget.orderBy!.length > 1) {
         btns.add(DropDownButton<OrderByItem>(
-          title: Icon(FontAwesomeIcons.arrowDownAZ),
+          title: const Icon(FontAwesomeIcons.arrowDownAZ),
           onPressed: (p0) => widget.onOrderByChange!(p0),
           items: widget.orderBy!
               .map((e) => DropDownItem<OrderByItem>(

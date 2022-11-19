@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_model/flutter_model.dart';
-import 'package:woue_components/woue_components.dart' as w;
 import 'package:cbl/cbl.dart';
 import 'package:cbl_flutter/cbl_flutter.dart';
+import 'package:loggy/loggy.dart';
 
 void main() async {
   //w.Woue.init(provider: const w.MaterialProvider());
@@ -53,7 +53,7 @@ class MyHomePage extends StatefulWidget {
   State<MyHomePage> createState() => _MyHomePageState();
 }
 
-class _MyHomePageState extends State<MyHomePage> {
+class _MyHomePageState extends State<MyHomePage> with UiLoggy{
   @override
   void initState() {
     for (int i = 0; i < 25; i++) {
@@ -76,14 +76,14 @@ class _MyHomePageState extends State<MyHomePage> {
         key: "displayLabel",
         onDisplay: (column, model, value, selected) =>
             Text(value == null ? "" : '$value  $selected'),
-        onSort: (column, index, ascending) => print("Sorting"),
+        onSort: (column, index, ascending) =>   logInfo("Sorting"),
         tooltip: "This is the tooltip for the display label"),
     TableColumn(
         label: "Created On",
         key: "createdDate",
         onDisplay: (column, model, value, selected) =>
             Text(value == null ? "" : '$value'),
-        onSort: (column, index, ascending) => print("Sorting"),
+        onSort: (column, index, ascending) =>  logInfo("Sorting"),
         tooltip: "This is the tooltip for the created on"),
     TableColumn(
         label: "Modified no sort",
@@ -258,7 +258,7 @@ class _MyHomePageState extends State<MyHomePage> {
     ));
 
     await replicator.addChangeListener((change) {
-      print('Replicator activity: ${change.status.activity}');
+       loggy.info('Replicator activity: ${change.status.activity}');
     });
 
     await replicator.start();
@@ -272,7 +272,7 @@ class _MyHomePageState extends State<MyHomePage> {
     final mutableDocument = MutableDocument({'type': 'SDK', 'majorVersion': 2});
     await database.saveDocument(mutableDocument);
 
-    print(
+     loggy.info(
       'Created document with id ${mutableDocument.id} and '
       'type ${mutableDocument.string('type')}.',
     );
@@ -281,7 +281,7 @@ class _MyHomePageState extends State<MyHomePage> {
     mutableDocument.setString('Dart', key: 'language');
     await database.saveDocument(mutableDocument);
 
-    print(
+     loggy.info(
       'Updated document with id ${mutableDocument.id}, '
       'adding language ${mutableDocument.string("language")!}.',
     );
@@ -289,14 +289,14 @@ class _MyHomePageState extends State<MyHomePage> {
     // Read the document.
     final document = (await database.document(mutableDocument.id))!;
 
-    print(
+     loggy.info(
       'Read document with id ${document.id}, '
       'type ${document.string('type')} and '
       'language ${document.string('language')}.',
     );
 
     // Create a query to fetch documents of type SDK.
-    print('Querying Documents of type=SDK.');
+     loggy.info('Querying Documents of type=SDK.');
     final query = await Query.fromN1ql(database, '''
     SELECT * FROM _
     WHERE type = 'SDK'
@@ -305,7 +305,7 @@ class _MyHomePageState extends State<MyHomePage> {
     // Run the query.
     final result = await query.execute();
     final results = await result.allResults();
-    print('Number of results: ${results.length}');
+     loggy.info('Number of results: ${results.length}');
 
     // Close the database.
     await database.close();
