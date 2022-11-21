@@ -7,10 +7,8 @@ abstract class AttachmentDAO {
     //Return image...
     return active.getImageProvider(coverImage, details, field);
   }
-Future<Map<String, dynamic>?> removeContentPost(String fieldName,
-dynamic id);
-  
 
+  Future<Map<String, dynamic>?> removeContentPost(String fieldName, dynamic id);
 
   Future<Map<String, dynamic>?> saveContentPost(String fieldName,
       Uint8List data, String? ext, dynamic id, String? mimeType);
@@ -42,20 +40,22 @@ class AttachmentDaoFilesystem extends AttachmentDAO {
       f.createSync();
     }
   }
-@override
 
-Future<Map<String, dynamic>?> removeContentPost(String fieldName,
-dynamic id) async{
-  //Delete it and return null; 
-return null;
-}
-@override
+  @override
+  Future<Map<String, dynamic>?> removeContentPost(
+      String fieldName, dynamic id) async {
+    //Delete it and return null;
+    return null;
+  }
+
+  @override
   Future<ImageProvider> getImageProvider(
       IModel coverImage, Map<String, dynamic>? details, String field) async {
     var f = FileImage(File(""));
     return f;
   }
-@override
+
+  @override
   Future<Map<String, dynamic>?> saveContentPost(String fieldName,
       Uint8List data, String? ext, dynamic id, String? mimeType) async {}
 
@@ -71,7 +71,8 @@ return null;
     }
     return '$_rootPath\\$input';
   }
-@override
+
+  @override
   Future<Map<String, dynamic>?> savePath(
       String fieldName, String srcPath, String? mimeType) async {
     String uid = const Uuid().v4();
@@ -87,7 +88,8 @@ return null;
       "${fieldName}ThumbnailUri": "/thumbnail/jpg"
     });
   }
-@override
+
+  @override
   Future<Map<String, dynamic>?> saveContent(
       String fieldName, Uint8List data, String? ext, String? mimeType) async {
     String uid = const Uuid().v4();
