@@ -125,24 +125,6 @@ class ModelsBloc<T extends IModel> extends Bloc<ModelsEvent<T>, ModelsState<T>>
     loggy.debug("_onAddModel Returning models update $T (${event.editMode})");
 
     var values = event.values;
-    // var attachmentKey =
-    //     await _handleAttachment(attachmentDao, event.values, loggy);
-
-    // if (attachmentKey != null) {
-    //   for (var key in attachmentKey.keys) {
-    //     values.update(
-    //       key,
-    //       (value) => attachmentKey[key],
-    //       ifAbsent: () => attachmentKey[key],
-    //     );
-    //   }
-    //   //values.update(event.attachmentFieldName!, (value) => attachmentKey);
-    // }
-    // var newModel = await _modelsRepository.create(values);
-
-    // _handleAttachmentPost(attachmentDao, event.values, newModel.id, loggy);
-
-    // loggy.debug("_onAddModel Returning models new model= $newModel");
 
     var newModel =
         await doAddModel(_modelsRepository, attachmentDao, values, loggy);
@@ -154,33 +136,9 @@ class ModelsBloc<T extends IModel> extends Bloc<ModelsEvent<T>, ModelsState<T>>
       UpdateModel<T> event, Emitter<ModelsState<T>> emit) async {
     loggy.debug("_onUpdateModel Returning models update $T");
     var values = event.values;
-    
-    await doUpdateModel(_modelsRepository, attachmentDao, event.id, values, loggy);
-    // var attachmentKey = await _handleAttachment(
-    //     attachmentDao,
-    //     // event.attachmentContent,
-    //     // event.attachmentFieldName,
-    //     // event.attachmentPath,
-    //     // event.attachmentExtension
-    //     event.values,
-    //     loggy);
 
-    // if (attachmentKey != null) {
-    //   for (var key in attachmentKey.keys) {
-    //     values.update(key, (value) => attachmentKey[key],
-    //         ifAbsent: () => attachmentKey[key]);
-    //   }
-    // }
-
-    // _modelsRepository.update(event.id, values);
-
-    // _handleAttachmentPost(
-    //     attachmentDao,
-    //     // event.attachmentContent, event.attachmentFieldName,
-    //     //   event.attachmentPath, event.attachmentExtension,
-    //     event.values,
-    //     event.id,
-    //     loggy);
+    await doUpdateModel(
+        _modelsRepository, attachmentDao, event.id, values, loggy);
   }
 
   void _onDeleteModel(
