@@ -67,10 +67,11 @@ class ModelEditEventSelect<T extends IModel> extends ModelEditEvent<T> {
 }
 
 class ModelEditBloc<T extends IModel>
-    extends Bloc<ModelEditEvent<T>, ModelEditState<T>> with UiLoggy {
+    extends Bloc<ModelEditEvent<T>, ModelEditState<T>>
+    with UiLoggy, HandleAttachment<T> {
   IModelAPI<T> dao;
-
-  ModelEditBloc(this.dao,
+  final AttachmentDAO? attachmentDao;
+  ModelEditBloc(this.dao, this.attachmentDao,
       [super.initialState = const ModelEditStateNotLoaded()]) {
     on<ModelEditEventMode<T>>(_onModelEditEventMode);
     on<ModelEditEventSave<T>>(_onModelEditEventSave);
@@ -105,8 +106,6 @@ class ModelEditBloc<T extends IModel>
     }
   }
 
-
-
   void _onModelEditEventChanged(
       ModelEditEventChanged<T> event, Emitter<ModelEditState<T>> emit) async {
     emit(ModelEditStateChanged<T>(state.model));
@@ -126,10 +125,16 @@ class ModelEditBloc<T extends IModel>
     try {
       emit(ModelEditStateSaving<T>(state.model));
       if (state.model == null) {
-        var newModel = await dao.create(event.values);
+        // var newModel = await dao.create(event.values);
+        var newModel =
+            await doAddModel(dao, attachmentDao, event.values, loggy);
+
         emit(ModelEditStateEdit<T>(newModel));
       } else {
-        await dao.update(state.model!.id, event.values);
+        //await dao.update(state.model!.id, event.values);
+        await doUpdateModel(
+            dao, attachmentDao, state.model!.id, event.values, loggy);
+
         emit(ModelEditStateEdit<T>(state.model));
       }
 
@@ -137,7 +142,7 @@ class ModelEditBloc<T extends IModel>
         add(ModelEditEventMode(event.isEditMode!));
       }
     } catch (e) {
-       loggy.info(e);
+      loggy.info(e);
       emit(ModelEditStateError<T>(
           "Error saving the item ${e.toString()}", e, state.model));
     }

@@ -39,11 +39,13 @@ part 'bloc/model_detail_bloc/models_detail_bloc.dart';
 part 'bloc/model_detail_bloc/models_detail_event.dart';
 part 'bloc/model_detail_bloc/models_detail_state.dart';
 
+part 'extensions/attachment_info_extension.dart';
 
 
 part 'bloc/models_list_bloc/models_list_bloc.dart';
 part 'bloc/models_list_bloc/models_list_event.dart';
 part 'bloc/models_list_bloc/models_list_state.dart';
+part 'bloc/handle_attachment.dart'; 
 
 part 'persist/file_cache_provider.dart';
 part 'persist/file_cache_writer.dart';

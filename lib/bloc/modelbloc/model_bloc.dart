@@ -1,7 +1,7 @@
 part of flutter_model;
 
 class ModelsBloc<T extends IModel> extends Bloc<ModelsEvent<T>, ModelsState<T>>
-    with UiLoggy {
+    with UiLoggy, HandleAttachment<T> {
   final IModelAPI<T> _modelsRepository;
 
   // final ModelsState<T> initState;
@@ -45,18 +45,19 @@ class ModelsBloc<T extends IModel> extends Bloc<ModelsEvent<T>, ModelsState<T>>
     on<ModelSelect<T>>(_onModelSelect);
     on<ModelsDeleteAttachment<T>>(_onModelsDeleteAttachment);
   }
-  
-  
+
   void _onModelsDeleteAttachment(
       ModelsDeleteAttachment<T> event, Emitter<ModelsState<T>> emit) async {
-         loggy.debug("_onModelsDeleteAttachment<$T> started ${event.id} ${event.fieldName}");
-   
-        if(attachmentDao!=null) {
-          await attachmentDao!.removeContentPost(event.fieldName, event.id);
-        } else {
-          loggy.error("RmeoveAttachment event sent by attachmentDAO is null");
-        }
-      }
+    loggy.debug(
+        "_onModelsDeleteAttachment<$T> started ${event.id} ${event.fieldName}");
+
+    if (attachmentDao != null) {
+      await attachmentDao!.removeContentPost(event.fieldName, event.id);
+    } else {
+      loggy.error("RmeoveAttachment event sent by attachmentDAO is null");
+    }
+  }
+
   void _onSetEditMode(
       SetEditMode<T> event, Emitter<ModelsState<T>> emit) async {
     loggy.debug("_onSetEditMode<$T> started ${event.editMode}");
@@ -124,132 +125,68 @@ class ModelsBloc<T extends IModel> extends Bloc<ModelsEvent<T>, ModelsState<T>>
     loggy.debug("_onAddModel Returning models update $T (${event.editMode})");
 
     var values = event.values;
-    var attachmentKey = await _handleAttachment(
-        event.attachmentContent,
-        event.attachmentFieldName,
-        event.attachmentPath,
-        event.attachmentExtension);
+    // var attachmentKey =
+    //     await _handleAttachment(attachmentDao, event.values, loggy);
 
-    if (attachmentKey != null) {
-      for (var key in attachmentKey.keys) {
-        values.update(
-          key,
-          (value) => attachmentKey[key],
-          ifAbsent: () => attachmentKey[key],
-        );
-      }
-      //values.update(event.attachmentFieldName!, (value) => attachmentKey);
-    }
-    var newModel = await _modelsRepository.create(values);
+    // if (attachmentKey != null) {
+    //   for (var key in attachmentKey.keys) {
+    //     values.update(
+    //       key,
+    //       (value) => attachmentKey[key],
+    //       ifAbsent: () => attachmentKey[key],
+    //     );
+    //   }
+    //   //values.update(event.attachmentFieldName!, (value) => attachmentKey);
+    // }
+    // var newModel = await _modelsRepository.create(values);
 
-    _handleAttachmentPost(event.attachmentContent, event.attachmentFieldName,
-        event.attachmentPath, event.attachmentExtension, newModel.id);
+    // _handleAttachmentPost(attachmentDao, event.values, newModel.id, loggy);
 
-    loggy.debug("_onAddModel Returning models new model= $newModel");
+    // loggy.debug("_onAddModel Returning models new model= $newModel");
+
+    var newModel =
+        await doAddModel(_modelsRepository, attachmentDao, values, loggy);
 
     add(ModelSelect(newModel, ModelStateMode.edit));
-  }
-
-  Future<Map<String, dynamic>?> _handleAttachment(
-      Uint8List? attachmentContent,
-      String? attachmentFieldName,
-      String? attachmentPath,
-      String? attachmentExtension) async {
-    loggy.debug("_handleAttachment attachmentFieldName= $attachmentFieldName");
-    loggy.debug("_handleAttachment RattachmentPath= $attachmentPath");
-    loggy.debug("_handleAttachment contentSet?= ${attachmentContent != null}");
-
-    if (attachmentFieldName != null &&
-        (attachmentContent != null || attachmentPath != null)) {
-      //TODO need to delete if already in existance....
-      loggy.debug("_handleAttachment Have content to save");
-
-      if (attachmentDao == null) {
-        throw ("Trying to save attachments with no attachmentDAO configured");
-      }
-
-      if (attachmentPath != null) {
-        String? mimeType = lookupMimeType(attachmentPath);
-
-        loggy.debug("_handleAttachment Saving from path");
-        return await attachmentDao!
-            .savePath(attachmentFieldName, attachmentPath, mimeType);
-      } else {
-        String? mimeType = lookupMimeType('', headerBytes: attachmentContent!);
-
-        loggy.debug("_handleAttachment Saving from content");
-        return attachmentDao!.saveContent(attachmentFieldName,
-            attachmentContent, attachmentExtension, mimeType);
-      }
-    }
-
-    return null;
-  }
-
-  Future<void> _handleAttachmentPost(
-      Uint8List? attachmentContent,
-      String? attachmentFieldName,
-      String? attachmentPath,
-      String? attachmentExtension,
-      dynamic id) async {
-    loggy.debug(
-        "_handleAttachmentPost attachmentFieldName= $attachmentFieldName");
-    loggy.debug("_handleAttachmentPost RattachmentPath= $attachmentPath");
-    loggy.debug(
-        "_handleAttachmentPost contentSet?= ${attachmentContent != null}");
-
-    if (attachmentFieldName != null &&
-        (attachmentContent != null || attachmentPath != null)) {
-      //TODO need to delete if already in existance....
-      loggy.debug("_handleAttachment Have content to save");
-
-      if (attachmentDao == null) {
-        throw ("Trying to save attachments with no attachmentDAO configured");
-      }
-
-      if (attachmentPath != null) {
-        String? mimeType = lookupMimeType(attachmentPath);
-
-        loggy.debug("_handleAttachment Saving from path");
-        return await attachmentDao!
-            .savePathPost(attachmentFieldName, attachmentPath, id, mimeType);
-      } else {
-        String? mimeType = lookupMimeType('', headerBytes: attachmentContent!);
-        loggy.debug("_handleAttachment Saving from content");
-        attachmentDao!.saveContentPost(attachmentFieldName, attachmentContent,
-            attachmentExtension, id, mimeType);
-      }
-    }
   }
 
   void _onUpdateModel(
       UpdateModel<T> event, Emitter<ModelsState<T>> emit) async {
     loggy.debug("_onUpdateModel Returning models update $T");
     var values = event.values;
-    var attachmentKey = await _handleAttachment(
-        event.attachmentContent,
-        event.attachmentFieldName,
-        event.attachmentPath,
-        event.attachmentExtension);
+    
+    await doUpdateModel(_modelsRepository, attachmentDao, event.id, values, loggy);
+    // var attachmentKey = await _handleAttachment(
+    //     attachmentDao,
+    //     // event.attachmentContent,
+    //     // event.attachmentFieldName,
+    //     // event.attachmentPath,
+    //     // event.attachmentExtension
+    //     event.values,
+    //     loggy);
 
-    if (attachmentKey != null) {
-      for (var key in attachmentKey.keys) {
-        values.update(key, (value) => attachmentKey[key],
-            ifAbsent: () => attachmentKey[key]);
-      }
-    }
+    // if (attachmentKey != null) {
+    //   for (var key in attachmentKey.keys) {
+    //     values.update(key, (value) => attachmentKey[key],
+    //         ifAbsent: () => attachmentKey[key]);
+    //   }
+    // }
 
-    _modelsRepository.update(event.id, values);
+    // _modelsRepository.update(event.id, values);
 
-    _handleAttachmentPost(event.attachmentContent, event.attachmentFieldName,
-        event.attachmentPath, event.attachmentExtension, event.id);
+    // _handleAttachmentPost(
+    //     attachmentDao,
+    //     // event.attachmentContent, event.attachmentFieldName,
+    //     //   event.attachmentPath, event.attachmentExtension,
+    //     event.values,
+    //     event.id,
+    //     loggy);
   }
 
   void _onDeleteModel(
       DeleteModel<T> event, Emitter<ModelsState<T>> emit) async {
     loggy.debug("_onDeleteModel Returning models update $T");
     _modelsRepository.deleteModel(event.model);
-    
   }
 
   void _onModelsUpdated(
