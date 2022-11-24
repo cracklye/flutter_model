@@ -103,16 +103,18 @@ class ModelsBloc<T extends IModel> extends Bloc<ModelsEvent<T>, ModelsState<T>>
 
   void _onModelSelect(
       ModelSelect<T> event, Emitter<ModelsState<T>> emit) async {
-    var state2 = state as ModelsLoaded<T>;
-    loggy.debug("_onModelSelect select model  $T");
-    if (event.model == null) {
-      emit(ModelsLoaded<T>(
-          id: state2.id,
-          models: state2.models,
-          hierarchy: state2.hierarchy,
-          parameters: state2.parameters));
-    } else {
-      emit(state2.copyWith(selected: event.model, mode: event.mode));
+    if (state is ModelsLoaded<T>) {
+      var state2 = state as ModelsLoaded<T>;
+      loggy.debug("_onModelSelect select model  $T");
+      if (event.model == null) {
+        emit(ModelsLoaded<T>(
+            id: state2.id,
+            models: state2.models,
+            hierarchy: state2.hierarchy,
+            parameters: state2.parameters));
+      } else {
+        emit(state2.copyWith(selected: event.model, mode: event.mode));
+      }
     }
   }
 
