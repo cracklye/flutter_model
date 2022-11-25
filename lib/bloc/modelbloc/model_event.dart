@@ -30,20 +30,20 @@ class RefreshLoadModel<T extends IModel> extends ModelsEvent<T> {
 class AddModel<T extends IModel> extends ModelsEvent<T> {
   final Map<String, dynamic> values;
   final bool editMode;
+  final bool deleteAttachment;
 
   // final Uint8List? attachmentContent;
   // final String? attachmentFieldName;
   // final String? attachmentPath;
   // final String? attachmentExtension;
 
-  const AddModel(
-    this.values, {
-    this.editMode = false,
-    // this.attachmentContent,
-    // this.attachmentFieldName,
-    // this.attachmentPath,
-    // this.attachmentExtension
-  });
+  const AddModel(this.values,
+      {this.editMode = false, this.deleteAttachment = false
+      // this.attachmentContent,
+      // this.attachmentFieldName,
+      // this.attachmentPath,
+      // this.attachmentExtension
+      });
 }
 
 const String fieldAttachmentContent = "attachmentContent";
@@ -52,27 +52,23 @@ const String fieldAttachmentContentType = "attachmentContentType";
 const String fieldAttachmentPath = "attachmentPath";
 const String fieldAttachmentFieldName = "attachmentFieldName";
 
-
-
 class UpdateModel<T extends IModel> extends ModelsEvent<T> {
   final Map<String, dynamic> values;
   final dynamic id;
-
+  final bool deleteAttachment;
   // final Uint8List? attachmentContent;
   // final String? attachmentFieldName;
   // final String? attachmentPath;
   // final String? attachmentExtension;
 
-  const UpdateModel(
-    this.id,
-    this.values,
-    //{
-    //   this.attachmentContent,
-    // this.attachmentFieldName,
-    // this.attachmentPath,
-    // this.attachmentExtension
-    //}
-  );
+  const UpdateModel(this.id, this.values, {this.deleteAttachment = false}
+      //{
+      //   this.attachmentContent,
+      // this.attachmentFieldName,
+      // this.attachmentPath,
+      // this.attachmentExtension
+      //}
+      );
 }
 
 /// Saves the selected model that is in the state.  (if the id is null then it creates a new model, if

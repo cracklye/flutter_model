@@ -204,7 +204,7 @@ class ModelSinglePage<T extends IModel> extends StatelessWidget {
             model,
             formKey,
             (values) => BlocProvider.of<ModelEditBloc<T>>(context)
-                .add(ModelEditEventSave<T>(values , false)))
+                .add(ModelEditEventSave<T>(values ,isEditMode : false)))
       ],
     );
   }

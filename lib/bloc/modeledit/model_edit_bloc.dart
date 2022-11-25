@@ -42,8 +42,10 @@ class ModelEditEventDelete<T extends IModel> extends ModelEditEvent<T> {
 class ModelEditEventSave<T extends IModel> extends ModelEditEvent<T> {
   final Map<String, dynamic> values;
   final bool? isEditMode;
+  final bool deleteAttachment;
 
-  const ModelEditEventSave(this.values, [this.isEditMode]);
+  const ModelEditEventSave(this.values,
+      {this.isEditMode, this.deleteAttachment = false});
 }
 
 class ModelEditEventChanged<T extends IModel> extends ModelEditEvent<T> {
@@ -126,14 +128,14 @@ class ModelEditBloc<T extends IModel>
       emit(ModelEditStateSaving<T>(state.model));
       if (state.model == null) {
         // var newModel = await dao.create(event.values);
-        var newModel =
-            await doAddModel(dao, attachmentDao, event.values, loggy);
+        var newModel = await doAddModel(
+            dao, attachmentDao, event.values, loggy, event.deleteAttachment);
 
         emit(ModelEditStateEdit<T>(newModel));
       } else {
         //await dao.update(state.model!.id, event.values);
-        await doUpdateModel(
-            dao, attachmentDao, state.model!.id, event.values, loggy);
+        await doUpdateModel(dao, attachmentDao, state.model!.id, event.values,
+            loggy, event.deleteAttachment);
 
         emit(ModelEditStateEdit<T>(state.model));
       }

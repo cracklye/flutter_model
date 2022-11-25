@@ -129,7 +129,7 @@ class ModelsBloc<T extends IModel> extends Bloc<ModelsEvent<T>, ModelsState<T>>
     var values = event.values;
 
     var newModel =
-        await doAddModel(_modelsRepository, attachmentDao, values, loggy);
+        await doAddModel(_modelsRepository, attachmentDao, values, loggy, event.deleteAttachment);
 
     add(ModelSelect(newModel, ModelStateMode.edit));
   }
@@ -140,7 +140,7 @@ class ModelsBloc<T extends IModel> extends Bloc<ModelsEvent<T>, ModelsState<T>>
     var values = event.values;
 
     await doUpdateModel(
-        _modelsRepository, attachmentDao, event.id, values, loggy);
+        _modelsRepository, attachmentDao, event.id, values, loggy, event.deleteAttachment);
   }
 
   void _onDeleteModel(
