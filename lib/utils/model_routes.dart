@@ -154,10 +154,13 @@ class ModelRouter with UiLoggy {
   /// [add] the add handler to execute when the add URI is triggered
   static routeSetupCRUDChild<T extends IModel, IModelChild>(FluroRouter router,
       {Handler? list, Handler? detail, Handler? edit, Handler? add}) {
+        logDebug("routeSetupCRUDChild Started $T ");
     if (list != null) {
+      logDebug("routeSetupCRUDChild Defined List $T ");
       router.define(ModelRouter.routeList<T>(), handler: list);
     }
     if (detail != null) {
+      logDebug("routeSetupCRUDChild Detail $T ");
       router.define(
         ModelRouter.routeDetail<T>(":id", ":parentId"),
         handler: detail,
@@ -165,12 +168,14 @@ class ModelRouter with UiLoggy {
     }
 
     if (edit != null) {
+      logDebug("routeSetupCRUDChild Defined Edit $T ");
       router.define(
         ModelRouter.routeEdit<T>(":id", ":parentId"),
         handler: edit,
       );
     }
     if (add != null) {
+      logDebug("routeSetupCRUDChild Defined Add $T ");
       router.define(
         ModelRouter.routeAdd<T>(":parentId"),
         handler: add,
