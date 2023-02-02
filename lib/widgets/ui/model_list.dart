@@ -20,11 +20,13 @@ class ModelList<T extends IModel> extends StatelessWidget {
     this.onTap,
     this.onDoubleTap,
     this.onLongTap,
+    this.onReorder,
     this.enableSearch = true,
     this.listTypesIcons,
     this.settingsKey,
     this.settings,
     this.enableSelect = true,
+
   });
   final String? parentId;
   final bool enableSelect;
@@ -48,6 +50,9 @@ class ModelList<T extends IModel> extends StatelessWidget {
   final Widget Function(BuildContext, T, Function()? onTap, Function()? onDoubleTap, Function()? onLongTap, )? buildGridItem;
   final Widget Function(BuildContext, T)? buildTreeItem;
   final Widget Function(BuildContext, T, TableColumn)? buildTableColumn;
+  final void Function(int previousPosition, int newPosition, T item, T? before,
+      T? after, T? parent)? onReorder;
+
 
   final SettingsStorage? settings;
   final String? settingsKey;
@@ -115,6 +120,7 @@ class ModelList<T extends IModel> extends StatelessWidget {
           onTap!(model);
         }
       },
+      onReorder: onReorder,
       isLoading: isLoading,
       items: items,
       hierarchy: hierarchy,
