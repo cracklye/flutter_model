@@ -11,7 +11,7 @@ dependencies:
   flutter:
     sdk: flutter
   uuid: 
-  fluro:
+  fluro: 2.0.4
   loggy: ^2.0.1+1
   freezed_annotation:
   flutter_bloc: 8.0.1
@@ -21,8 +21,8 @@ dependencies:
     path: ../woue_components/
   mime:
   font_awesome_flutter:
-
-  
+  #drag_and_drop_lists: ^0.3.3
+  reorderables:
 dev_dependencies:
   flutter_test:
     sdk: flutter

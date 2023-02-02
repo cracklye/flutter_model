@@ -5,6 +5,8 @@ enum ListViewType {
   list,
   grid,
   table,
+  sortable,
+  map,
 }
 
 class OrderByItem {
@@ -58,9 +60,12 @@ class ExtendedListView<T extends IModel> extends StatefulWidget {
     this.onTap,
     this.onDoubleTap,
     this.onLongTap,
+    this.onReorder,
     this.isLoading = false,
     this.enableSearch = true,
     this.listTypesIcons = const {
+      ListViewType.sortable: FontAwesomeIcons.sort, //m.Icons.grid_3x3,
+      ListViewType.map: FontAwesomeIcons.map, //m.Icons.grid_3x3,
       ListViewType.grid: FontAwesomeIcons.grip, //m.Icons.grid_3x3,
       ListViewType.list: FontAwesomeIcons.list, // m.Icons.list,
       ListViewType.tree:
@@ -98,6 +103,9 @@ class ExtendedListView<T extends IModel> extends StatefulWidget {
   final Function(T)? onLongTap;
   final Function(T)? onDoubleTap;
 
+  final void Function(int previousPosition, int newPosition, T item, T? before,
+      T? after, T? parent)? onReorder;
+
   final Widget Function(BuildContext, T, Function()? onTap,
       Function()? onDoubleTap, Function()? onLongPress)? buildListItem;
   final Widget Function(BuildContext, T, Function()? onTap,
@@ -124,7 +132,7 @@ abstract class SettingsStorage {
   Future<void> setGridListViewType(ListViewType listViewType);
 }
 
-class SharedPreferencesSettings extends SettingsStorage  with UiLoggy{
+class SharedPreferencesSettings extends SettingsStorage with UiLoggy {
   final String key;
   SharedPreferencesSettings(this.key);
 
@@ -144,7 +152,7 @@ class SharedPreferencesSettings extends SettingsStorage  with UiLoggy{
       return ListViewType.values
           .firstWhere((element) => element.toString() == lookup);
     } catch (e) {
-       loggy.warning(e);
+      loggy.warning(e);
     }
     return defaultValue;
   }
@@ -175,7 +183,7 @@ class SharedPreferencesSettings extends SettingsStorage  with UiLoggy{
 }
 
 class _ExtendedListViewState<T extends IModel>
-    extends State<ExtendedListView<T>> with UiLoggy{
+    extends State<ExtendedListView<T>> with UiLoggy {
   late ListViewType _listViewType;
   late TextEditingController _searchController;
   late double _gridColumns;
@@ -190,13 +198,13 @@ class _ExtendedListViewState<T extends IModel>
     if (widget.settingsStorer != null) {
       //_listViewType =
       widget.settingsStorer!.getListViewType().then((value) {
-         loggy.debug("Updating the list view type from settings $value");
+        loggy.debug("Updating the list view type from settings $value");
         setState(() {
           _listViewType = value;
         });
       });
       widget.settingsStorer!.getGridColumns().then((value) {
-         loggy.debug("Updating the grid columnsS from settings $value");
+        loggy.debug("Updating the grid columnsS from settings $value");
         setState(() {
           _gridColumns = value;
         });
@@ -263,8 +271,119 @@ class _ExtendedListViewState<T extends IModel>
       return buildContentList(context);
     } else if (_listViewType == ListViewType.tree) {
       return buildContentTree(context);
+    } else if (_listViewType == ListViewType.sortable) {
+      return buildContentSortable(context);
     }
     return buildContentTable(context);
+  }
+
+  Widget _buildListEntry(BuildContext context, T e) {
+    //return Text("${e.displayLabel}", key: Key("label_${e.id}"),);
+    return
+        // Container(key: Key("extended_list_${e.id}"), child:
+        GestureDetector(
+            key: Key("extended_list_${e.id}"),
+            onTap: widget.onTap == null ? null : () => widget.onTap!(e),
+            onDoubleTap: widget.onDoubleTap == null
+                ? null
+                : () => widget.onDoubleTap!(e),
+            onLongPress:
+                widget.onLongTap == null ? null : () => widget.onLongTap!(e),
+            child: widget.buildListItem == null
+                ? buildListItemDefault(
+                    context,
+                    e,
+                    widget.onTap == null ? null : () => widget.onTap!(e),
+                    widget.onDoubleTap == null
+                        ? null
+                        : () => widget.onDoubleTap!(e),
+                    widget.onLongTap == null
+                        ? null
+                        : () => widget.onLongTap!(e),
+                  )
+                : widget.buildListItem!(
+                    context,
+                    e,
+                    widget.onTap == null ? null : () => widget.onTap!(e),
+                    widget.onDoubleTap == null
+                        ? null
+                        : () => widget.onDoubleTap!(e),
+                    widget.onLongTap == null
+                        ? null
+                        : () => widget.onLongTap!(e),
+                  ));
+  }
+
+  Widget _buildListEntryNoLongTap(BuildContext context, T e) {
+    //return Text("${e.displayLabel}", key: Key("label_${e.id}"),);
+    return
+        // Container(key: Key("extended_list_${e.id}"), child:
+        GestureDetector(
+            key: Key("extended_list_${e.id}"),
+            onTap: widget.onTap == null ? null : () => widget.onTap!(e),
+            onDoubleTap: widget.onDoubleTap == null
+                ? null
+                : () => widget.onDoubleTap!(e),
+            // onLongPress:
+            //     widget.onLongTap == null ? null : () => widget.onLongTap!(e),
+            child: widget.buildListItem == null
+                ? buildListItemDefault(
+                    context,
+                    e,
+                    widget.onTap == null ? null : () => widget.onTap!(e),
+                    widget.onDoubleTap == null
+                        ? null
+                        : () => widget.onDoubleTap!(e),
+                    null)
+                : widget.buildListItem!(
+                    context,
+                    e,
+                    widget.onTap == null ? null : () => widget.onTap!(e),
+                    widget.onDoubleTap == null
+                        ? null
+                        : () => widget.onDoubleTap!(e),
+                    null));
+  }
+
+  Widget buildContentSortable(BuildContext context) {
+    return ReorderableColumn(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: widget.items
+          .map((e) => _buildListEntryNoLongTap(context, e))
+          .toList(),
+      onReorder: (oldIndex, newIndex) {
+        if (widget.onReorder != null) {
+          int beforeIndex  = (newIndex - 1) + ((oldIndex < newIndex) ? 1 : 0);
+          int afterIndex  = newIndex  + ((oldIndex < newIndex) ? 1 : 0);
+
+          T item = widget.items[oldIndex];
+
+          widget.onReorder!(
+              oldIndex,
+              newIndex,
+              item,
+              beforeIndex > -1 ? widget.items[beforeIndex] : null,
+              afterIndex < widget.items.length
+                  ? widget.items[afterIndex]
+                  : null,
+              null //Not dealing with parents yet...
+              );
+        }
+      },
+      onNoReorder: (int index) {
+        //this callback is optional
+        debugPrint(
+            '${DateTime.now().toString().substring(5, 22)} reorder cancelled. index:$index');
+      },
+    );
+
+    //  var wrap = ReorderableWrap(
+    //     spacing: 8.0,
+    //     runSpacing: 4.0,
+    //     padding: const EdgeInsets.all(8),
+    //     children: widget._tiles,
+    //     onReorder:
+    //   );
   }
 
   Widget buildContentList(BuildContext context) {
@@ -319,8 +438,8 @@ class _ExtendedListViewState<T extends IModel>
 
   Widget buildListItemDefault(
       BuildContext context, T item, onTap, onDoubleTap, onLongPress) {
-     //   print("List tile $item = ${widget.selected?.first}");
-        
+    //   print("List tile $item = ${widget.selected?.first}");
+
     return ListTile(
         selected: item == widget.selected?.first,
         onTap: onTap,

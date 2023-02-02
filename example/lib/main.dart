@@ -3,10 +3,12 @@ import 'package:flutter_model/flutter_model.dart';
 import 'package:cbl/cbl.dart';
 import 'package:cbl_flutter/cbl_flutter.dart';
 import 'package:loggy/loggy.dart';
+import 'package:woue_components/woue_components.dart' as w;
+import 'package:woue_components_material/material_provider.dart' as mp;
 
 void main() async {
-  //w.Woue.init(provider: const w.MaterialProvider());
-  await CouchbaseLiteFlutter.init();
+  w.Woue.init(const mp.MaterialProvider());
+  //await CouchbaseLiteFlutter.init();
   runApp(const MyApp());
 }
 
@@ -53,11 +55,11 @@ class MyHomePage extends StatefulWidget {
   State<MyHomePage> createState() => _MyHomePageState();
 }
 
-class _MyHomePageState extends State<MyHomePage> with UiLoggy{
+class _MyHomePageState extends State<MyHomePage> with UiLoggy {
   @override
   void initState() {
     for (int i = 0; i < 25; i++) {
-      dynamic parent ;
+      dynamic parent;
       if (i > 6) {
         parent = ((i - 6 / 3)).toInt();
       }
@@ -76,14 +78,14 @@ class _MyHomePageState extends State<MyHomePage> with UiLoggy{
         key: "displayLabel",
         onDisplay: (column, model, value, selected) =>
             Text(value == null ? "" : '$value  $selected'),
-        onSort: (column, index, ascending) =>   logInfo("Sorting"),
+        onSort: (column, index, ascending) => logInfo("Sorting"),
         tooltip: "This is the tooltip for the display label"),
     TableColumn(
         label: "Created On",
         key: "createdDate",
         onDisplay: (column, model, value, selected) =>
             Text(value == null ? "" : '$value'),
-        onSort: (column, index, ascending) =>  logInfo("Sorting"),
+        onSort: (column, index, ascending) => logInfo("Sorting"),
         tooltip: "This is the tooltip for the created on"),
     TableColumn(
         label: "Modified no sort",
@@ -133,10 +135,10 @@ class _MyHomePageState extends State<MyHomePage> with UiLoggy{
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
-           const  Text(
+            const Text(
                 "To Do\n Tree view \n Multiple selections \n Property level on the column (although could still handle from the child) \n selecting grid count\n searching \n detailed searching by field\n sort order"),
             Row(children: [
-           const    Text("Data Type"),
+              const Text("Data Type"),
               Radio(
                   groupValue: true,
                   value: _showTreeData,
@@ -151,40 +153,59 @@ class _MyHomePageState extends State<MyHomePage> with UiLoggy{
                       }))
             ]),
             Row(children: [
-            const   Text("Show Search Bar"),
+              const Text("Show Search Bar"),
               Checkbox(
                   value: _showSearchBar,
                   onChanged: (value) => setState(() {
                         _showSearchBar = value ?? false;
-                      }))
+                      })),
+              const Text("Is Loading: "),
+              Checkbox(
+                  value: _isLoading,
+                  onChanged: (value) => setState(() {
+                        _isLoading = value ?? false;
+                      })),
             ]),
             Row(
               children: [
-              const   Text("Show Types:"),
-               const  Text("View: "),
+                const Text("Show Types:         "),
+                const Text("| View: "),
                 Checkbox(
                     value: _showTypeView,
                     onChanged: (value) => setState(() {
                           _showTypeView = value ?? false;
                         })),
-              const   Text("Grid: "),
+                const Text("| Grid: "),
                 Checkbox(
                     value: _showTypeGrid,
                     onChanged: (value) => setState(() {
                           _showTypeGrid = value ?? false;
                         })),
-               const  Text("List: "),
+                const Text("| Map: "),
+                Checkbox(
+                    value: _showTypeMap,
+                    onChanged: (value) => setState(() {
+                          _showTypeMap = value ?? false;
+                        })),
+                const Text("| Drag: "),
+                Checkbox(
+                    value: _showTypeDrag,
+                    onChanged: (value) => setState(() {
+                          _showTypeDrag = value ?? false;
+                        })),
+                const Text("| List: "),
                 Checkbox(
                     value: _showTypeList,
                     onChanged: (value) => setState(() {
                           _showTypeList = value ?? false;
                         })),
-               const  Text("Tree: "),
+                const Text("| Tree: "),
                 Checkbox(
                     value: _showTypeTree,
                     onChanged: (value) => setState(() {
                           _showTypeTree = value ?? false;
                         })),
+                const Text("| "),
               ],
             ),
             Text("Last Action: $lastAction"),
@@ -201,6 +222,11 @@ class _MyHomePageState extends State<MyHomePage> with UiLoggy{
   bool _showTypeGrid = true;
   bool _showTypeList = true;
   bool _showTypeTree = true;
+  bool _showTypeDrag = true;
+  bool _showTypeMap = true;
+
+  bool _isLoading = false;
+
   Sample? selected;
   String lastAction = "";
 
@@ -215,13 +241,16 @@ class _MyHomePageState extends State<MyHomePage> with UiLoggy{
     if (_showTypeList) types.add(ListViewType.list);
     if (_showTypeView) types.add(ListViewType.table);
     if (_showTypeTree) types.add(ListViewType.tree);
+    if (_showTypeDrag) types.add(ListViewType.sortable);
+    if (_showTypeMap) types.add(ListViewType.map);
 
     return ExtendedListView<Sample>(
+      isLoading: _isLoading,
       items: itemsSample,
       hierarchy: hierarchySample,
       enableSearch: _showSearchBar,
       enabledListTypes: types,
-      selected: selected!=null?[selected!]:null,
+      selected: selected != null ? [selected!] : null,
       onTap: (model) {
         setState(() {
           lastAction = "onTap : ${model.displayLabel}";
@@ -243,6 +272,10 @@ class _MyHomePageState extends State<MyHomePage> with UiLoggy{
       onSearchChange: (value) => setState(() {
         lastAction = "Search Changed : $value";
       }),
+      onReorder: ((previousPosition, newPosition, item, before, after,
+              parent) =>
+          print(
+              "On Reorder: Moving $item  from $previousPosition to $newPosition between $before and $after")),
       tableColumns: possibleColumns,
     );
   }
@@ -258,7 +291,7 @@ class _MyHomePageState extends State<MyHomePage> with UiLoggy{
     ));
 
     await replicator.addChangeListener((change) {
-       loggy.info('Replicator activity: ${change.status.activity}');
+      loggy.info('Replicator activity: ${change.status.activity}');
     });
 
     await replicator.start();
@@ -272,7 +305,7 @@ class _MyHomePageState extends State<MyHomePage> with UiLoggy{
     final mutableDocument = MutableDocument({'type': 'SDK', 'majorVersion': 2});
     await database.saveDocument(mutableDocument);
 
-     loggy.info(
+    loggy.info(
       'Created document with id ${mutableDocument.id} and '
       'type ${mutableDocument.string('type')}.',
     );
@@ -281,7 +314,7 @@ class _MyHomePageState extends State<MyHomePage> with UiLoggy{
     mutableDocument.setString('Dart', key: 'language');
     await database.saveDocument(mutableDocument);
 
-     loggy.info(
+    loggy.info(
       'Updated document with id ${mutableDocument.id}, '
       'adding language ${mutableDocument.string("language")!}.',
     );
@@ -289,14 +322,14 @@ class _MyHomePageState extends State<MyHomePage> with UiLoggy{
     // Read the document.
     final document = (await database.document(mutableDocument.id))!;
 
-     loggy.info(
+    loggy.info(
       'Read document with id ${document.id}, '
       'type ${document.string('type')} and '
       'language ${document.string('language')}.',
     );
 
     // Create a query to fetch documents of type SDK.
-     loggy.info('Querying Documents of type=SDK.');
+    loggy.info('Querying Documents of type=SDK.');
     final query = await Query.fromN1ql(database, '''
     SELECT * FROM _
     WHERE type = 'SDK'
@@ -305,7 +338,7 @@ class _MyHomePageState extends State<MyHomePage> with UiLoggy{
     // Run the query.
     final result = await query.execute();
     final results = await result.allResults();
-     loggy.info('Number of results: ${results.length}');
+    loggy.info('Number of results: ${results.length}');
 
     // Close the database.
     await database.close();
@@ -326,6 +359,11 @@ class Sample extends IModel with IHierarchy {
   final int numericValue;
   @override
   final dynamic hierarchyParentId;
+
+  @override
+  String toString() {
+    return "Item $id";
+  }
 
   Sample(this.id, this.createdDate, this.modifiedDate, this.displayLabel,
       this.description, this.url, this.numericValue, this.hierarchyParentId);

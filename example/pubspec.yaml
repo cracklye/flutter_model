@@ -21,7 +21,7 @@ version: 1.0.0+1
 
 environment:
   sdk: ">=2.17.3 <3.0.0"
-  flutter: ">=1.17.0"
+  
   
 
 # Dependencies specify other packages that your package needs in order to work.
@@ -39,7 +39,10 @@ dependencies:
     path: ../../woue_components
   fluent_ui:
   path:
-
+  woue_components_material: 
+    path: ../../woue_components/woue_components_material/
+  woue_components_fluent: 
+    path: ../../woue_components/woue_components_fluent/    
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.
   cupertino_icons: ^1.0.2
