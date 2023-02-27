@@ -39,6 +39,10 @@ class ModelEditEventDelete<T extends IModel> extends ModelEditEvent<T> {
   const ModelEditEventDelete();
 }
 
+class ModelEditEventClear<T extends IModel> extends ModelEditEvent<T> {
+  const ModelEditEventClear();
+}
+
 class ModelEditEventSave<T extends IModel> extends ModelEditEvent<T> {
   final Map<String, dynamic> values;
   final bool? isEditMode;
@@ -81,6 +85,12 @@ class ModelEditBloc<T extends IModel>
     on<ModelEditEventSelect<T>>(_onModelEditEventSelect);
     on<ModelEditEventDelete<T>>(_onModelEditEventDelete);
     on<ModelEditEventCreateNew<T>>(_onModelEditEventCreateNew);
+    on<ModelEditEventClear<T>>(_onModelEditEventClear);
+  }
+
+  void _onModelEditEventClear(
+      ModelEditEventClear<T> event, Emitter<ModelEditState<T>> emit) async {
+    emit(ModelEditStateNotLoaded<T>());
   }
 
   void _onModelEditEventCreateNew(

@@ -60,6 +60,7 @@ part 'widgets/model_bloc_form_widget.dart';
 part 'widgets/ui/extended_list_view.dart'; 
 part 'widgets/ui/model_extendedlist_view.dart'; 
 part 'widgets/ui/model_list.dart'; 
+part 'widgets/model_list_edit.dart'; 
 part 'widgets/ui/attachment_viewer.dart'; 
 part 'widgets/addin/model_listbloc_addin.dart';
 
