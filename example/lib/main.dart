@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_model/flutter_model.dart';
 import 'package:cbl/cbl.dart';
-import 'package:cbl_flutter/cbl_flutter.dart';
 import 'package:loggy/loggy.dart';
 import 'package:woue_components/woue_components.dart' as w;
 import 'package:woue_components_material/material_provider.dart' as mp;

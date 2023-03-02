@@ -7,7 +7,7 @@ import 'dart:typed_data';
 import 'package:fluro/fluro.dart';
 import 'package:flutter_model/widgets/ui/grid_card_default.dart';
 import 'package:mime/mime.dart';
-import 'package:path/path.dart'; // Used in attachment_dao
+//import 'package:path/path.dart'; // Used in attachment_dao
 import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:loggy/loggy.dart';
@@ -20,6 +20,7 @@ import 'package:uuid/uuid.dart';
 import 'package:woue_components/woue_components.dart';
 import 'package:flutter/material.dart' as m;
 
+import 'package:path/path.dart'; // Used in attachment_dao
 
 part 'bloc/filtered/model_filter_bloc.dart';
 

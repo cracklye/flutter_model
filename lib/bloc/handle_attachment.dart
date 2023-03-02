@@ -77,14 +77,14 @@ class HandleAttachment<T extends IModel> {
           String? mimeType = lookupMimeType(attachmentPath);
 
           loggy.debug("HandleAttachment._handleAttachment Saving from path");
-          return await attachmentDao!
+          return await attachmentDao
               .savePath(attachmentFieldName, attachmentPath, mimeType);
         } else {
           String? mimeType =
               lookupMimeType('', headerBytes: attachmentContent!);
 
           loggy.debug("_handleAttachment Saving from content");
-          return attachmentDao!.saveContent(attachmentFieldName,
+          return attachmentDao.saveContent(attachmentFieldName,
               attachmentContent, attachmentExtension, mimeType);
         }
       }
@@ -148,7 +148,7 @@ class HandleAttachment<T extends IModel> {
               doLookupMime(attachmentContentType, attachmentPath);
 
           loggy.debug("HandleAttachment._handleAttachmentPost Saving from path");
-          await attachmentDao!
+          await attachmentDao
               .savePathPost(attachmentFieldName, attachmentPath, id, mimeType);
         } else {
           if (attachmentContent != null) {
@@ -156,7 +156,7 @@ class HandleAttachment<T extends IModel> {
                 attachmentContent: attachmentContent);
             loggy.debug(
                 "HandleAttachment._handleAttachmentPost Saving from content");
-            await attachmentDao!.saveContentPost(attachmentFieldName,
+            await attachmentDao.saveContentPost(attachmentFieldName,
                 attachmentContent, attachmentExtension, id, mimeType);
           }
         }

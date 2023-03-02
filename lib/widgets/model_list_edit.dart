@@ -40,19 +40,17 @@ class ModelListEdit<T extends IModel> extends StatelessWidget {
             buildStateLoaded(context, state),
           ],
         );
-
-        return buildStateLoaded(context, state as ModelsListLoaded<T>);
       } else {
-        return Text("Loading");
+        return const Text("Loading");
       }
     });
   }
 
   Widget buildPrompt(Widget child) {
     return Container(
-      color: Color(0x88AAAAAA),
+      color: const Color(0x88AAAAAA),
       child: Container(
-        padding: EdgeInsets.fromLTRB(10, 50, 10, 50),
+        padding: const EdgeInsets.fromLTRB(10, 50, 10, 50),
         child: m.Card(child: child),
       ),
     );
@@ -64,8 +62,6 @@ class ModelListEdit<T extends IModel> extends StatelessWidget {
         if (editstate is ModelEditStateView<T>) {
           return buildPrompt(
               buildDetailDisplay(context, editstate, editstate.model));
-
-          return buildDetailDisplay(context, editstate, editstate.model);
         } else if (editstate is ModelEditStateEdit<T>) {
           return buildPrompt(
               buildDetailEdit(context, editstate, editstate.model));
@@ -104,18 +100,11 @@ class ModelListEdit<T extends IModel> extends StatelessWidget {
           onLongTap: ((model) => BlocProvider.of<ModelEditBloc<T>>(context)
               .add(ModelEditEventSelect<T>(model, false))),
         )),
-        
         ElevatedButton(
             onPressed: () => BlocProvider.of<ModelEditBloc<T>>(context)
-                  .add(ModelEditEventCreateNew<T>()),
+                .add(ModelEditEventCreateNew<T>()),
             child: const Text("Create")),
       ],
-    );
-    return ModelExtendedListView<T>(
-      buildListItem: buildListItem,
-      enabledListTypes: const [ListViewType.list],
-      onLongTap: ((model) => BlocProvider.of<ModelEditBloc<T>>(context)
-          .add(ModelEditEventSelect<T>(model, false))),
     );
   }
 
