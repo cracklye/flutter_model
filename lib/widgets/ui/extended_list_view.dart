@@ -9,7 +9,7 @@ enum ListViewType {
   map,
 }
 
-class OrderByItem {
+class OrderByItem<T> {
   final Widget label;
   final List<SortOrderBy> Function() getSortOrders;
 

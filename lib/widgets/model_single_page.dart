@@ -23,7 +23,6 @@ class ModelSinglePage<T extends IModel> extends StatelessWidget {
       create: ((context) => ModelEditBloc<T>(
           RepositoryProvider.of<IModelAPI<T>>(context),
           RepositoryProvider.of<AttachmentDAO>(context),
-          
           ModelEditStateNotLoaded<T>())),
       child: buildBlocBuilder(context),
     );

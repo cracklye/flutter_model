@@ -87,7 +87,11 @@ class ModelListEdit<T extends IModel> extends StatelessWidget {
   Widget buildListItem(BuildContext context, T model, Function()? onTap,
       Function()? onDoubleTap, Function()? onLongPress) {
 //return null;
-    return ListTile(title: Text(model.displayLabel));
+    return ListTile(
+      title: Text(model.displayLabel),
+      onTap: onTap,
+      onDoubleTap: onDoubleTap,
+    );
   }
 
   Widget buildList(BuildContext context, ModelsListState<T> state) {
@@ -97,7 +101,7 @@ class ModelListEdit<T extends IModel> extends StatelessWidget {
             child: ModelExtendedListView<T>(
           buildListItem: buildListItem,
           enabledListTypes: const [ListViewType.list],
-          onLongTap: ((model) => BlocProvider.of<ModelEditBloc<T>>(context)
+          onTap: ((model) => BlocProvider.of<ModelEditBloc<T>>(context)
               .add(ModelEditEventSelect<T>(model, false))),
         )),
         ElevatedButton(
