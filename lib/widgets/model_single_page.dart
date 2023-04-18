@@ -90,6 +90,7 @@ class ModelSinglePage<T extends IModel> extends StatelessWidget {
 
   Widget buildList(BuildContext context, ModelsListState<T> state) {
     return ModelExtendedListView<T>(
+      
       enabledListTypes:const  [ListViewType.list],
       onTap: ((model) => BlocProvider.of<ModelEditBloc<T>>(context)
           .add(ModelEditEventSelect<T>(model, false))),

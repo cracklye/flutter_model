@@ -74,7 +74,7 @@ class ModelListEdit<T extends IModel> extends StatelessWidget {
 
   Widget buildListHeader(BuildContext context, ModelsListState<T> state) {
     return SizedBox(
-      height: 30,
+      height: 30, 
       child: Row(crossAxisAlignment: CrossAxisAlignment.start, children: [
         ElevatedButton(
             onPressed: () => BlocProvider.of<ModelsBloc<T>>(context)
