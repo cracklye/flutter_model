@@ -612,9 +612,11 @@ packages:
   woue_components:
     dependency: "direct main"
     description:
-      path: "../../woue_components"
-      relative: true
-    source: path
+      path: "."
+      ref: HEAD
+      resolved-ref: "6c614a7a960f9c18e300789dd7b023eda4fd0e13"
+      url: "https://github.com/cracklye/woue_components.git"
+    source: git
     version: "0.0.1"
   woue_components_fluent:
     dependency: "direct main"

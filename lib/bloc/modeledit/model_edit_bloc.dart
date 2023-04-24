@@ -9,20 +9,20 @@ class ModelEditStateNotLoaded<T extends IModel> extends ModelEditState<T> {
   const ModelEditStateNotLoaded() : super(null);
 }
 
-class ModelEditStateEdit<T extends IModel> extends ModelEditState<T> {
+abstract class ModelEditStateEdit<T extends IModel> extends ModelEditState<T> {
   const ModelEditStateEdit([super.model]);
 }
 
-class ModelEditStateChanged<T extends IModel> extends ModelEditStateEdit<T> {
-  const ModelEditStateChanged([super.model]);
+class ModelEditStateLoaded<T extends IModel> extends ModelEditStateEdit<T> {
+  const ModelEditStateLoaded([super.model]);
+}
+
+class ModelEditStateSaved<T extends IModel> extends ModelEditStateEdit<T> {
+  const ModelEditStateSaved([super.model]);
 }
 
 class ModelEditStateSaving<T extends IModel> extends ModelEditStateEdit<T> {
   const ModelEditStateSaving([super.model]);
-}
-
-class ModelEditStateView<T extends IModel> extends ModelEditState<T> {
-  const ModelEditStateView([super.model]);
 }
 
 class ModelEditStateError<T extends IModel> extends ModelEditState<T> {
@@ -35,41 +35,33 @@ abstract class ModelEditEvent<T extends IModel> {
   const ModelEditEvent();
 }
 
-class ModelEditEventDelete<T extends IModel> extends ModelEditEvent<T> {
-  const ModelEditEventDelete();
-}
-
 class ModelEditEventClear<T extends IModel> extends ModelEditEvent<T> {
   const ModelEditEventClear();
 }
 
 class ModelEditEventSave<T extends IModel> extends ModelEditEvent<T> {
   final Map<String, dynamic> values;
-  final bool? isEditMode;
   final bool deleteAttachment;
+  final dynamic id;
+  final dynamic parentId;
 
   const ModelEditEventSave(this.values,
-      {this.isEditMode, this.deleteAttachment = false});
-}
-
-class ModelEditEventChanged<T extends IModel> extends ModelEditEvent<T> {
-  const ModelEditEventChanged();
+      {this.deleteAttachment = false, this.parentId, this.id});
 }
 
 class ModelEditEventCreateNew<T extends IModel> extends ModelEditEvent<T> {
-  const ModelEditEventCreateNew();
+  final dynamic parentId;
+  const ModelEditEventCreateNew([this.parentId]);
 }
 
-class ModelEditEventMode<T extends IModel> extends ModelEditEvent<T> {
-  final bool isEditMode;
-  const ModelEditEventMode(this.isEditMode);
+class ModelEditEventLoad<T extends IModel> extends ModelEditEvent<T> {
+  final dynamic id;
+  const ModelEditEventLoad(this.id);
 }
 
 class ModelEditEventSelect<T extends IModel> extends ModelEditEvent<T> {
-  final bool isEditMode;
   final T? model;
-
-  const ModelEditEventSelect(this.model, this.isEditMode);
+  const ModelEditEventSelect(this.model);
 }
 
 class ModelEditBloc<T extends IModel>
@@ -79,13 +71,11 @@ class ModelEditBloc<T extends IModel>
   final AttachmentDAO? attachmentDao;
   ModelEditBloc(this.dao, this.attachmentDao,
       [super.initialState = const ModelEditStateNotLoaded()]) {
-    on<ModelEditEventMode<T>>(_onModelEditEventMode);
     on<ModelEditEventSave<T>>(_onModelEditEventSave);
-    on<ModelEditEventChanged<T>>(_onModelEditEventChanged);
-    on<ModelEditEventSelect<T>>(_onModelEditEventSelect);
-    on<ModelEditEventDelete<T>>(_onModelEditEventDelete);
     on<ModelEditEventCreateNew<T>>(_onModelEditEventCreateNew);
     on<ModelEditEventClear<T>>(_onModelEditEventClear);
+    on<ModelEditEventLoad<T>>(_onModelEditEventLoad);
+    on<ModelEditEventSelect<T>>(_onModelEditEventSelect);
   }
 
   void _onModelEditEventClear(
@@ -95,41 +85,28 @@ class ModelEditBloc<T extends IModel>
 
   void _onModelEditEventCreateNew(
       ModelEditEventCreateNew<T> event, Emitter<ModelEditState<T>> emit) async {
-    emit(ModelEditStateEdit<T>(
+    emit(ModelEditStateLoaded<T>(
       null,
     ));
   }
 
-  void _onModelEditEventDelete(
-      ModelEditEventDelete<T> event, Emitter<ModelEditState<T>> emit) async {
-    await dao.deleteById(state.model!.id);
-    emit(ModelEditStateNotLoaded<T>());
+  void _onModelEditEventLoad(
+      ModelEditEventLoad<T> event, Emitter<ModelEditState<T>> emit) async {
+    T? model = await dao.getById(event.id);
+    if (model == null) {
+      emit(ModelEditStateError("Unable to find model with the ID=${event.id}"));
+    } else {
+      emit(ModelEditStateLoaded<T>(
+        model,
+      ));
+    }
   }
 
   void _onModelEditEventSelect(
       ModelEditEventSelect<T> event, Emitter<ModelEditState<T>> emit) async {
-    //emit(ModelEditStateChanged<T>(state.model));
-    if (event.isEditMode) {
-      emit(ModelEditStateEdit<T>(
-        event.model,
-      ));
-    } else {
-      emit(ModelEditStateView<T>(event.model));
-    }
-  }
-
-  void _onModelEditEventChanged(
-      ModelEditEventChanged<T> event, Emitter<ModelEditState<T>> emit) async {
-    emit(ModelEditStateChanged<T>(state.model));
-  }
-
-  void _onModelEditEventMode(
-      ModelEditEventMode<T> event, Emitter<ModelEditState<T>> emit) async {
-    if (event.isEditMode) {
-      emit(ModelEditStateEdit<T>(state.model));
-    } else {
-      emit(ModelEditStateView<T>(state.model));
-    }
+    emit(ModelEditStateLoaded<T>(
+      event.model,
+    ));
   }
 
   void _onModelEditEventSave(
@@ -141,17 +118,13 @@ class ModelEditBloc<T extends IModel>
         var newModel = await doAddModel(
             dao, attachmentDao, event.values, loggy, event.deleteAttachment);
 
-        emit(ModelEditStateEdit<T>(newModel));
+        emit(ModelEditStateSaved<T>(newModel));
       } else {
         //await dao.update(state.model!.id, event.values);
         await doUpdateModel(dao, attachmentDao, state.model!.id, event.values,
             loggy, event.deleteAttachment);
 
-        emit(ModelEditStateEdit<T>(state.model));
-      }
-
-      if (event.isEditMode != null) {
-        add(ModelEditEventMode(event.isEditMode!));
+        emit(ModelEditStateSaved<T>(state.model));
       }
     } catch (e) {
       loggy.info(e);

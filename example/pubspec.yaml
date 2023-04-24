@@ -35,10 +35,14 @@ dependencies:
     sdk: flutter
   flutter_model:
     path: ../../flutter_model
+
   woue_components:
-    path: ../../woue_components
+     git:
+      url: https://github.com/cracklye/woue_components.git
+
   fluent_ui:
   path:
+
   woue_components_material: 
     path: ../../woue_components/woue_components_material/
   woue_components_fluent: 

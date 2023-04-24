@@ -20,10 +20,10 @@ class ModelSinglePage<T extends IModel> extends StatelessWidget {
 
   Widget buildBlocProviderEdit(BuildContext context) {
     return BlocProvider(
-      create: ((context) => ModelEditBloc<T>(
+      create: ((context) => ModelEditViewBloc<T>(
           RepositoryProvider.of<IModelAPI<T>>(context),
           RepositoryProvider.of<AttachmentDAO>(context),
-          ModelEditStateNotLoaded<T>())),
+          ModelEditViewStateNotLoaded<T>())),
       child: buildBlocBuilder(context),
     );
   }
@@ -92,23 +92,23 @@ class ModelSinglePage<T extends IModel> extends StatelessWidget {
     return ModelExtendedListView<T>(
       
       enabledListTypes:const  [ListViewType.list],
-      onTap: ((model) => BlocProvider.of<ModelEditBloc<T>>(context)
-          .add(ModelEditEventSelect<T>(model, false))),
+      onTap: ((model) => BlocProvider.of<ModelEditViewBloc<T>>(context)
+          .add(ModelEditViewEventSelect<T>(model, false))),
     );
   }
 
   Widget buildDetail(BuildContext context, ModelsListState<T> state) {
-    return BlocBuilder<ModelEditBloc<T>, ModelEditState<T>>(
+    return BlocBuilder<ModelEditViewBloc<T>, ModelEditViewState<T>>(
       builder: buildDetailState,
     );
   }
 
-  Widget buildDetailState(BuildContext context, ModelEditState<T> state) {
-    if (state is ModelEditStateNotLoaded<T>) {
+  Widget buildDetailState(BuildContext context, ModelEditViewState<T> state) {
+    if (state is ModelEditViewStateNotLoaded<T>) {
       return buildDetailNotSelected(context, state) ;
-    } else if (state is ModelEditStateView<T>) {
+    } else if (state is ModelEditViewStateView<T>) {
       return buildDetailDisplay(context, state, state.model);
-    } else if (state is ModelEditStateEdit<T>) {
+    } else if (state is ModelEditViewStateEdit<T>) {
       return buildDetailEdit(context, state, state.model);
     }
     return Text("Unhandled state: $state > ${state.model}");
@@ -116,7 +116,7 @@ class ModelSinglePage<T extends IModel> extends StatelessWidget {
 
 
   Widget buildDetailNotSelected(
-      BuildContext context, ModelEditStateNotLoaded<T> state) {
+      BuildContext context, ModelEditViewStateNotLoaded<T> state) {
     return Column(
       // mainAxisSize: MainAxisSize.min,
       // crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -124,8 +124,8 @@ class ModelSinglePage<T extends IModel> extends StatelessWidget {
       children: [
         buildActionBar(context, [
            ElevatedButton(
-            onPressed: () => BlocProvider.of<ModelEditBloc<T>>(context)
-                .add(ModelEditEventCreateNew<T>()),
+            onPressed: () => BlocProvider.of<ModelEditViewBloc<T>>(context)
+                .add(ModelEditViewEventCreateNew<T>()),
             child: const Text("Create")),
        ]),
         //Text(state.selected != null ? state.selected!.id ?? "" : "No Id"),
@@ -137,7 +137,7 @@ class ModelSinglePage<T extends IModel> extends StatelessWidget {
 
 
   Widget buildDetailDisplay(
-      BuildContext context, ModelEditStateView<T> state, T? model) {
+      BuildContext context, ModelEditViewStateView<T> state, T? model) {
     return Column(
       // mainAxisSize: MainAxisSize.min,
       // crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -145,18 +145,18 @@ class ModelSinglePage<T extends IModel> extends StatelessWidget {
       children: [
         buildActionBar(context, [
            ElevatedButton(
-            onPressed: () => BlocProvider.of<ModelEditBloc<T>>(context)
-                .add(ModelEditEventCreateNew<T>()),
+            onPressed: () => BlocProvider.of<ModelEditViewBloc<T>>(context)
+                .add(ModelEditViewEventCreateNew<T>()),
             child: const Text("Create")),
 
           ElevatedButton(
-              onPressed: () => BlocProvider.of<ModelEditBloc<T>>(context)
-                  .add(ModelEditEventMode<T>(true)),
+              onPressed: () => BlocProvider.of<ModelEditViewBloc<T>>(context)
+                  .add(ModelEditViewEventMode<T>(true)),
               child: const Text("Edit")),
 
           ElevatedButton(
-              onPressed: () => BlocProvider.of<ModelEditBloc<T>>(context)
-                  .add(ModelEditEventDelete<T>()),
+              onPressed: () => BlocProvider.of<ModelEditViewBloc<T>>(context)
+                  .add(ModelEditViewEventDelete<T>()),
               child: const Text("Delete"))
         ]),
         //Text(state.selected != null ? state.selected!.id ?? "" : "No Id"),
@@ -166,7 +166,7 @@ class ModelSinglePage<T extends IModel> extends StatelessWidget {
   }
 
   Widget buildDetailDisplayForModel2(
-      BuildContext context, ModelEditStateView<T> state, T? model) {
+      BuildContext context, ModelEditViewStateView<T> state, T? model) {
     if (model == null) return const Text("Model is null");
     return Text(
         "Display page ${model.displayLabel} ID = ${model.id}  -  No Detail Page Provided");
@@ -181,7 +181,7 @@ class ModelSinglePage<T extends IModel> extends StatelessWidget {
   }
 
   Widget buildDetailEdit(
-      BuildContext context, ModelEditStateEdit<T> state, T? model) {
+      BuildContext context, ModelEditViewStateEdit<T> state, T? model) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -194,8 +194,8 @@ class ModelSinglePage<T extends IModel> extends StatelessWidget {
               },
               child: const Text("Save")),
           ElevatedButton(
-              onPressed: () => BlocProvider.of<ModelEditBloc<T>>(context)
-                  .add(ModelEditEventMode<T>(false)),
+              onPressed: () => BlocProvider.of<ModelEditViewBloc<T>>(context)
+                  .add(ModelEditViewEventMode<T>(false)),
               child: const Text("Cancel"))
         ]),
         buildForm2(
@@ -203,8 +203,8 @@ class ModelSinglePage<T extends IModel> extends StatelessWidget {
             state,
             model,
             formKey,
-            (values) => BlocProvider.of<ModelEditBloc<T>>(context)
-                .add(ModelEditEventSave<T>(values ,isEditMode : false)))
+            (values) => BlocProvider.of<ModelEditViewBloc<T>>(context)
+                .add(ModelEditViewEventSave<T>(values ,isEditMode : false)))
       ],
     );
   }
@@ -213,7 +213,7 @@ class ModelSinglePage<T extends IModel> extends StatelessWidget {
 
   Widget buildForm2(
     BuildContext context,
-    ModelEditStateEdit<T> state,
+    ModelEditViewStateEdit<T> state,
     T? model,
     GlobalKey<FormState> formKey,
     void Function(Map<String, dynamic>) onSave, 

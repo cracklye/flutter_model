@@ -40,10 +40,10 @@ class ModelExtendedListView<T extends IModel> extends StatelessWidget {
   final Function(T)? onLongTap;
   final Function(T)? onDoubleTap;
 
-  final Widget Function(BuildContext, T, Function()? onTap, Function()? 
-  onDoubleTap, Function()? onLongPress)? buildListItem;
-  final Widget Function(BuildContext, T, Function()? onTap, Function()? 
-  onDoubleTap, Function()? onLongPress)? buildGridItem;
+  final Widget Function(BuildContext, T, Function()? onTap,
+      Function()? onDoubleTap, Function()? onLongPress)? buildListItem;
+  final Widget Function(BuildContext, T, Function()? onTap,
+      Function()? onDoubleTap, Function()? onLongPress)? buildGridItem;
   final Widget Function(BuildContext, T)? buildTreeItem;
   final Widget Function(BuildContext, T, TableColumn)? buildTableColumn;
 
@@ -69,7 +69,7 @@ class ModelExtendedListView<T extends IModel> extends StatelessWidget {
         return ExtendedListView<T>(
           items: items,
           hierarchy: hierarchy,
-          
+
           enabledListTypes: enabledListTypes,
           buildGridItem: buildGridItem,
           buildListItem: buildListItem,
@@ -78,7 +78,7 @@ class ModelExtendedListView<T extends IModel> extends StatelessWidget {
           enableSearch: enableSearch,
           filterBy: filterBy,
           orderBy: orderBy,
-          isLoading : isLoading, 
+          isLoading: isLoading,
           // listTypesIcons: listTypesIcons,
           onDoubleTap: onDoubleTap,
           onLongTap: onLongTap,
@@ -92,7 +92,7 @@ class ModelExtendedListView<T extends IModel> extends StatelessWidget {
           onSearchChange: ((searchString) =>
               BlocProvider.of<ModelsListBloc<T>>(context)
                   .add(ModelsListChangeSearchText<T>(searchString))),
-                  
+
           onFilterByChange: ((filter) =>
               BlocProvider.of<ModelsListBloc<T>>(context).add(
                   ModelsListChangeFilter<T>(

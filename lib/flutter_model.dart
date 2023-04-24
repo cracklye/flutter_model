@@ -1,5 +1,7 @@
 library flutter_model;
 
+import 'package:flutter_model/widgets/addin/model_bloc_addin_detail.dart';
+import 'package:flutter_model/widgets/addin/model_bloc_addin_navigation.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'dart:async';
 import 'dart:typed_data';
@@ -24,7 +26,6 @@ import 'package:path/path.dart'; // Used in attachment_dao
 
 part 'bloc/filtered/model_filter_bloc.dart';
 
-
 part 'model/orderby/order_by.dart';
 
 part 'model/filters/filter.dart';
@@ -36,6 +37,7 @@ part 'model/ihierarchy.dart';
 part 'bloc/modelbloc/model_bloc.dart';
 part 'bloc/modelbloc/model_event.dart';
 part 'bloc/modeledit/model_edit_bloc.dart';
+part 'bloc/modeledit/model_edit_view_bloc.dart';
 
 part 'bloc/model_detail_bloc/models_detail_bloc.dart';
 part 'bloc/model_detail_bloc/models_detail_event.dart';
@@ -43,29 +45,39 @@ part 'bloc/model_detail_bloc/models_detail_state.dart';
 
 part 'extensions/attachment_info_extension.dart';
 
-
 part 'bloc/models_list_bloc/models_list_bloc.dart';
 part 'bloc/models_list_bloc/models_list_event.dart';
 part 'bloc/models_list_bloc/models_list_state.dart';
-part 'bloc/handle_attachment.dart'; 
+part 'bloc/handle_attachment.dart';
 
 part 'persist/file_cache_provider.dart';
 part 'persist/file_cache_writer.dart';
 part 'persist/model_dao_memory.dart';
 part 'persist/attachment_dao.dart';
 part 'persist/model_dao.dart';
+
+part 'screen/add_edit_screen.dart';
+part 'screen/details_screen.dart';
+part 'screen/model_screen_list.dart';
+part 'screen/button_location.dart';
+
 part 'widgets/model_bloc_widget.dart';
 part 'widgets/model_single_page.dart';
 part 'widgets/model_bloc_form_widget.dart';
 
-part 'widgets/ui/extended_list_view.dart'; 
-part 'widgets/ui/model_extendedlist_view.dart'; 
-part 'widgets/ui/model_list.dart'; 
-part 'widgets/model_list_edit.dart'; 
-part 'widgets/ui/attachment_viewer.dart'; 
-part 'widgets/addin/model_listbloc_addin.dart';
+part 'widgets/ui/extended_list_view.dart';
+part 'widgets/ui/model_extendedlist_view.dart';
+part 'widgets/ui/model_list.dart';
+part 'widgets/model_list_edit.dart';
+part 'widgets/ui/attachment_viewer.dart';
+part 'widgets/addin/model_bloc_addin_list.dart';
+part 'widgets/addin/model_bloc_addin_edit.dart';
 
-part 'utils/model_functions.dart'; 
-part 'utils/model_keys.dart'; 
-part 'utils/model_routes.dart'; 
-part 'widgets/ui/model_list_searchbox.dart'; 
+part 'utils/model_functions.dart';
+part 'utils/model_keys.dart';
+part 'utils/model_routes.dart';
+part 'widgets/ui/model_list_searchbox.dart';
+
+part 'widgets/addin/model_dialog.dart';
+part 'widgets/addin/model_widget_stateful.dart';
+part 'widgets/addin/model_widget_stateless.dart';
