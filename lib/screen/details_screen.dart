@@ -21,7 +21,12 @@ class ModelScreenDetail<T extends IModel> extends StatelessWidget
       BuildContext context, ModelsDetailState<T> state) {
     return m.Scaffold(
       appBar: m.AppBar(
-        title: Text("View"),
+        title: isDetailLoaded(state)
+            ? Text(
+                (state as ModelsDetailLoaded<T>).model.displayLabel,
+                overflow: TextOverflow.ellipsis,
+              )
+            : Text("View"),
         actions: (state is ModelsDetailLoaded)
             ? [
                 ElevatedButton(
