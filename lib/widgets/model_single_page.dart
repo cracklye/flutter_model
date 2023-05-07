@@ -40,9 +40,7 @@ class ModelSinglePage<T extends IModel> extends StatelessWidget
     return BlocBuilder<ModelsListBloc<T>, ModelsListState<T>>(
         builder: (context, state) {
       return LayoutBuilder(builder: (context, size) {
-        logDebug(
-            "maxWidth $splitMinWidthEdit , size.maxWidth =${size.maxWidth}");
-
+       
         bool split = (splitMinWidthEdit == 0 ||
             size.maxWidth < (splitMinWidthEdit + splitListWidth));
         return buildListLayout(context, state, loadedstate, split);
