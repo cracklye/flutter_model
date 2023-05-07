@@ -373,7 +373,7 @@ packages:
     source: hosted
     version: "2.3.2"
   freezed_annotation:
-    dependency: transitive
+    dependency: "direct main"
     description:
       name: freezed_annotation
       sha256: aeac15850ef1b38ee368d4c53ba9a847e900bb2c53a4db3f6881cbb3cb684338
@@ -900,9 +900,11 @@ packages:
   woue_components:
     dependency: "direct main"
     description:
-      path: "../../woue_components"
-      relative: true
-    source: path
+      path: "."
+      ref: HEAD
+      resolved-ref: "0b18210f4ef8fe71bd3e7fafa7e907be81536bfa"
+      url: "https://github.com/cracklye/woue_components.git"
+    source: git
     version: "0.0.1"
   woue_components_fluent:
     dependency: "direct main"
