@@ -1,4 +1,10 @@
-part of flutter_model;
+
+import 'dart:convert';
+import 'dart:io';
+
+import 'package:flutter_model/flutter_model.dart';
+import 'package:loggy/loggy.dart';
+import 'package:path_provider/path_provider.dart';
 
 class FileSystemWriter<T extends IModel> extends ModelCacheProvider<T> with UiLoggy{
   const FileSystemWriter(this.fromJson);

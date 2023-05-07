@@ -1,4 +1,9 @@
-part of flutter_model;
+
+import 'dart:async';
+
+import 'package:flutter_model/flutter_model.dart';
+import 'package:loggy/loggy.dart';
+import 'package:uuid/uuid.dart';
 
 /// This provides an in memory API that can be used for testing purposes
 /// The data is held within a list in the class so will be lost as soon

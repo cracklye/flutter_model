@@ -1,4 +1,8 @@
-part of flutter_model;
+
+import 'package:flutter/widgets.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_model/flutter_model.dart';
+
 
 class ModelListBlocAddin<T extends IModel> {
   Widget buildListBlocProvider(BuildContext context, dynamic parentId) {
@@ -38,12 +42,12 @@ class ModelListBlocAddin<T extends IModel> {
 
   Widget buildListBlocLoading(
       BuildContext context, ModelsListLoading<T> state) {
-    return Text("Loading");
+    return const Text("Loading");
   }
 
   Widget buildListBlocNotLoaded(
       BuildContext context, ModelsListNotLoaded<T> state) {
-    return Text("Not Loaded");
+    return const Text("Not Loaded");
   }
 
   void doListChangeSearch(BuildContext context, String searchString) {
@@ -51,16 +55,16 @@ class ModelListBlocAddin<T extends IModel> {
         .add(ModelsListChangeSearchText<T>(searchString));
   }
 
-  void doListChangeOrderBy(
-      BuildContext context, OrderByItem<T>? orderByChange) {
-    BlocProvider.of<ModelsListBloc<T>>(context).add(ModelsListChangeOrderBy<T>(
-        orderByChange != null ? orderByChange.getSortOrders() : null));
-  }
+  // void doListChangeOrderBy(
+  //     BuildContext context, SortOrderBy? orderByChange) {
+  //   BlocProvider.of<ModelsListBloc<T>>(context).add(ModelsListChangeOrderBy<T>(
+  //       orderByChange != null ? orderByChange!.getSortOrders() : null));
+  // }
 
-  void doListChangeFilter(BuildContext context, FilterByItem<T>? filter) {
-    BlocProvider.of<ModelsListBloc<T>>(context).add(
-        ModelsListChangeFilter<T>(filter != null ? filter.getFilters() : null));
-  }
+  // void doListChangeFilter(BuildContext context, FilterByItem<T>? filter) {
+  //   BlocProvider.of<ModelsListBloc<T>>(context).add(
+  //       ModelsListChangeFilter<T>(filter != null ? filter.getFilters() : null));
+  // }
 
   bool isListLoaded(ModelsListState<T> state) {
     if (state is ModelsListLoaded<T>) {

@@ -1,4 +1,9 @@
-part of flutter_model;
+
+import 'dart:async';
+
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_model/flutter_model.dart';
+import 'package:loggy/loggy.dart';
 
 /// This bloc can be used to return the information
 /// for a single model based on the ID.  It also allows for the

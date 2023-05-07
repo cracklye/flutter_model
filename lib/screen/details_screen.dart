@@ -1,4 +1,8 @@
-part of flutter_model;
+import 'package:flutter/widgets.dart';
+import 'package:flutter_model/flutter_model.dart';
+import 'package:flutter_model/widgets/addin/model_bloc_addin_detail.dart';
+import 'package:woue_components/woue_components.dart';
+import 'package:flutter/material.dart' as m;
 
 class ModelScreenDetail<T extends IModel> extends StatelessWidget
     with ModelDetailBlocAddin<T> {
@@ -26,13 +30,13 @@ class ModelScreenDetail<T extends IModel> extends StatelessWidget
                 (state as ModelsDetailLoaded<T>).model.displayLabel,
                 overflow: TextOverflow.ellipsis,
               )
-            : Text("View"),
+            : const Text("View"),
         actions: (state is ModelsDetailLoaded)
             ? [
                 ElevatedButton(
-                  child: Text("Edit"),
+                  child: const Text("Edit"),
                   onPressed: () => Navigator.of(context).pushNamed(
-                      ModelRouter.routeEdit(
+                      ModelRouter.routeEdit<T>(
                           (state as ModelsDetailLoaded<T>).model.id)),
                 ),
                 ElevatedButton(
@@ -43,7 +47,9 @@ class ModelScreenDetail<T extends IModel> extends StatelessWidget
               ]
             : [],
       ),
-      body: super.buildDetailBlocContent(context, state),
+      body: Padding(
+          padding: const EdgeInsets.all(10),
+          child: super.buildDetailBlocContent(context, state)),
     );
   }
 }

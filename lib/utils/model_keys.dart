@@ -1,4 +1,6 @@
-part of flutter_model;
+import 'package:flutter/widgets.dart';
+import 'package:flutter_model/flutter_model.dart';
+import 'package:loggy/loggy.dart';
 
 class ModelKeys {
   static Key detailFabEdit<T extends IModel>(T model) =>
@@ -13,10 +15,9 @@ class ModelKeys {
       Key(getKeyModel<T>("detail_icon_delete", model.id ?? "new"));
 
   static Key editFabSaveExisting<T extends IModel>(T model) =>
-      Key(getKeyModel<T>(
-          "edit_fab_saveexisting",  model.id ?? "new"));
-  static Key editFabSaveNew<T extends IModel>(T model) => Key(getKeyModel<T>(
-      "edit_fab_savenew", model.id ?? "new"));
+      Key(getKeyModel<T>("edit_fab_saveexisting", model.id ?? "new"));
+  static Key editFabSaveNew<T extends IModel>(T model) =>
+      Key(getKeyModel<T>("edit_fab_savenew", model.id ?? "new"));
 
   static Key filterTextbox<T extends IModel>() =>
       Key(getKey<T>("filter_textbox"));

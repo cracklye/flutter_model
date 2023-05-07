@@ -1,17 +1,10 @@
-part of flutter_model;
+import 'package:flutter_model/flutter_model.dart';
 
 abstract class Filter<T extends IModel> {
   String get key;
 }
 
-enum FilterComparison {
-  equals,
-  notequals,
-  like,
-  greaterthan,
-  lessthan,
-  isin
-}
+enum FilterComparison { equals, notequals, like, greaterthan, lessthan, isin }
 
 class FilterField<T extends IModel> extends Filter<T> {
   final dynamic value;

@@ -1,4 +1,9 @@
-part of flutter_model;
+import 'package:flutter/material.dart' as m;
+import 'package:flutter/widgets.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_model/flutter_model.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:woue_components/woue_components.dart';
 
 class ModelListSearchBox<T extends IModel> extends StatefulWidget {
   const ModelListSearchBox(
@@ -15,7 +20,7 @@ class _ModelListSearchBoxState<T extends IModel>
   @override
   void initState() {
     _searchController = TextEditingController();
-    _searchController.text = (widget.defaultSearchText );
+    _searchController.text = (widget.defaultSearchText);
 
     super.initState();
   }

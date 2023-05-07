@@ -1,13 +1,9 @@
-
-
 import 'package:flutter_model/flutter_model.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 
 part 'model_notes.freezed.dart';
 part 'model_notes.g.dart';
 
-
-  
 @JsonSerializable()
 @freezed
 class Notes with _$Notes, IModel, IHierarchy {
@@ -16,6 +12,7 @@ class Notes with _$Notes, IModel, IHierarchy {
   factory Notes({
     dynamic id,
     required String name,
+    required String description,
     int? colour,
     DateTime? createdDate,
     DateTime? modifiedDate,

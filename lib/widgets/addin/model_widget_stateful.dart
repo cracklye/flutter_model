@@ -1,13 +1,18 @@
-part of flutter_model;
+import 'package:flutter/widgets.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_model/flutter_model.dart';
 
-enum LaunchType { Dialog, Navigate, Inline, None }
+enum LaunchType { dialog, navigate, inline, none }
 
 class OrderByListOption {
   final String label;
-  final List<OrderByItem> orderBy;
+  //final List<OrderByItem> orderBy;
   final IconData? icon;
 
-  OrderByListOption({required this.label, required this.orderBy, this.icon});
+  OrderByListOption(
+      {required this.label,
+      //required this.orderBy,
+      this.icon});
 }
 
 abstract class ModelWidgetStateful<T extends IModel> extends StatefulWidget {
@@ -24,12 +29,12 @@ abstract class ModelWidgetStateful<T extends IModel> extends StatefulWidget {
   ModelWidgetStateful({
     this.id,
     this.parentId,
-    this.blocMode = BlocMode.Consumer,
+    this.blocMode = BlocMode.consumer,
     this.modelDialog,
     key,
-    this.launchTypeEdit = LaunchType.Navigate,
-    this.launchTypeDetail = LaunchType.Navigate,
-    this.launchTypeAdd = LaunchType.Navigate,
+    this.launchTypeEdit = LaunchType.navigate,
+    this.launchTypeDetail = LaunchType.navigate,
+    this.launchTypeAdd = LaunchType.navigate,
     this.orderBy,
   }) : super(key: key);
 }
@@ -70,45 +75,36 @@ abstract class ModelWidgetStatefulState<T extends IModel,
   }
 
   void doEdit(BuildContext context, T model) {
-    if (widget.launchTypeEdit == LaunchType.Navigate) {
-      print("ModelWidgetStateful Edit: Launch type Navigate");
+    if (widget.launchTypeEdit == LaunchType.navigate) {
       navigateToEdit(context, model);
-    } else if (widget.launchTypeEdit == LaunchType.Dialog) {
-      print("ModelWidgetStateful Edit: Launch type Dialog");
+    } else if (widget.launchTypeEdit == LaunchType.dialog) {
       dialogEdit(context, model);
     } else {}
   }
 
   void doDetails(BuildContext context, T model) {
-    if (widget.launchTypeDetail == LaunchType.Navigate) {
-      print("ModelWidgetStateful Detail: Launch type Navigate");
+    if (widget.launchTypeDetail == LaunchType.navigate) {
       navigateToDetails(context, model);
-    } else if (widget.launchTypeDetail == LaunchType.Dialog) {
-      print("ModelWidgetStateful Detail: Launch type Dialog");
+    } else if (widget.launchTypeDetail == LaunchType.dialog) {
       dialogToDetails(context, model);
     } else {}
   }
 
   void doAdd(BuildContext context) {
-    if (widget.launchTypeAdd == LaunchType.Navigate) {
-      print("ModelWidgetStateful Add: Launch type New");
+    if (widget.launchTypeAdd == LaunchType.navigate) {
       navigateToNew(context);
-    } else if (widget.launchTypeAdd == LaunchType.Dialog) {
-      print("ModelWidgetStateful Add: Launch type Dialog");
+    } else if (widget.launchTypeAdd == LaunchType.dialog) {
       dialogToNew(context);
     } else {}
   }
 
   @override
   Widget build(BuildContext context) {
-    if (widget.blocMode == BlocMode.Provider) {
-      print("ModelWidgetStateful Building With Bloc Provider");
+    if (widget.blocMode == BlocMode.provider) {
       return buildBlocProvider(context);
-    } else if (widget.blocMode == BlocMode.None) {
-      print("ModelWidgetStateful Building With No Bloc");
+    } else if (widget.blocMode == BlocMode.none) {
       return buildContent(context);
     } else {
-      print("ModelWidgetStateful Building With Bloc Builder");
       return buildBlocBuilder(context);
     }
   }
@@ -118,8 +114,6 @@ abstract class ModelWidgetStatefulState<T extends IModel,
   }
 
   Widget buildBlocProvider(BuildContext context) {
-    print(
-        "ModelWidgetStateful EDIT building bloc provider orderBy:${widget.orderBy}");
     return BlocProvider<ModelsBloc<T>>(
       create: (context) {
         return ModelsBloc<T>(

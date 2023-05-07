@@ -1,4 +1,4 @@
-part of flutter_model;
+import 'package:flutter_model/flutter_model.dart';
 
 abstract class IModelAPI<T extends IModel> {
   Future<dynamic> init([dynamic props]);
@@ -22,10 +22,18 @@ abstract class IModelAPI<T extends IModel> {
   Future<dynamic> deleteModel(T model);
 
   /// Returns a alist of models based on the search parameters provided
-  Future<List<T>> listModels({String? parentId, String? searchText,  List<SortOrderBy>? orderBy, List<Filter>? filters});
+  Future<List<T>> listModels(
+      {String? parentId,
+      String? searchText,
+      List<SortOrderBy>? orderBy,
+      List<Filter>? filters});
 
   /// Returns a stream of models based on the search parameters provided
-  Future<Stream<List<T>>> list({String? parentId, String? searchText, List<SortOrderBy>? orderBy, List<Filter>? filters});
+  Future<Stream<List<T>>> list(
+      {String? parentId,
+      String? searchText,
+      List<SortOrderBy>? orderBy,
+      List<Filter>? filters});
 
   Future<Stream<T?>> listById(
     dynamic id,
@@ -34,16 +42,11 @@ abstract class IModelAPI<T extends IModel> {
   /// Returns the object that matches the [id] passed through (and [parentId] if the model is a child)
   Future<T?> getById(dynamic id);
 
-  /// Create a new type, if this has multiple sub types then pass in the type in S, otherwise this can 
+  /// Create a new type, if this has multiple sub types then pass in the type in S, otherwise this can
   /// be ignored.
   T createNewModel<S>({String? parentId});
-
 
   Future<dynamic> deleteByParentId(dynamic parentId);
 
   Future<dynamic> deleteById(dynamic id);
- 
-
-
-
 }

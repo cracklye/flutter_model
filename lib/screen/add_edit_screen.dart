@@ -1,4 +1,8 @@
-part of flutter_model;
+import 'package:flutter/material.dart' as m;
+import 'package:flutter/widgets.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_model/flutter_model.dart';
+import 'package:woue_components/woue_components.dart';
 
 class ModelScreenEdit<T extends IModel> extends StatelessWidget
     with ModelEditBlocAddin<T> {
@@ -23,10 +27,10 @@ class ModelScreenEdit<T extends IModel> extends StatelessWidget
   Widget buildEditBlocContent(BuildContext context, ModelEditState<T> state) {
     return m.Scaffold(
       appBar: m.AppBar(
-        title: Text("Edit"),
+        title: const Text("Edit"),
         actions: [
           ElevatedButton(
-            child: IconButton(icon: Icon(m.Icons.save)),
+            child:  const IconButton(icon: Icon(m.Icons.save)),
             onPressed: () {
               if (formKey.currentState!.validate()) {
                 formKey.currentState!.save();

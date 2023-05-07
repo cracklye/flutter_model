@@ -1,6 +1,7 @@
-part of flutter_model;
 
 //part 'model_state.freezed.dart';
+
+import 'package:flutter_model/flutter_model.dart';
 
 abstract class ModelsListState<T extends IModel> {
   ModelsListState({

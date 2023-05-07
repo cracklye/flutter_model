@@ -1,388 +1,96 @@
+import 'package:example/app_settings.dart';
+import 'package:example/notes/model_notes.dart';
+import 'package:example/repos/notes_repo_inmemory.dart';
+import 'package:example/routes/app_router.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_model/app_environement.dart';
+import 'package:flutter_model/bloc/preferences/app_preference_storedpref.dart';
+import 'package:flutter_model/bloc/preferences/preferences_bloc.dart';
 import 'package:flutter_model/flutter_model.dart';
-import 'package:cbl/cbl.dart';
 import 'package:loggy/loggy.dart';
 import 'package:woue_components/woue_components.dart' as w;
 import 'package:woue_components_material/material_provider.dart' as mp;
 
 void main() async {
+  Loggy.initLoggy(
+    logPrinter: const PrettyPrinter(
+      showColors: true,
+    ),
+    logOptions: LogOptions(
+      AppEnvironment.isDebug ? LogLevel.all : LogLevel.warning,
+      stackTraceLevel: LogLevel.warning,
+    ),
+    filters: [
+      //BlacklistFilter([BlacklistedLoggy]),
+    ],
+  );
+
+  // Ensure the binding is initialised
+  WidgetsFlutterBinding.ensureInitialized();
+
   w.Woue.init(const mp.MaterialProvider());
+  AppRouter.setupRouter();
+
   //await CouchbaseLiteFlutter.init();
   runApp(const MyApp());
 }
 
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
+  @override
+  Widget build(BuildContext context) {
+    return buildRepoProviders(context);
+  }
+
+  Widget buildRepoProviders(BuildContext context) {
+    return MultiRepositoryProvider(providers: [
+      RepositoryProvider<IModelAPI<Notes>>(
+        create: (context) => RepositoryNotesMemory([
+          Notes(id: "1", name: "Item 1", description: "This is the first tiem"),
+          Notes(id: "2", name: "Item 2", description: "This is the first tiem"),
+          Notes(id: "3", name: "Item 3", description: "This is the first tiem"),
+          Notes(id: "4", name: "Item 4", description: "This is the first tiem"),
+          Notes(id: "5", name: "Item 5", description: "This is the first tiem"),
+        ])
+          ..init(),
+      )
+    ], child: buildProviders(context));
+  }
 
   // This widget is the root of your application.
-  @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'Flutter Demo',
-      theme: ThemeData(
-        // This is the theme of your application.
-        //
-        // Try running your application with "flutter run". You'll see the
-        // application has a blue toolbar. Then, without quitting the app, try
-        // changing the primarySwatch below to Colors.green and then invoke
-        // "hot reload" (press "r" in the console where you ran "flutter run",
-        // or simply save your changes to "hot reload" in a Flutter IDE).
-        // Notice that the counter didn't reset back to zero; the application
-        // is not restarted.
-        primarySwatch: Colors.blue,
-      ),
-      home: const MyHomePage(title: 'Flutter Demo Home Page'),
-    );
-  }
-}
 
-class MyHomePage extends StatefulWidget {
-  const MyHomePage({super.key, required this.title});
-
-  // This widget is the home page of your application. It is stateful, meaning
-  // that it has a State object (defined below) that contains fields that affect
-  // how it looks.
-
-  // This class is the configuration for the state. It holds the values (in this
-  // case the title) provided by the parent (in this case the App widget) and
-  // used by the build method of the State. Fields in a Widget subclass are
-  // always marked "final".
-
-  final String title;
-
-  @override
-  State<MyHomePage> createState() => _MyHomePageState();
-}
-
-class _MyHomePageState extends State<MyHomePage> with UiLoggy {
-  @override
-  void initState() {
-    for (int i = 0; i < 25; i++) {
-      dynamic parent;
-      if (i > 6) {
-        parent = ((i - 6 / 3)).toInt();
-      }
-
-      itemsSample.add(Sample(i, DateTime.now(), DateTime.now(), "Item $i",
-          "This is the description to use $i", "", i, parent));
-    }
-    //Set the hierarchy
-    hierarchySample = HierarchyHelper.computeHierarchy(itemsSample);
-    super.initState();
+  Widget buildProviders(BuildContext context) {
+    return MultiBlocProvider(providers: [
+      BlocProvider<PreferencesBloc<AppSettings>>(
+          create: (context) => PreferencesBloc<AppSettings>(
+              PreferencesInitial(AppSettings()),
+              store: AppPrefStoreSharedPreferences())
+            ..add(const PreferencesInit<AppSettings>())),
+      BlocProvider<ModelsBloc<Notes>>(
+          create: (context) => ModelsBloc<Notes>(
+                modelsRepository:
+                    RepositoryProvider.of<IModelAPI<Notes>>(context),
+              )..add(const LoadModels<Notes>())),
+    ], child: buildApp(context));
   }
 
-  List<TableColumn> possibleColumns = [
-    TableColumn(
-        label: "Display Label",
-        key: "displayLabel",
-        onDisplay: (column, model, value, selected) =>
-            Text(value == null ? "" : '$value  $selected'),
-        onSort: (column, index, ascending) => logInfo("Sorting"),
-        tooltip: "This is the tooltip for the display label"),
-    TableColumn(
-        label: "Created On",
-        key: "createdDate",
-        onDisplay: (column, model, value, selected) =>
-            Text(value == null ? "" : '$value'),
-        onSort: (column, index, ascending) => logInfo("Sorting"),
-        tooltip: "This is the tooltip for the created on"),
-    TableColumn(
-        label: "Modified no sort",
-        key: "modifiedDate",
-        onDisplay: (column, model, value, selected) =>
-            Text(value == null ? "" : '$value'),
-        tooltip: "This is the tooltip for the created on"),
-    TableColumn(
-      label: "Numeriv Value",
-      key: "numericValue",
-      onDisplay: (column, model, value, selected) =>
-          Text(value == null ? "" : '$value'),
-    ),
-    TableColumn(
-      label: "Doesn't Exist",
-      key: "Doesn't exist",
-      onDisplay: (column, model, value, selected) =>
-          Text(value == null ? "" : '$value'),
-    ),
-    TableColumn(
-      label: "Properties Vlaue",
-      key: "properties.propvalue",
-      onDisplay: (column, model, value, selected) =>
-          Text(value == null ? "" : '$value'),
-    )
-  ];
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text(widget.title),
-        actions: [
-          IconButton(
-              onPressed: () async {
-                await _runDatabaseTest();
-              },
-              icon: const Icon(Icons.data_array)),
-          IconButton(
-              onPressed: () async {
-                await _runDbSync();
-              },
-              icon: const Icon(Icons.sync))
-        ],
-      ),
-      body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            const Text(
-                "To Do\n Tree view \n Multiple selections \n Property level on the column (although could still handle from the child) \n selecting grid count\n searching \n detailed searching by field\n sort order"),
-            Row(children: [
-              const Text("Data Type"),
-              Radio(
-                  groupValue: true,
-                  value: _showTreeData,
-                  onChanged: (value) => setState(() {
-                        _showTreeData = true;
-                      })),
-              Radio(
-                  groupValue: true,
-                  value: !_showTreeData,
-                  onChanged: (value) => setState(() {
-                        _showTreeData = false;
-                      }))
-            ]),
-            Row(children: [
-              const Text("Show Search Bar"),
-              Checkbox(
-                  value: _showSearchBar,
-                  onChanged: (value) => setState(() {
-                        _showSearchBar = value ?? false;
-                      })),
-              const Text("Is Loading: "),
-              Checkbox(
-                  value: _isLoading,
-                  onChanged: (value) => setState(() {
-                        _isLoading = value ?? false;
-                      })),
-            ]),
-            Row(
-              children: [
-                const Text("Show Types:         "),
-                const Text("| View: "),
-                Checkbox(
-                    value: _showTypeView,
-                    onChanged: (value) => setState(() {
-                          _showTypeView = value ?? false;
-                        })),
-                const Text("| Grid: "),
-                Checkbox(
-                    value: _showTypeGrid,
-                    onChanged: (value) => setState(() {
-                          _showTypeGrid = value ?? false;
-                        })),
-                const Text("| Map: "),
-                Checkbox(
-                    value: _showTypeMap,
-                    onChanged: (value) => setState(() {
-                          _showTypeMap = value ?? false;
-                        })),
-                const Text("| Drag: "),
-                Checkbox(
-                    value: _showTypeDrag,
-                    onChanged: (value) => setState(() {
-                          _showTypeDrag = value ?? false;
-                        })),
-                const Text("| List: "),
-                Checkbox(
-                    value: _showTypeList,
-                    onChanged: (value) => setState(() {
-                          _showTypeList = value ?? false;
-                        })),
-                const Text("| Tree: "),
-                Checkbox(
-                    value: _showTypeTree,
-                    onChanged: (value) => setState(() {
-                          _showTypeTree = value ?? false;
-                        })),
-                const Text("| "),
-              ],
-            ),
-            Text("Last Action: $lastAction"),
-            Expanded(child: buildExtendedListView(context)),
-          ],
-        ),
-      ),
-    );
-  }
-
-  bool _showTreeData = true;
-  bool _showSearchBar = true;
-  bool _showTypeView = true;
-  bool _showTypeGrid = true;
-  bool _showTypeList = true;
-  bool _showTypeTree = true;
-  bool _showTypeDrag = true;
-  bool _showTypeMap = true;
-
-  bool _isLoading = false;
-
-  Sample? selected;
-  String lastAction = "";
-
-  List<Sample> itemsSample = [];
-  List<HierarchyEntry<Sample>> hierarchySample = [];
-
-  //List<SampleTree> itemsTree = [];
-
-  Widget buildExtendedListView(BuildContext context) {
-    List<ListViewType> types = [];
-    if (_showTypeGrid) types.add(ListViewType.grid);
-    if (_showTypeList) types.add(ListViewType.list);
-    if (_showTypeView) types.add(ListViewType.table);
-    if (_showTypeTree) types.add(ListViewType.tree);
-    if (_showTypeDrag) types.add(ListViewType.sortable);
-    if (_showTypeMap) types.add(ListViewType.map);
-
-    return ExtendedListView<Sample>(
-      isLoading: _isLoading,
-      items: itemsSample,
-      hierarchy: hierarchySample,
-      enableSearch: _showSearchBar,
-      enabledListTypes: types,
-      selected: selected != null ? [selected!] : null,
-      onTap: (model) {
-        setState(() {
-          lastAction = "onTap : ${model.displayLabel}";
-          selected = model;
-        });
-      },
-      onDoubleTap: (model) {
-        setState(() {
-          lastAction = "onDoubleTap : ${model.displayLabel}";
-          selected = model;
-        });
-      },
-      onLongTap: (model) {
-        setState(() {
-          lastAction = "onLongTap : ${model.displayLabel}";
-          selected = model;
-        });
-      },
-      onSearchChange: (value) => setState(() {
-        lastAction = "Search Changed : $value";
-      }),
-      onReorder: ((previousPosition, newPosition, item, before, after,
-              parent) =>
-          print(
-              "On Reorder: Moving $item  from $previousPosition to $newPosition between $before and $after")),
-      tableColumns: possibleColumns,
-    );
-  }
-
-  Future<void> _runDbSync() async {
-    final database = await Database.openAsync('my-database');
-
-    final replicator = await Replicator.create(ReplicatorConfiguration(
-      authenticator:
-          BasicAuthenticator(username: "administrator", password: "letmein123"),
-      database: database,
-      target: UrlEndpoint(Uri.parse('ws://localhost:4984/testbucket')),
-    ));
-
-    await replicator.addChangeListener((change) {
-      loggy.info('Replicator activity: ${change.status.activity}');
-    });
-
-    await replicator.start();
-  }
-
-  Future<void> _runDatabaseTest() async {
-    // Open the database (creating it if it doesn’t exist).
-    final database = await Database.openAsync('my-database');
-
-    // Create a new document.
-    final mutableDocument = MutableDocument({'type': 'SDK', 'majorVersion': 2});
-    await database.saveDocument(mutableDocument);
-
-    loggy.info(
-      'Created document with id ${mutableDocument.id} and '
-      'type ${mutableDocument.string('type')}.',
-    );
-
-    // Update the document.
-    mutableDocument.setString('Dart', key: 'language');
-    await database.saveDocument(mutableDocument);
-
-    loggy.info(
-      'Updated document with id ${mutableDocument.id}, '
-      'adding language ${mutableDocument.string("language")!}.',
-    );
-
-    // Read the document.
-    final document = (await database.document(mutableDocument.id))!;
-
-    loggy.info(
-      'Read document with id ${document.id}, '
-      'type ${document.string('type')} and '
-      'language ${document.string('language')}.',
-    );
-
-    // Create a query to fetch documents of type SDK.
-    loggy.info('Querying Documents of type=SDK.');
-    final query = await Query.fromN1ql(database, '''
-    SELECT * FROM _
-    WHERE type = 'SDK'
-  ''');
-
-    // Run the query.
-    final result = await query.execute();
-    final results = await result.allResults();
-    loggy.info('Number of results: ${results.length}');
-
-    // Close the database.
-    await database.close();
-  }
-}
-
-class Sample extends IModel with IHierarchy {
-  @override
-  final dynamic id;
-  @override
-  final DateTime createdDate;
-  @override
-  final DateTime modifiedDate;
-  @override
-  final String displayLabel;
-  final String description;
-  final String url;
-  final int numericValue;
-  @override
-  final dynamic hierarchyParentId;
-
-  @override
-  String toString() {
-    return "Item $id";
-  }
-
-  Sample(this.id, this.createdDate, this.modifiedDate, this.displayLabel,
-      this.description, this.url, this.numericValue, this.hierarchyParentId);
-
-  @override
-  IModel copyWithId({id, DateTime? createdDate, DateTime? modifiedDate}) {
-    return this;
-  }
-
-  @override
-  Map<String, dynamic> toJson() {
-    return {
-      "id": id,
-      "createdDate": createdDate,
-      "modifiedDate": modifiedDate,
-      "displayLabel": displayLabel,
-      "description": description,
-      "numericValue": numericValue,
-      "hierarchyParentId": hierarchyParentId,
-      "url": url
-    };
+  Widget buildApp(BuildContext context) {
+    return BlocBuilder<PreferencesBloc<AppSettings>,
+            PreferencesState<AppSettings>>(
+        builder: (context, state) => MaterialApp(
+              title: 'Flutter Model Test App',
+              themeMode: state.pref.darkMode ? ThemeMode.dark : ThemeMode.light,
+              theme: ThemeData(
+                brightness: Brightness.light,
+                /* light theme settings */
+              ),
+              darkTheme: ThemeData(
+                brightness: Brightness.dark,
+                /* dark theme settings */
+              ),
+              debugShowCheckedModeBanner: false,
+              onGenerateRoute: AppRouter.router.generator,
+            ));
   }
 }

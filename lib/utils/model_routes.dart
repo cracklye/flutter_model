@@ -1,8 +1,7 @@
-// Copyright 2018 The Flutter Architecture Sample Authors. All rights reserved.
-// Use of this source code is governed by the MIT license that can be found
-// in the LICENSE file.
 
-part of flutter_model;
+import 'package:fluro/fluro.dart';
+import 'package:flutter_model/flutter_model.dart';
+import 'package:loggy/loggy.dart';
 
 /// The ModelRouter provides some static methods to enable
 /// building the routing URI's based of the class type

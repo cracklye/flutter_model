@@ -1,4 +1,5 @@
-part of flutter_model;
+
+import 'package:flutter_model/flutter_model.dart';
 
 abstract class ModelsDetailEvent<T extends IModel> {
   const ModelsDetailEvent();

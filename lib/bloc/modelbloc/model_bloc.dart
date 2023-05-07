@@ -1,4 +1,10 @@
-part of flutter_model;
+
+import 'dart:async';
+
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_model/flutter_model.dart';
+import 'package:loggy/loggy.dart';
+
 
 class ModelsBloc<T extends IModel> extends Bloc<ModelsEvent<T>, ModelsState<T>>
     with UiLoggy, HandleAttachment<T> {

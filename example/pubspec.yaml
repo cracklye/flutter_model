@@ -37,14 +37,20 @@ dependencies:
     path: ../../flutter_model
 
   woue_components:
-     git:
-      url: https://github.com/cracklye/woue_components.git
-
+    path: ../../woue_components
+    #  git:
+    #   url: https://github.com/cracklye/woue_components.git
+  bloc:
+  flutter_bloc:
+  
+  fluro: ^2.0.4
   fluent_ui:
   path:
-
+  json_annotation:
+  freezed: 2.3.2
   woue_components_material: 
     path: ../../woue_components/woue_components_material/
+
   woue_components_fluent: 
     path: ../../woue_components/woue_components_fluent/    
   # The following adds the Cupertino Icons font to your application.
@@ -54,9 +60,15 @@ dependencies:
   cbl_flutter: ^2.0.2
   cbl_flutter_ce: ^2.1.2
   loggy:
+  freezed_annotation:
 dev_dependencies:
   flutter_test:
     sdk: flutter
+
+  build_runner: 
+  json_serializable: ^6.2.0
+  
+  
 
   # The "flutter_lints" package below contains a set of recommended lints to
   # encourage good coding practices. The lint set provided by the package is

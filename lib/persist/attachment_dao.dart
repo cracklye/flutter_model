@@ -1,4 +1,13 @@
-part of flutter_model;
+
+import 'dart:io';
+
+import 'package:flutter/widgets.dart';
+import 'package:flutter_model/flutter_model.dart';
+import 'package:path_provider/path_provider.dart';
+import 'dart:typed_data';
+
+
+import 'package:uuid/uuid.dart';
 
 abstract class AttachmentDAO {
   static late AttachmentDAO active;

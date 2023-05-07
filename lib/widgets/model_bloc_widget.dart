@@ -1,5 +1,8 @@
 
-part of flutter_model; 
+
+import 'package:flutter/widgets.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_model/flutter_model.dart';
 
 abstract class ModelBlocWidget<T extends IModel> extends StatelessWidget {
   const ModelBlocWidget({Key? key}) : super(key: key);

@@ -18,9 +18,10 @@ dependencies:
   path_provider:
   shared_preferences: 
   woue_components:
-     git:
-      url: https://github.com/cracklye/woue_components.git
-
+      git:
+       url: https://github.com/cracklye/woue_components.git
+    # path: ../woue_components
+  path:
 
   mime:
   font_awesome_flutter:

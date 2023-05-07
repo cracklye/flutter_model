@@ -1,4 +1,7 @@
-part of flutter_model;
+
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_model/flutter_model.dart';
+import 'package:loggy/loggy.dart';
 
 abstract class ModelEditState<T extends IModel> {
   final T? model;

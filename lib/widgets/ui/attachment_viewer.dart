@@ -1,11 +1,12 @@
-part of flutter_model;
+import 'package:flutter/widgets.dart';
+import 'package:flutter_model/flutter_model.dart';
 
 class AttachmentViewer extends StatelessWidget {
   const AttachmentViewer({
     super.key,
     required this.model,
     required this.fieldName,
-    this.fit ,
+    this.fit,
     this.repeat = ImageRepeat.repeat,
   });
   final BoxFit? fit;

@@ -1,4 +1,3 @@
-part of flutter_model;
 
 /// This is the base model for all data entities.
 abstract class IModel {

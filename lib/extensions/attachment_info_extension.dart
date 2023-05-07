@@ -1,5 +1,7 @@
-part of flutter_model;
 
+
+import 'package:flutter_model/bloc/modelbloc/model_event.dart';
+import 'package:woue_components/woue_components.dart';
 
 extension AttachmentInfoToJson on AttachmentInfo {
   Map<String, dynamic> toJson(String fieldName) {

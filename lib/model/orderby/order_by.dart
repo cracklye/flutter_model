@@ -1,6 +1,7 @@
-part of flutter_model;
 
-abstract class SortOrderBy {  String get key;
+abstract class SortOrderBy {  
+  
+  String get key;
 }
 
 class SortOrderByFieldName  extends SortOrderBy{

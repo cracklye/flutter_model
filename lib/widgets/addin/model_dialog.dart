@@ -1,18 +1,22 @@
-part of flutter_model;
+import 'package:flutter/material.dart' as m;
+import 'package:flutter/widgets.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_model/flutter_model.dart';
+import 'package:woue_components/woue_components.dart';
 
-enum PopupType { Bottom, Dialog }
+enum PopupType { bottom, dialog }
 
 abstract class ModelDialog<T extends IModel> {
   final double? dialogHeight;
   final double? dialogWidth;
   final PopupType popupType;
-  final GlobalKey<FormState> formKey2 = new GlobalKey<FormState>();
+  final GlobalKey<FormState> formKey2 = GlobalKey<FormState>();
   final bool enableEdit;
 
   ModelDialog(
       {this.dialogHeight,
       this.dialogWidth,
-      this.popupType = PopupType.Dialog,
+      this.popupType = PopupType.dialog,
       // @required this.formKey,
       this.enableEdit = true});
 
@@ -35,7 +39,7 @@ abstract class ModelDialog<T extends IModel> {
   // Shows the detail form..
   void showDetail(BuildContext context, T model, GlobalKey<FormState> formKey,
       Function(BuildContext, GlobalKey, T) onEdit) {
-    if (popupType == PopupType.Dialog) {
+    if (popupType == PopupType.dialog) {
       // showDialog(context: context, builder: _showModelBuilder(context, model));
 
       showDialog(
@@ -46,7 +50,7 @@ abstract class ModelDialog<T extends IModel> {
             title: getTitleDisplay(context, model),
             // content: buildModelDisplay(context, model),
 
-            content: Container(
+            content: SizedBox(
               height: getDialogHeight(),
               width: MediaQuery.of(context).size.width - 10,
               child: Padding(
@@ -67,14 +71,14 @@ abstract class ModelDialog<T extends IModel> {
             actions: <Widget>[
               // usually buttons at the bottom of the dialog
               TextButton(
-                child: new Text("Close"),
+                child: const Text("Close"),
                 onPressed: () {
                   Navigator.of(context).pop();
                 },
               ),
               enableEdit
                   ? TextButton(
-                      child: new Text("Edit"),
+                      child: const Text("Edit"),
                       onPressed: () {
                         Navigator.of(context).pop();
                         //showAdd(context, formKey, model);
@@ -143,8 +147,8 @@ abstract class ModelDialog<T extends IModel> {
 
   void showAdd(BuildContext context, GlobalKey<FormState> formKey,
       [T? model, parentId]) {
-    if (popupType == PopupType.Dialog) {
-      print("modelDialog.  showAdd($model, $parentId)");
+    if (popupType == PopupType.dialog) {
+      //print("modelDialog.  showAdd($model, $parentId)");
       //showDialog(context: context, builder: _addModelBuilder(context, model));
       showDialog(
         context: context,
@@ -153,13 +157,13 @@ abstract class ModelDialog<T extends IModel> {
 
           return BlocProvider<ModelEditBloc<T>>(
               create: (context) {
-                print("modelDialog about to create the edit bloc provider");
+                //print("modelDialog about to create the edit bloc provider");
                 return createEditBloc(context, model?.id, parentId);
               },
               child: m.AlertDialog(
-                title: Text("Edit"),
+                title: const Text("Edit"),
                 // content: Text("Hi"),
-                content: Container(
+                content: SizedBox(
                   height: getDialogHeight(),
                   width: MediaQuery.of(context).size.width - 10,
                   child: Padding(
@@ -167,7 +171,7 @@ abstract class ModelDialog<T extends IModel> {
                     child: SingleChildScrollView(
                       child: BlocConsumer<ModelEditBloc<T>, ModelEditState<T>>(
                           listener: (context, state) {
-                        print("Listener has been called $state");
+                        // print("Listener has been called $state");
 
                         if (state is ModelEditStateSaved<T>) {
                           //if (this._overlayEntry != null) this._overlayEntry.remove();
@@ -206,13 +210,13 @@ abstract class ModelDialog<T extends IModel> {
                 actions: <Widget>[
                   // usually buttons at the bottom of the dialog
                   TextButton(
-                    child: Text("Cancel"),
+                    child: const Text("Cancel"),
                     onPressed: () {
                       Navigator.of(context).pop();
                     },
                   ),
                   TextButton(
-                    child: Text("Save"),
+                    child: const Text("Save"),
                     onPressed: () {
                       if (formKey2.currentState!.validate()) {
                         formKey2.currentState!.save();
@@ -231,7 +235,6 @@ abstract class ModelDialog<T extends IModel> {
   }
 
   ModelEditBloc<T> createEditBloc(context, dynamic id, dynamic parentId) {
-    print("ModelDialog.createEditBloc create edit blco");
     return ModelEditBloc<T>(
         // modelsBloc: BlocProvider.of<ModelsBloc<T>>(context)
         RepositoryProvider.of<IModelAPI<T>>(context),
@@ -256,7 +259,7 @@ abstract class ModelDialog<T extends IModel> {
                     topRight: Radius.circular(10.0))),
             child: Padding(
                 padding:
-                    EdgeInsets.only(left: 15, top: 25.0, right: 15, bottom: 30),
+                   const  EdgeInsets.only(left: 15, top: 25.0, right: 15, bottom: 30),
                 child: ListView(
                   children: <Widget>[
                     Row(
@@ -272,7 +275,7 @@ abstract class ModelDialog<T extends IModel> {
                                   id: model.id, parentId: parentId),
                             );
                           } else {
-                            print("saving new doc");
+                           
                             BlocProvider.of<ModelEditBloc<T>>(context).add(
                               ModelEditEventSave<T>(values, parentId: parentId),
                             );

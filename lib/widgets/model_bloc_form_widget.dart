@@ -1,4 +1,6 @@
-part of flutter_model;
+
+import 'package:flutter/widgets.dart';
+import 'package:flutter_model/flutter_model.dart';
 
 /// Extends the Form class and adds a onSave function so that
 /// once the form has completed the save functionality it can notify
@@ -8,7 +10,7 @@ class FormNotify extends Form {
 
   const FormNotify({
     Key? key,
-    @required child,
+    required child,
     autovalidate = false,
     onWillPop,
     onChanged,

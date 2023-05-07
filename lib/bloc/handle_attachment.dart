@@ -1,4 +1,12 @@
-part of flutter_model;
+
+import 'dart:io';
+
+import 'package:flutter_model/flutter_model.dart';
+import 'package:loggy/loggy.dart';
+import 'dart:typed_data';
+
+import 'package:mime/mime.dart';
+
 
 class HandleAttachment<T extends IModel> {
   Future<T> doAddModel(IModelAPI<T> dao, AttachmentDAO? attachmentDao,
