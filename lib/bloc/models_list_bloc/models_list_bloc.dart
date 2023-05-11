@@ -1,4 +1,3 @@
-
 import 'dart:async';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -13,10 +12,9 @@ class ModelsListBloc<T extends IModel>
   ModelsListBloc({
     required this.modelsRepository,
     //ModelsBloc? parentBloc,
-    ModelsListState<T>? initialState, 
-  })  : //_modelsRepository = modelsRepository,
-        super(initialState??ModelsListLoading<T>()) {
-
+    ModelsListState<T>? initialState,
+  }) : //_modelsRepository = modelsRepository,
+        super(initialState ?? ModelsListLoading<T>()) {
     on<ModelsListLoad<T>>(_onLoadModels);
     on<ModelsListDelete<T>>(_onDeleteModel);
     on<ModelListSelect<T>>(_onModelSelect);
@@ -24,7 +22,6 @@ class ModelsListBloc<T extends IModel>
     on<ModelsListChangeSearchText<T>>(_onModelsListChangeSearchText);
     on<ModelsListChangeOrderBy<T>>(_onModelsListChangeOrderBy);
     on<ModelsListChangeFilter<T>>(_onModelsListChangeFilter);
-
   }
 
   void _onModelsListChangeSearchText(ModelsListChangeSearchText<T> event,
@@ -73,7 +70,7 @@ class ModelsListBloc<T extends IModel>
     // }
 
     emit(ModelsListLoading<T>.fromState(state));
-    
+
     List<HierarchyEntry<T>> hierarchy = [];
 
     //Compute the hierarchy...
@@ -116,17 +113,16 @@ class ModelsListBloc<T extends IModel>
     loggy.debug("_onLoadModels Returning models update $T");
     _modelsSubscription?.cancel();
 
-    emit(ModelsListLoading.fromState(state, parentId: event.parentId,
-              searchText: event.searchtext,
-              orderBy: event.orderBy,
-              filters: event.filters ));
+    emit(ModelsListLoading.fromState(state,
+        parentId: event.parentId,
+        searchText: event.searchtext,
+        orderBy: event.orderBy,
+        filters: event.filters));
 
-              
     if (event.clear) {
       loggy.debug("_doLoadModels Clear is true so updating to empty list");
 
       add(ModelsListUpdateList<T>([]));
-
     } else {
       loggy.debug("_doLoadModels ID is null ${event.parentId}");
       _modelsSubscription = (await modelsRepository.list(
@@ -136,16 +132,17 @@ class ModelsListBloc<T extends IModel>
               filters: event.filters))
           .listen(
         (models) {
-          loggy.warning(
-              "_doLoadModels, called the modesl subscription ${models.length}");
-          loggy.warning(
-              "_doLoadModels, called the modesl subscription $event.parentId");
+          // loggy.warning(
+          //     "_doLoadModels, called the modesl subscription ${models.length}");
+          // loggy.warning(
+          //     "_doLoadModels, called the modesl subscription $event.parentId");
 
           //We want to load
-
-          loggy.debug("_doLoadModels loading");
-          add(ModelsListUpdateList<T>(models));
-
+          if (!isClosed) {
+            loggy.debug(
+                "_doLoadModels loading as _modelsSubscription has responded");
+            add(ModelsListUpdateList<T>(models));
+          }
         },
       );
     }
@@ -158,9 +155,8 @@ class ModelsListBloc<T extends IModel>
   }
 
   @override
-  Future<void> close() {
-    _modelsSubscription?.cancel();
-
-    return super.close();
+  Future<void> close() async {
+    await _modelsSubscription?.cancel();
+    await super.close();
   }
 }

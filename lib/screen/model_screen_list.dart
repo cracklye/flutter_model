@@ -12,8 +12,8 @@ abstract class ModelScreenList<T extends IModel> extends ModelSinglePage<T>
   ModelScreenList({super.key, this.drawer, this.title, this.parentId});
 
   @override
-  Widget buildListLayout(BuildContext context, ModelsListState<T> state,
-      ModelsListLoaded<T> loadedstate, bool fullScreen) {
+  Widget buildListLayout(
+      BuildContext context, ModelsListState<T> state, bool fullScreen) {
     return BlocBuilder<ModelEditViewBloc<T>, ModelEditViewState<T>>(
         builder: (context, editState) {
       List<Widget> rtn = [];
@@ -63,7 +63,7 @@ abstract class ModelScreenList<T extends IModel> extends ModelSinglePage<T>
             actions: rtn,
             title: Text(title ?? ""),
           ),
-          body: super.buildListLayout(context, state, loadedstate, fullScreen));
+          body: super.buildListLayout(context, state, fullScreen));
     });
   }
 }

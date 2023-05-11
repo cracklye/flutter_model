@@ -27,6 +27,8 @@ class ModelsDetailBloc<T extends IModel>
     on<ModelDetailRaiseError<T>>(_onModelDetailRaiseError);
   }
 
+
+
   /// Handles an error message, this is mainly used within internal methods
   /// and sets the state to [ModelsDetailError]
   void _onModelDetailRaiseError(ModelDetailRaiseError<T> event,

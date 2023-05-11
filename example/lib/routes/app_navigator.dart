@@ -1,5 +1,6 @@
 import 'package:example/app_settings.dart';
 import 'package:example/notes/model_notes.dart';
+import 'package:example/screens/test_view.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_model/bloc/preferences/preferences_bloc.dart';
@@ -36,8 +37,7 @@ class AppDrawer extends StatelessWidget {
           ListTile(
             title: const Text("Home"),
             leading: const Icon(Icons.home),
-            onTap: () =>
-                Navigator.of(context).pushReplacementNamed("/"),
+            onTap: () => Navigator.of(context).pushReplacementNamed("/"),
           ),
           ListTile(
             title: const Text("Test List"),
@@ -45,11 +45,23 @@ class AppDrawer extends StatelessWidget {
             onTap: () =>
                 Navigator.of(context).pushReplacementNamed("/testListScreen"),
           ),
-           ListTile(
+          ListTile(
             title: const Text("Note Home"),
             leading: const Icon(Icons.home),
+            onTap: () => Navigator.of(context)
+                .pushReplacementNamed(ModelRouter.routeList<Notes>()),
+          ),
+          ListTile(
+            title: const Text("Sample Home"),
+            leading: const Icon(Icons.home),
+            onTap: () => Navigator.of(context)
+                .pushReplacementNamed(ModelRouter.routeList<Sample>()),
+          ),
+          ListTile(
+            title: const Text("Note Home Slow"),
+            leading: const Icon(Icons.slow_motion_video_sharp),
             onTap: () =>
-                Navigator.of(context).pushReplacementNamed(ModelRouter.routeList<Notes>()),
+                Navigator.of(context).pushReplacementNamed("/testslowlist"),
           ),
           const Divider(),
         ])),

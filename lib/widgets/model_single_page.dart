@@ -34,22 +34,30 @@ class ModelSinglePage<T extends IModel> extends StatelessWidget
         child: buildListBlocProvider(context, null));
   }
 
+  // if (state is ModelsListLoaded<T>) {
+  //     return buildListBlocLoaded(context, state);
+  //   } else if (state is ModelsListLoading<T>) {
+  //     return buildListBlocLoading(context, state);
+  //   }
+  //   if (state is ModelsListNotLoaded<T>) {
+  //     return buildListBlocNotLoaded(context, state);
+  //   }
+  //   return Text("Unknown state: $state");
+  // }
+
   @override
-  Widget buildListBlocLoaded(
-      BuildContext context, ModelsListLoaded<T> loadedstate) {
-    return BlocBuilder<ModelsListBloc<T>, ModelsListState<T>>(
-        builder: (context, state) {
-      return LayoutBuilder(builder: (context, size) {
-       
-        bool split = (splitMinWidthEdit == 0 ||
-            size.maxWidth < (splitMinWidthEdit + splitListWidth));
-        return buildListLayout(context, state, loadedstate, split);
-      });
+  Widget buildListBlocContent(BuildContext context, ModelsListState<T> state) {
+    return LayoutBuilder(builder: (context, size) {
+      bool split = (splitMinWidthEdit == 0 ||
+          size.maxWidth < (splitMinWidthEdit + splitListWidth));
+      return buildListLayout(context, state, split);
     });
   }
 
-  Widget buildListLayout(BuildContext context, ModelsListState<T> state,
-      ModelsListLoaded<T> loadedstate, bool fullScreen) {
+  Widget buildListLayout(
+      BuildContext context, ModelsListState<T> state, bool fullScreen) {
+
+        
     if (fullScreen) {
       return buildList(context, state, true);
     }
@@ -83,13 +91,14 @@ class ModelSinglePage<T extends IModel> extends StatelessWidget
   }
 
   Widget buildList(
-      BuildContext context, ModelsListState<T> state, bool isFullScreen) {
+      BuildContext context, ModelsListState<T> state,  bool isFullScreen) {
     bool isLoading = true;
     List<T> items = [];
     if (state is ModelsListLoaded<T>) {
       items = state.models;
       isLoading = false;
     }
+
     return BlocBuilder<ModelEditViewBloc<T>, ModelEditViewState<T>>(
         builder: (context, editState) {
       return ExtendedListView<T>(
