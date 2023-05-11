@@ -1,10 +1,8 @@
-
 import 'dart:async';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_model/flutter_model.dart';
 import 'package:loggy/loggy.dart';
-
 
 class ModelsBloc<T extends IModel> extends Bloc<ModelsEvent<T>, ModelsState<T>>
     with UiLoggy, HandleAttachment<T> {
@@ -134,8 +132,8 @@ class ModelsBloc<T extends IModel> extends Bloc<ModelsEvent<T>, ModelsState<T>>
 
     var values = event.values;
 
-    var newModel =
-        await doAddModel(_modelsRepository, attachmentDao, values, loggy, event.deleteAttachment);
+    var newModel = await doAddModel(_modelsRepository, attachmentDao, values,
+        loggy, event.deleteAttachment);
 
     add(ModelSelect(newModel, ModelStateMode.edit));
   }
@@ -145,8 +143,8 @@ class ModelsBloc<T extends IModel> extends Bloc<ModelsEvent<T>, ModelsState<T>>
     loggy.debug("_onUpdateModel Returning models update $T");
     var values = event.values;
 
-    await doUpdateModel(
-        _modelsRepository, attachmentDao, event.id, values, loggy, event.deleteAttachment);
+    await doUpdateModel(_modelsRepository, attachmentDao, event.id, values,
+        loggy, event.deleteAttachment);
   }
 
   void _onDeleteModel(
@@ -236,9 +234,9 @@ class ModelsBloc<T extends IModel> extends Bloc<ModelsEvent<T>, ModelsState<T>>
   }
 
   @override
-  Future<void> close() {
-    _modelsSubscription?.cancel();
-    if (_parentBlocSubscription != null) _parentBlocSubscription?.cancel();
-    return super.close();
+  Future<void> close() async {
+    await _modelsSubscription?.cancel();
+    await _parentBlocSubscription?.cancel();
+    await super.close();
   }
 }
