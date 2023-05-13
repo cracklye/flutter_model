@@ -1,4 +1,3 @@
-
 import 'dart:async';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -26,8 +25,6 @@ class ModelsDetailBloc<T extends IModel>
     on<ModelsDetailUpdateDetail<T>>(_onModelsDetailUpdateDetail);
     on<ModelDetailRaiseError<T>>(_onModelDetailRaiseError);
   }
-
-
 
   /// Handles an error message, this is mainly used within internal methods
   /// and sets the state to [ModelsDetailError]
@@ -67,10 +64,12 @@ class ModelsDetailBloc<T extends IModel>
     _modelsSubscription =
         (await modelsRepository.listById(event.id)).listen((model) {
       loggy.warning("_doLoadModels, called the models subscription so loading");
-      if (model == null) {
-        add(const ModelDetailRaiseError("no model returned"));
-      } else {
-        add(ModelsDetailUpdateDetail<T>(model));
+      if (!isClosed) {
+        if (model == null) {
+          add(const ModelDetailRaiseError("no model returned"));
+        } else {
+          add(ModelsDetailUpdateDetail<T>(model));
+        }
       }
     });
   }
@@ -90,9 +89,9 @@ class ModelsDetailBloc<T extends IModel>
 
   /// Closes the models subscription if it is not null.
   @override
-  Future<void> close() {
-    _modelsSubscription?.cancel();
+  Future<void> close() async {
+    await _modelsSubscription?.cancel();
 
-    return super.close();
+    await super.close();
   }
 }

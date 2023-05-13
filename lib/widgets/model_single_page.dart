@@ -9,10 +9,10 @@ class ModelSinglePage<T extends IModel> extends StatelessWidget
     with ModelListBlocAddin<T> {
   final double splitMinWidthEdit = 400;
   final double splitListWidth = 400;
+  
+  final bool enableSplit ;
 
-  final bool isFullWidth = true;
-
-  ModelSinglePage({Key? key}) : super(key: key);
+  ModelSinglePage({Key? key, this.enableSplit = true}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -48,11 +48,13 @@ class ModelSinglePage<T extends IModel> extends StatelessWidget
   @override
   Widget buildListBlocContent(BuildContext context, ModelsListState<T> state) {
     return LayoutBuilder(builder: (context, size) {
-      bool split = (splitMinWidthEdit == 0 ||
+      bool fullScreen = (splitMinWidthEdit == 0 ||
           size.maxWidth < (splitMinWidthEdit + splitListWidth));
-      return buildListLayout(context, state, split);
+      return buildListLayout(context, state, (!enableSplit) || fullScreen);
     });
   }
+
+
 
   Widget buildListLayout(
       BuildContext context, ModelsListState<T> state, bool fullScreen) {
