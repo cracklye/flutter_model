@@ -9,10 +9,10 @@ class ModelSinglePage<T extends IModel> extends StatelessWidget
     with ModelListBlocAddin<T> {
   final double splitMinWidthEdit = 400;
   final double splitListWidth = 400;
-  
+  final dynamic parentId; 
   final bool enableSplit ;
 
-  ModelSinglePage({Key? key, this.enableSplit = true}) : super(key: key);
+  ModelSinglePage({Key? key, this.enableSplit = true, this.parentId}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -31,19 +31,9 @@ class ModelSinglePage<T extends IModel> extends StatelessWidget
             RepositoryProvider.of<IModelAPI<T>>(context),
             attachDao,
             ModelEditViewStateNotLoaded<T>())),
-        child: buildListBlocProvider(context, null));
+        child: buildListBlocProvider(context, parentId));
   }
 
-  // if (state is ModelsListLoaded<T>) {
-  //     return buildListBlocLoaded(context, state);
-  //   } else if (state is ModelsListLoading<T>) {
-  //     return buildListBlocLoading(context, state);
-  //   }
-  //   if (state is ModelsListNotLoaded<T>) {
-  //     return buildListBlocNotLoaded(context, state);
-  //   }
-  //   return Text("Unknown state: $state");
-  // }
 
   @override
   Widget buildListBlocContent(BuildContext context, ModelsListState<T> state) {
