@@ -12,6 +12,8 @@ class ModelSinglePage<T extends IModel> extends StatelessWidget
   final dynamic parentId; 
   final bool enableSplit ;
 
+
+
   ModelSinglePage({Key? key, this.enableSplit = true, this.parentId}) : super(key: key);
 
   @override
