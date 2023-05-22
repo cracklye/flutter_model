@@ -9,7 +9,7 @@ abstract class ModelScreenList<T extends IModel> extends ModelSinglePage<T>
   final Widget? drawer;
   final String? title;
   final String? parentId;
-  ModelScreenList({super.key, this.drawer, this.title, this.parentId});
+  ModelScreenList({super.key, super.enableSplit = true, this.drawer, this.title, this.parentId});
 
   @override
   Widget buildListLayout(
