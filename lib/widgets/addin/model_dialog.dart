@@ -180,8 +180,8 @@ abstract class ModelDialog<T extends IModel> {
                       }, builder: (context, state) {
                         return ListBody(
                           children: <Widget>[
-                            buildForm(formKey2, context, model, (values) {
-                              if (model != null) {
+                            buildForm(formKey, context, model, (values) {
+                              if (model != null && model.id!=null) {
                                 BlocProvider.of<ModelEditBloc<T>>(context).add(
                                   ModelEditEventSave<T>(
                                     values,
@@ -190,8 +190,9 @@ abstract class ModelDialog<T extends IModel> {
                                 );
                               } else {
                                 print("saving new doc");
+                                
                                 BlocProvider.of<ModelEditBloc<T>>(context).add(
-                                  ModelEditEventSave<T>(values),
+                                  ModelEditEventSave<T>(values, parentId: parentId),
                                 );
                               }
                             }, parentId),
@@ -218,8 +219,8 @@ abstract class ModelDialog<T extends IModel> {
                   TextButton(
                     child: const Text("Save"),
                     onPressed: () {
-                      if (formKey2.currentState!.validate()) {
-                        formKey2.currentState!.save();
+                      if (formKey.currentState!.validate()) {
+                        formKey.currentState!.save();
                       }
                     },
                   ),
@@ -236,10 +237,15 @@ abstract class ModelDialog<T extends IModel> {
 
   ModelEditBloc<T> createEditBloc(context, dynamic id, dynamic parentId) {
     return ModelEditBloc<T>(
+      RepositoryProvider.of<IModelAPI<T>>(context),
+        RepositoryProvider.of<AttachmentDAO>(context),
         // modelsBloc: BlocProvider.of<ModelsBloc<T>>(context)
-        RepositoryProvider.of<IModelAPI<T>>(context),
-        id,
-        parentId);
+        
+        
+
+        // id,
+        // parentId
+        )..add(ModelEditEventCreateNew(parentId));
   }
 
   _addModelBuilder(
