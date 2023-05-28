@@ -26,6 +26,18 @@ export 'bloc/models_list_bloc/models_list_event.dart';
 export 'bloc/models_list_bloc/models_list_state.dart';
 export 'bloc/handle_attachment.dart';
 
+
+export 'bloc/preferences/app_preference.dart';
+export 'bloc/preferences/app_preference_store.dart';
+export 'bloc/preferences/app_preference_storedpref.dart';
+export 'bloc/preferences/preferences_bloc.dart';
+
+
+
+
+
+
+
 export 'persist/file_cache_provider.dart';
 export 'persist/file_cache_writer.dart';
 export 'persist/model_dao_memory.dart';
