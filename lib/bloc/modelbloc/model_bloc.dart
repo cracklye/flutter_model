@@ -218,9 +218,10 @@ class ModelsBloc<T extends IModel> extends Bloc<ModelsEvent<T>, ModelsState<T>>
         _modelsSubscription =
             (await _modelsRepository.list(parentId: parentId)).listen(
           (models) {
-            loggy.warning(
+
+            loggy.debug(
                 "_doLoadModels, called the modesl subscription ${models.length}");
-            loggy.warning(
+            loggy.debug(
                 "_doLoadModels, called the modesl subscription $parentId");
 
             //We want to load

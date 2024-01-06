@@ -66,6 +66,8 @@ class ModelRouter with UiLoggy {
     return '/$model/list';
   }
 
+
+
   static routeEditByTypeName(String typeName, dynamic id, [parentId]) {
     logDebug("ModelRouter.Route Edit");
 
@@ -151,7 +153,7 @@ class ModelRouter with UiLoggy {
   /// [detail] the handler to execute when the detail URI is triggered
   /// [edit] the edit handler to execute when the edit URI is triggered
   /// [add] the add handler to execute when the add URI is triggered
-  static routeSetupCRUDChild<T extends IModel, IModelChild>(FluroRouter router,
+  static routeSetupCRUDChild<T extends IModel, IModelParent>(FluroRouter router,
       {Handler? list, Handler? detail, Handler? edit, Handler? add}) {
         logDebug("routeSetupCRUDChild Started $T ");
     if (list != null) {
