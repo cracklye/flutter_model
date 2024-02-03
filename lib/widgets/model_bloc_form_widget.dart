@@ -44,6 +44,7 @@ abstract class ModelForm<T extends IModel> extends StatefulWidget {
   //final registerGetValues;
   final void Function(Map<String, dynamic>) onSave;
   final void Function()? onChanged;
+  final Map<String, dynamic>? initialProperties;
 
   const ModelForm(
       {Key? key,
@@ -52,7 +53,8 @@ abstract class ModelForm<T extends IModel> extends StatefulWidget {
       required this.formKey,
       required this.onSave,
       this.onChanged,
-      this.parentId})
+      this.parentId, 
+      this.initialProperties})
       : super(key: key);
 }
 
