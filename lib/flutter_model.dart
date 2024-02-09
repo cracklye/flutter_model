@@ -20,6 +20,7 @@ export 'bloc/model_detail_bloc/models_detail_event.dart';
 export 'bloc/model_detail_bloc/models_detail_state.dart';
 
 export 'extensions/attachment_info_extension.dart';
+export 'extensions/attachment_info.dart';
 
 export 'bloc/models_list_bloc/models_list_bloc.dart';
 export 'bloc/models_list_bloc/models_list_event.dart';
