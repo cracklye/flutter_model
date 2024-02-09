@@ -1,4 +1,3 @@
-
 import 'package:example/routes/app_navigator.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_model/flutter_model.dart';
@@ -274,7 +273,7 @@ class _MyHomePageState extends State<TestViewScreen> with UiLoggy {
   }
 }
 
-class Sample extends IModel with IHierarchy {
+class Sample extends IModel implements IHierarchy {
   @override
   final dynamic id;
   @override

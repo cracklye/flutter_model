@@ -6,8 +6,8 @@ part 'model_sample.g.dart';
 
 @JsonSerializable()
 @freezed
-class Sample with _$Sample, IModel, IHierarchy {
-  const Sample._();
+class Sample extends IModel with _$Sample implements IHierarchy {
+   Sample._();
 
   factory Sample({
     dynamic id,

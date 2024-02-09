@@ -6,8 +6,8 @@ part 'model_notes.g.dart';
 
 @JsonSerializable()
 @freezed
-class Notes with _$Notes, IModel, IHierarchy {
-  const Notes._();
+class Notes extends IModel with _$Notes implements IHierarchy {
+   Notes._();
 
   factory Notes({
     dynamic id,
