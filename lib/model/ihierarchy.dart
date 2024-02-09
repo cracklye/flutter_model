@@ -1,7 +1,7 @@
 
 import 'package:flutter_model/flutter_model.dart';
 
-abstract class IHierarchy{
+abstract class IHierarchy {
 
   dynamic get hierarchyParentId; 
 }
