@@ -1,20 +1,18 @@
+import 'package:extended_list_view/extended_list_view.dart';
 import 'package:flutter/material.dart' as m;
 import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_model/flutter_model.dart';
-import 'package:loggy/loggy.dart';
-import 'package:woue_components/woue_components.dart';
 
 class ModelSinglePage<T extends IModel> extends StatelessWidget
     with ModelListBlocAddin<T> {
   final double splitMinWidthEdit = 400;
   final double splitListWidth = 400;
-  final dynamic parentId; 
-  final bool enableSplit ;
+  final dynamic parentId;
+  final bool enableSplit;
 
-
-
-  ModelSinglePage({Key? key, this.enableSplit = true, this.parentId}) : super(key: key);
+  ModelSinglePage({Key? key, this.enableSplit = true, this.parentId})
+      : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -36,7 +34,6 @@ class ModelSinglePage<T extends IModel> extends StatelessWidget
         child: buildListBlocProvider(context, parentId));
   }
 
-
   @override
   Widget buildListBlocContent(BuildContext context, ModelsListState<T> state) {
     return LayoutBuilder(builder: (context, size) {
@@ -46,12 +43,8 @@ class ModelSinglePage<T extends IModel> extends StatelessWidget
     });
   }
 
-
-
   Widget buildListLayout(
       BuildContext context, ModelsListState<T> state, bool fullScreen) {
-
-        
     if (fullScreen) {
       return buildList(context, state, true);
     }
@@ -85,7 +78,7 @@ class ModelSinglePage<T extends IModel> extends StatelessWidget
   }
 
   Widget buildList(
-      BuildContext context, ModelsListState<T> state,  bool isFullScreen) {
+      BuildContext context, ModelsListState<T> state, bool isFullScreen) {
     bool isLoading = true;
     List<T> items = [];
     if (state is ModelsListLoaded<T>) {

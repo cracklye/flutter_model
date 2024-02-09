@@ -3,7 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_model/flutter_model.dart';
 import 'package:loggy/loggy.dart';
 
-abstract class ModelEditBlocAddin<T extends IModel> {
+mixin class ModelEditBlocAddin<T extends IModel> {
   /// This will build the provider required for editing.
   /// Providing an ID will select the document, providing null as the ID will try and create a new one.
   /// onSaved will be called when the model has been saved.

@@ -1,8 +1,8 @@
 import 'package:flutter/widgets.dart';
 import 'package:flutter_model/flutter_model.dart';
 import 'package:flutter_model/widgets/addin/model_bloc_addin_detail.dart';
-import 'package:woue_components/woue_components.dart';
-import 'package:flutter/material.dart' as m;
+
+import 'package:flutter/material.dart';
 
 class ModelScreenDetail<T extends IModel> extends StatelessWidget
     with ModelDetailBlocAddin<T> {
@@ -23,8 +23,8 @@ class ModelScreenDetail<T extends IModel> extends StatelessWidget
   @override
   Widget buildDetailBlocContent(
       BuildContext context, ModelsDetailState<T> state) {
-    return m.Scaffold(
-      appBar: m.AppBar(
+    return Scaffold(
+      appBar: AppBar(
         title: isDetailLoaded(state)
             ? Text(
                 (state as ModelsDetailLoaded<T>).model.displayLabel,

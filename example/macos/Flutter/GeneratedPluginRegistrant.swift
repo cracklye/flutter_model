@@ -7,8 +7,8 @@ import Foundation
 
 import cbl_flutter_ce
 import desktop_drop
-import path_provider_macos
-import shared_preferences_macos
+import path_provider_foundation
+import shared_preferences_foundation
 
 func RegisterGeneratedPlugins(registry: FlutterPluginRegistry) {
   CblFlutterCe.register(with: registry.registrar(forPlugin: "CblFlutterCe"))

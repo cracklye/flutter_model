@@ -4,7 +4,7 @@ import 'package:flutter_model/flutter_model.dart';
 
 //import 'package:flutter/material.dart' as m;
 
-abstract class ModelDetailBlocAddin<T extends IModel> {
+mixin class ModelDetailBlocAddin<T extends IModel> {
   Widget buildDetailBlocProvider(BuildContext context, dynamic id,
       Function(BuildContext context)? onDeleted) {
     return BlocProvider<ModelsDetailBloc<T>>(

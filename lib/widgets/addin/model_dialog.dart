@@ -1,8 +1,8 @@
-import 'package:flutter/material.dart' as m;
+import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_model/flutter_model.dart';
-import 'package:woue_components/woue_components.dart';
+
 
 enum PopupType { bottom, dialog }
 
@@ -46,7 +46,7 @@ abstract class ModelDialog<T extends IModel> {
         context: context,
         builder: (BuildContext context) {
           // return object of type Dialog
-          return m.AlertDialog(
+          return AlertDialog(
             title: getTitleDisplay(context, model),
             // content: buildModelDisplay(context, model),
 
@@ -91,7 +91,7 @@ abstract class ModelDialog<T extends IModel> {
         },
       );
     } else {
-      m.showModalBottomSheet(
+      showModalBottomSheet(
           context: context,
           builder: _showModelBuilder(context, formKey, model));
     }
@@ -104,11 +104,11 @@ abstract class ModelDialog<T extends IModel> {
         padding:
             EdgeInsets.only(bottom: MediaQuery.of(context).viewInsets.bottom),
         child: Container(
-          color: m.Colors.transparent,
+          color: Colors.transparent,
           child: Container(
             height: 230,
             decoration: const BoxDecoration(
-                color: m.Colors.white,
+                color: Colors.white,
                 borderRadius: BorderRadius.only(
                     topLeft: Radius.circular(10.0),
                     topRight: Radius.circular(10.0))),
@@ -121,14 +121,14 @@ abstract class ModelDialog<T extends IModel> {
                       buildModelDisplay(context, model),
                       Padding(
                         padding: const EdgeInsets.only(left: 5, top: 15),
-                        child: m.CircleAvatar(
-                          backgroundColor: m.Colors.indigoAccent,
+                        child: CircleAvatar(
+                          backgroundColor: Colors.indigoAccent,
                           radius: 18,
                           child: IconButton(
                             icon: const Icon(
-                              m.Icons.save,
+                              Icons.save,
                               size: 22,
-                              color: m.Colors.white,
+                              color: Colors.white,
                             ),
                             onPressed: () {
                               showAdd(context, formKey, model);
@@ -160,7 +160,7 @@ abstract class ModelDialog<T extends IModel> {
                 //print("modelDialog about to create the edit bloc provider");
                 return createEditBloc(context, model?.id, parentId);
               },
-              child: m.AlertDialog(
+              child: AlertDialog(
                 title: const Text("Edit"),
                 // content: Text("Hi"),
                 content: SizedBox(
@@ -229,7 +229,7 @@ abstract class ModelDialog<T extends IModel> {
         },
       );
     } else {
-      m.showModalBottomSheet(
+      showModalBottomSheet(
           context: context,
           builder: _addModelBuilder(context, formKey2, model, parentId));
     }
@@ -255,11 +255,11 @@ abstract class ModelDialog<T extends IModel> {
         padding:
             EdgeInsets.only(bottom: MediaQuery.of(context).viewInsets.bottom),
         child: Container(
-          color: m.Colors.transparent,
+          color: Colors.transparent,
           child: Container(
             height: 230,
             decoration: const BoxDecoration(
-                color: m.Colors.white,
+                color: Colors.white,
                 borderRadius: BorderRadius.only(
                     topLeft: Radius.circular(10.0),
                     topRight: Radius.circular(10.0))),
@@ -289,14 +289,14 @@ abstract class ModelDialog<T extends IModel> {
                         }, parentId)),
                         Padding(
                           padding: const EdgeInsets.only(left: 5, top: 15),
-                          child: m.CircleAvatar(
-                            backgroundColor: m.Colors.indigoAccent,
+                          child: CircleAvatar(
+                            backgroundColor: Colors.indigoAccent,
                             radius: 18,
                             child: IconButton(
                               icon: const Icon(
-                                m.Icons.save,
+                                Icons.save,
                                 size: 22,
-                                color: m.Colors.white,
+                                color: Colors.white,
                               ),
                               onPressed: () {
                                 if (formKey2.currentState!.validate()) {

@@ -8,7 +8,8 @@ import 'dart:typed_data';
 import 'package:mime/mime.dart';
 
 
-class HandleAttachment<T extends IModel> {
+//class 
+mixin HandleAttachment<T extends IModel> {
   Future<T> doAddModel(IModelAPI<T> dao, AttachmentDAO? attachmentDao,
       Map<String, dynamic> values, Loggy loggy, bool deleteAttachment) async {
     loggy.debug("HandleAttachment._onAddModel Started the onAddModel");

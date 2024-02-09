@@ -4,7 +4,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_model/flutter_model.dart';
 
 
-class ModelListBlocAddin<T extends IModel> {
+mixin ModelListBlocAddin<T extends IModel> {
   Widget buildListBlocProvider(BuildContext context, dynamic parentId) {
     return BlocProvider<ModelsListBloc<T>>(
         create: ((context) => ModelsListBloc<T>(

@@ -12,7 +12,7 @@ abstract class ModelBlocWidget<T extends IModel> extends StatelessWidget {
     return BlocBuilder<ModelsBloc<T>, ModelsState<T>>(
         builder: (context, state) {
       if (state is ModelsLoaded<T>) {
-        return buildStateLoaded(context, state);
+        return buildStateLoaded(context, state as ModelsLoaded<T>);
       } else if (state is ModelsLoading<T>) {
         return buildStateLoading(context, state);
       } else {

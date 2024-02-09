@@ -1,4 +1,3 @@
-
 //part 'model_state.freezed.dart';
 
 import 'package:flutter_model/flutter_model.dart';
@@ -12,14 +11,15 @@ class ModelsLoading<T extends IModel> extends ModelsState<T> {
 class HierarchyEntry<T> {
   final T item;
   final List<HierarchyEntry<T>> children = [];
-  HierarchyEntry(this.item, 
-  //[this.children = const [] as List<HierarchyEntry<T>>]
+  HierarchyEntry(
+    this.item,
+    //[this.children = const [] as List<HierarchyEntry<T>>]
   );
 }
 
 enum ModelStateMode { view, edit }
 
-class ModelsLoaded<T extends IModel> with ModelsState<T> {
+class ModelsLoaded<T extends IModel> extends ModelsState<T> {
   //@Default(ModelStateMode.view)
   final ModelStateMode mode;
   final List<T> models;

@@ -25,10 +25,10 @@ class ModelsBloc<T extends IModel> extends Bloc<ModelsEvent<T>, ModelsState<T>>
         loggy.debug("_parentBlocSubscription.listen State ");
         if (stateB is ModelsLoaded) {
           loggy.debug("_parentBlocSubscription.listen is is a models loaded");
-          if (stateB.selected != null) {
+          if ((stateB as ModelsLoaded).selected != null) {
             loggy.debug(
-                "_parentBlocSubscription.listen Selected is not null loading id: ${stateB.selected!.id}");
-            add(LoadModels(parentId: stateB.selected!.id));
+                "_parentBlocSubscription.listen Selected is not null loading id: ${(stateB as ModelsLoaded).selected!.id}");
+            add(LoadModels(parentId: (stateB as ModelsLoaded).selected!.id));
             return;
           }
         }
@@ -218,7 +218,6 @@ class ModelsBloc<T extends IModel> extends Bloc<ModelsEvent<T>, ModelsState<T>>
         _modelsSubscription =
             (await _modelsRepository.list(parentId: parentId)).listen(
           (models) {
-
             loggy.debug(
                 "_doLoadModels, called the modesl subscription ${models.length}");
             loggy.debug(
