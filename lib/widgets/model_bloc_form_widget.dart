@@ -1,4 +1,3 @@
-
 import 'package:flutter/widgets.dart';
 import 'package:flutter_model/flutter_model.dart';
 
@@ -45,7 +44,7 @@ abstract class ModelForm<T extends IModel> extends StatefulWidget {
   final void Function(Map<String, dynamic>) onSave;
   final void Function()? onChanged;
   final Map<String, dynamic>? initialProperties;
-
+  final bool includeScrollView;
   const ModelForm(
       {Key? key,
       required this.model,
@@ -53,7 +52,8 @@ abstract class ModelForm<T extends IModel> extends StatefulWidget {
       required this.formKey,
       required this.onSave,
       this.onChanged,
-      this.parentId, 
+      this.parentId,
+      this.includeScrollView = true,
       this.initialProperties})
       : super(key: key);
 }
@@ -77,11 +77,25 @@ abstract class ModelFormState<T extends IModel> extends State<ModelForm<T>> {
           widget.onChanged!();
         }
       },
-      child: SingleChildScrollView(
+      child: _buildFormFields(),
+    );
+  }
+
+  Widget _buildFormFields() {
+    if (widget.includeScrollView) {
+      return SingleChildScrollView(
           controller: _scrollController,
           child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
-              children: buildFormFields(context))),
-    );
+              children: buildFormFields(context)));
+    } else {
+      var rtn = buildFormFields(context);
+      if (rtn.length == 1) {
+        return rtn[0];
+      } else {
+        return Column(
+            crossAxisAlignment: CrossAxisAlignment.start, children: rtn);
+      }
+    }
   }
 }
