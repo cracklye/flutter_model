@@ -21,7 +21,7 @@ abstract class ModelDialog<T extends IModel> {
       this.enableEdit = true});
 
   Widget buildForm(
-      GlobalKey formKey, BuildContext context, T? model, onSave, parentId);
+      GlobalKey<FormState> formKey, BuildContext context, T? model, onSave, parentId);
   Widget buildModelDisplay(BuildContext context, T model);
 
   double getDialogHeight() {
@@ -38,7 +38,7 @@ abstract class ModelDialog<T extends IModel> {
 
   // Shows the detail form..
   void showDetail(BuildContext context, T model, GlobalKey<FormState> formKey,
-      Function(BuildContext, GlobalKey, T) onEdit) {
+      Function(BuildContext, GlobalKey<FormState>, T) onEdit) {
     if (popupType == PopupType.dialog) {
       // showDialog(context: context, builder: _showModelBuilder(context, model));
 
