@@ -1,8 +1,6 @@
-import 'package:flutter/widgets.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_model/flutter_model.dart';
 import 'package:flutter_model/widgets/addin/model_bloc_addin_detail.dart';
-
-import 'package:flutter/material.dart';
 
 class ModelScreenDetail<T extends IModel> extends StatelessWidget
     with ModelDetailBlocAddin<T> {
@@ -12,8 +10,8 @@ class ModelScreenDetail<T extends IModel> extends StatelessWidget
   ModelScreenDetail({
     required this.id,
     this.onDeleted,
-    Key? key,
-  }) : super(key: key);
+    super.key,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -24,32 +22,37 @@ class ModelScreenDetail<T extends IModel> extends StatelessWidget
   Widget buildDetailBlocContent(
       BuildContext context, ModelsDetailState<T> state) {
     return Scaffold(
+      body: super.buildDetailBlocContent(context, state),
       appBar: AppBar(
-        title: isDetailLoaded(state)
-            ? Text(
-                (state as ModelsDetailLoaded<T>).model.displayLabel,
-                overflow: TextOverflow.ellipsis,
-              )
-            : const Text("View"),
-        actions: (state is ModelsDetailLoaded)
-            ? [
-                ElevatedButton(
-                  child: const Text("Edit"),
-                  onPressed: () => Navigator.of(context).pushNamed(
-                      ModelRouter.routeEdit<T>(
-                          (state as ModelsDetailLoaded<T>).model.id)),
-                ),
-                ElevatedButton(
-                  child: const Text("Delete"),
-                  onPressed: () =>
-                      doDelete(context, (state as ModelsDetailLoaded<T>).model),
-                ),
-              ]
-            : [],
+        centerTitle: true,
+        title: Text((state is ModelsDetailLoaded<T>)
+            ? state.model.displayLabel
+            : "Loading"),
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.edit),
+            tooltip: 'Edit',
+            onPressed: () {
+              Navigator.of(context).pushNamed(ModelRouter.routeEdit<T>(
+                  (state as ModelsDetailLoaded<T>).model.id));
+            },
+          ),
+          IconButton(
+            icon: const Icon(Icons.deblur),
+            tooltip: 'Delete',
+            onPressed: () {
+              doDelete(context, (state as ModelsDetailLoaded<T>).model);
+            },
+          ),
+          IconButton(
+            icon: const Icon(Icons.close),
+            tooltip: 'Close',
+            onPressed: () {
+              Navigator.of(context).pop();
+            },
+          ),
+        ],
       ),
-      body: Padding(
-          padding: const EdgeInsets.all(10),
-          child: super.buildDetailBlocContent(context, state)),
     );
   }
 }

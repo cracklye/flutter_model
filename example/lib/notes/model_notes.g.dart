@@ -10,7 +10,7 @@ Notes _$NotesFromJson(Map<String, dynamic> json) => Notes(
       id: json['id'],
       name: json['name'] as String,
       description: json['description'] as String,
-      colour: json['colour'] as int?,
+      colour: (json['colour'] as num?)?.toInt(),
       createdDate: json['createdDate'] == null
           ? null
           : DateTime.parse(json['createdDate'] as String),

@@ -22,6 +22,8 @@ class ModelsListBloc<T extends IModel>
     on<ModelsListChangeSearchText<T>>(_onModelsListChangeSearchText);
     on<ModelsListChangeOrderBy<T>>(_onModelsListChangeOrderBy);
     on<ModelsListChangeFilter<T>>(_onModelsListChangeFilter);
+
+    
   }
 
   void _onModelsListChangeSearchText(ModelsListChangeSearchText<T> event,

@@ -1,0 +1,10 @@
+{
+    "editor.codeActionsOnSave": {
+        "source.fixAll": "explicit",
+        "source.organizeImports": "explicit"
+    },
+    "files.exclude": {
+        "notd_fluentapp/**/*.*": true,
+    },
+    "cmake.ignoreCMakeListsMissing": true
+}

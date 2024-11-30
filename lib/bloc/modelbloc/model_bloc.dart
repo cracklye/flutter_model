@@ -25,10 +25,10 @@ class ModelsBloc<T extends IModel> extends Bloc<ModelsEvent<T>, ModelsState<T>>
         loggy.debug("_parentBlocSubscription.listen State ");
         if (stateB is ModelsLoaded) {
           loggy.debug("_parentBlocSubscription.listen is is a models loaded");
-          if ((stateB as ModelsLoaded).selected != null) {
+          if ((stateB).selected != null) {
             loggy.debug(
-                "_parentBlocSubscription.listen Selected is not null loading id: ${(stateB as ModelsLoaded).selected!.id}");
-            add(LoadModels(parentId: (stateB as ModelsLoaded).selected!.id));
+                "_parentBlocSubscription.listen Selected is not null loading id: ${(stateB).selected!.id}");
+            add(LoadModels(parentId: (stateB).selected!.id));
             return;
           }
         }
@@ -36,11 +36,13 @@ class ModelsBloc<T extends IModel> extends Bloc<ModelsEvent<T>, ModelsState<T>>
       });
     }
 
+
+
     on<LoadModels<T>>(_onLoadModels);
-    on<AddModel<T>>(_onAddModel);
-    on<UpdateModel<T>>(_onUpdateModel);
     on<DeleteModel<T>>(_onDeleteModel);
     on<ModelsUpdated<T>>(_onModelsUpdated);
+    on<AddModel<T>>(_onAddModel);
+    on<UpdateModel<T>>(_onUpdateModel);
     on<CreateNewModel<T>>(_onCreateNewModel);
     on<UpdateSelected<T>>(_onUpdateSelected);
     //on<UpdateModelValue<T>>(_onUpdateModelValue);
@@ -48,6 +50,15 @@ class ModelsBloc<T extends IModel> extends Bloc<ModelsEvent<T>, ModelsState<T>>
     on<SetEditMode<T>>(_onSetEditMode);
     on<ModelSelect<T>>(_onModelSelect);
     on<ModelsDeleteAttachment<T>>(_onModelsDeleteAttachment);
+
+
+
+
+
+
+
+
+
   }
 
   void _onModelsDeleteAttachment(

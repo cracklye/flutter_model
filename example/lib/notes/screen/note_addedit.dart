@@ -12,16 +12,30 @@ class NotesAddEditScreen extends ModelScreenEdit<Notes> {
       : super(onSaved: (context) => Navigator.of(context).pop());
   @override
   Widget buildForm(
-    BuildContext context,
-    ModelEditStateEdit<Notes> state,
-    Notes? model,
-    GlobalKey<FormState> formKey,
-    void Function(Map<String, dynamic>) onSave,
-  ) {
+      BuildContext context,
+      ModelEditStateEdit<Notes> state,
+      Notes? model,
+      GlobalKey<FormState> formKey,
+      void Function(Map<String, dynamic> onSave) onSave,
+      Map<String, dynamic>? initalProperties) {
     return NotesForm(
       formKey: formKey,
       onSave: onSave,
       model: model,
     );
   }
+  // @override
+  // Widget buildForm(
+  //   BuildContext context,
+  //   ModelEditStateEdit<Notes> state,
+  //   Notes? model,
+  //   GlobalKey<FormState> formKey,
+  //   void Function(Map<String, dynamic>) onSave,
+  // ) {
+  //   return NotesForm(
+  //     formKey: formKey,
+  //     onSave: onSave,
+  //     model: model,
+  //   );
+  // }
 }
