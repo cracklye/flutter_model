@@ -39,3 +39,22 @@ contribute to the package, how to file issues, what response they can expect
 from the package authors, and more.
 
 
+
+ModelsListState  =ModelsState
+
+
+
+
+## ModelSinglePage<Model>
+Provides a split screen (if the width is above the width provided)  This does not include the 
+Override
+- buildDetail : To override all the buildDetail functions
+- buildDetailDisplay
+- buildDetailNotSelected
+- buildDetailDisplayForModel * 
+- buildForm *
+- buildList
+- getOrderBy
+- getListDataProviders
+
+

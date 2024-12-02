@@ -1,7 +1,6 @@
 import 'package:example/dailyaction/model_dailyaction.dart';
 import 'package:flutter/material.dart';
-
-
+import 'package:flutter_model/flutter_model.dart';
 
 class DailyActionDisplay extends StatelessWidget {
   const DailyActionDisplay({super.key, required this.model});
@@ -19,7 +18,7 @@ class DailyActionDisplay extends StatelessWidget {
             buildContent: Text(model.createdDate.toString())),
         LabelWidget(
             buildLabel: const Text("Description"),
-            buildContent: Text(model.description )),
+            buildContent: Text(model.description)),
       ],
     );
   }

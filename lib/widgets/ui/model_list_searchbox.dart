@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_model/flutter_model.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
@@ -29,7 +28,7 @@ class _ModelListSearchBoxState<T extends IModel>
   @override
   Widget build(BuildContext context) {
     if (widget.enableSearch) {
-      return BlocBuilder<ModelsListBloc<T>, ModelsListState<T>>(
+      return BlocBuilder<ModelsBloc<T>, ModelsState<T>>(
           builder: (context, shotState) {
         return Row(
           children: [
@@ -39,13 +38,13 @@ class _ModelListSearchBoxState<T extends IModel>
                 child: TextFormField(
               controller: _searchController,
               onChanged: (value) {
-                BlocProvider.of<ModelsListBloc<T>>(context)
-                    .add(ModelsListChangeSearchText<T>(value));
+                BlocProvider.of<ModelsBloc<T>>(context)
+                    .add(ModelsChangeSearchText<T>(value));
               },
             )),
             IconButton(
-                onPressed: (() => BlocProvider.of<ModelsListBloc<T>>(context)
-                    .add(ModelsListChangeSearchText<T>(""))),
+                onPressed: (() => BlocProvider.of<ModelsBloc<T>>(context)
+                    .add(ModelsChangeSearchText<T>(""))),
                 icon: const Icon(FontAwesomeIcons.xmark)),
           ],
         );

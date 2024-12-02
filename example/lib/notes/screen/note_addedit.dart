@@ -5,6 +5,7 @@
 import 'package:example/notes/model_notes.dart';
 import 'package:example/notes/widget/note_form.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_model/bloc/modeledit/model_edit_state.dart';
 import 'package:flutter_model/flutter_model.dart';
 
 class NotesAddEditScreen extends ModelScreenEdit<Notes> {
@@ -13,7 +14,7 @@ class NotesAddEditScreen extends ModelScreenEdit<Notes> {
   @override
   Widget buildForm(
       BuildContext context,
-      ModelEditStateEdit<Notes> state,
+      ModelEditViewStateLoaded<Notes> state,
       Notes? model,
       GlobalKey<FormState> formKey,
       void Function(Map<String, dynamic> onSave) onSave,

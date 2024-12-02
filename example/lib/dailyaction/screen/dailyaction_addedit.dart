@@ -5,6 +5,7 @@
 import 'package:example/dailyaction/model_dailyaction.dart';
 import 'package:example/dailyaction/widget/dailyaction_form.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_model/bloc/modeledit/model_edit_state.dart';
 import 'package:flutter_model/flutter_model.dart';
 
 class DailyActionAddEditScreen extends ModelScreenEdit<DailyAction> {
@@ -13,7 +14,7 @@ class DailyActionAddEditScreen extends ModelScreenEdit<DailyAction> {
   @override
   Widget buildForm(
       BuildContext context,
-      ModelEditStateEdit<DailyAction> state,
+      ModelEditViewStateLoaded<DailyAction> state,
       DailyAction? model,
       GlobalKey<FormState> formKey,
       void Function(Map<String, dynamic> onSave) onSave,

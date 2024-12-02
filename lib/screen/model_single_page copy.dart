@@ -2,6 +2,9 @@ import 'package:extended_list_view/extended_list_view.dart';
 import 'package:flutter/material.dart' as m;
 import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_model/bloc/modeledit/model_edit_events.dart';
+import 'package:flutter_model/bloc/modeledit/model_edit_state.dart';
+import 'package:flutter_model/bloc/modeledit/model_edit_view2.dart';
 import 'package:flutter_model/flutter_model.dart';
 import 'package:loggy/loggy.dart';
 
@@ -18,6 +21,12 @@ class ModelSinglePage<T extends IModel> extends StatelessWidget
 
   @override
   Widget build(BuildContext context) {
+
+
+
+
+
+    
     return buildBlocProviderEdit(context);
   }
 
@@ -38,7 +47,7 @@ class ModelSinglePage<T extends IModel> extends StatelessWidget
   }
 
   @override
-  Widget buildListBlocContent(BuildContext context, ModelsListState<T> state) {
+  Widget buildListBlocContent(BuildContext context, ModelsState<T> state) {
     return LayoutBuilder(builder: (context, size) {
       bool fullScreen = (splitMinWidthEdit == 0 ||
           size.maxWidth < (splitMinWidthEdit + splitListWidth));
@@ -47,7 +56,7 @@ class ModelSinglePage<T extends IModel> extends StatelessWidget
   }
 
   Widget buildListLayout(
-      BuildContext context, ModelsListState<T> state, bool fullScreen) {
+      BuildContext context, ModelsState<T> state, bool fullScreen) {
     if (fullScreen) {
       return buildList(context, state, true);
     }
@@ -85,10 +94,10 @@ class ModelSinglePage<T extends IModel> extends StatelessWidget
   }
 
   Widget buildList(
-      BuildContext context, ModelsListState<T> state, bool isFullScreen) {
+      BuildContext context, ModelsState<T> state, bool isFullScreen) {
     bool isLoading = true;
     List<T> items = [];
-    if (state is ModelsListLoaded<T>) {
+    if (state is ModelsLoaded<T>) {
       items = state.models;
       isLoading = false;
     }
@@ -104,27 +113,27 @@ class ModelSinglePage<T extends IModel> extends StatelessWidget
 
         orderBy: getOrderBy(),
         selectedOrderBy: state.orderBy,
-        onOrderByChange: (p) => BlocProvider.of<ModelsListBloc<T>>(context)
-            .add(ModelsListChangeOrderBy<T>(p?.value)),
+        onOrderByChange: (p) => BlocProvider.of<ModelsBloc<T>>(context)
+            .add(ModelsChangeOrderBy<T>(p?.value)),
 
         onTap: isFullScreen
             ? ((model) => Navigator.of(context)
                 .pushNamed(ModelRouter.routeDetail<T>(model.id)))
             : ((model) => BlocProvider.of<ModelEditViewBloc<T>>(context)
                 .add(ModelEditViewEventSelect<T>(model, false))),
-        onSearchChange: (p0) => BlocProvider.of<ModelsListBloc<T>>(context)
-            .add(ModelsListChangeSearchText<T>(p0)),
+        onSearchChange: (p0) => BlocProvider.of<ModelsBloc<T>>(context)
+            .add(ModelsChangeSearchText<T>(p0)),
 
 //TODO order by and filter by
         // onOrderByChange: (orderByItem) {
-        //     BlocProvider.of<ModelsListBloc<T>>(context)
-        //     .add(ModelsListChangeOrderBy<T>(orderByItem as List<SortOrderBy<T>>));
+        //     BlocProvider.of<ModelsBloc<T>>(context)
+        //     .add(ModelsChangeOrderBy<T>(orderByItem as List<SortOrderBy<T>>));
         // },
       );
     });
   }
 
-  Widget buildDetail(BuildContext context, ModelsListState<T> state) {
+  Widget buildDetail(BuildContext context, ModelsState<T> state) {
     return BlocBuilder<ModelEditViewBloc<T>, ModelEditViewState<T>>(
         builder:
             buildDetailState //(context, state) => Text("This is the buidler $state"),
@@ -134,10 +143,12 @@ class ModelSinglePage<T extends IModel> extends StatelessWidget
   Widget buildDetailState(BuildContext context, ModelEditViewState<T> state) {
     if (state is ModelEditViewStateNotLoaded<T>) {
       return buildDetailNotSelected(context, state);
-    } else if (state is ModelEditViewStateView<T>) {
-      return buildDetailDisplay(context, state, state.model);
-    } else if (state is ModelEditViewStateEdit<T>) {
-      return buildDetailEdit(context, state, state.model);
+    } else if (state is ModelEditViewStateLoaded<T>) {
+      if (!state.isEditMode) {
+        return buildDetailDisplay(context, state, state.model);
+      } else if (state.isEditMode) {
+        return buildDetailEdit(context, state, state.model);
+      }
     }
     return Text("Unhandled state: $state > ${state.model}");
   }
@@ -157,7 +168,7 @@ class ModelSinglePage<T extends IModel> extends StatelessWidget
   }
 
   Widget buildDetailDisplay(
-      BuildContext context, ModelEditViewStateView<T> state, T? model) {
+      BuildContext context, ModelEditViewStateLoaded<T> state, T? model) {
     return Column(
       // mainAxisSize: MainAxisSize.min,
       // crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -167,14 +178,14 @@ class ModelSinglePage<T extends IModel> extends StatelessWidget
   }
 
   Widget buildDetailDisplayForModel(
-      BuildContext context, ModelEditViewStateView<T> state, T? model) {
+      BuildContext context, ModelEditViewStateLoaded<T> state, T? model) {
     if (model == null) return const Text("Model is null");
     return Text(
         "Display page ${model.displayLabel} ID = ${model.id}  -  No Detail Page Provided");
   }
 
   Widget buildDetailEdit(
-      BuildContext context, ModelEditViewStateEdit<T> state, T? model) {
+      BuildContext context, ModelEditViewStateLoaded<T> state, T? model) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -193,7 +204,7 @@ class ModelSinglePage<T extends IModel> extends StatelessWidget
 
   Widget buildForm(
     BuildContext context,
-    ModelEditViewStateEdit<T> state,
+    ModelEditViewStateLoaded<T> state,
     T? model,
     GlobalKey<FormState> formKey,
     void Function(Map<String, dynamic>) onSave,

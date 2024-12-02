@@ -1,13 +1,16 @@
 import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_model/bloc/modeledit/model_edit_events.dart';
+import 'package:flutter_model/bloc/modeledit/model_edit_state.dart';
+import 'package:flutter_model/bloc/modeledit/model_edit_view2.dart';
 import 'package:flutter_model/flutter_model.dart';
 import 'package:loggy/loggy.dart';
 
-mixin class ModelEditBlocAddin<T extends IModel> {
+mixin class ModelEditViewBlocAddin<T extends IModel> {
   /// This will build the provider required for editing.
   /// Providing an ID will select the document, providing null as the ID will try and create a new one.
   /// onSaved will be called when the model has been saved.
-  Widget buildEditBlocProvider(BuildContext context,
+  Widget buildEditViewBlocProvider(BuildContext context,
       {dynamic id, dynamic parentId, Function(BuildContext context)? onSaved}) {
     AttachmentDAO? attachmentDao;
     try {
@@ -16,66 +19,56 @@ mixin class ModelEditBlocAddin<T extends IModel> {
       logWarning("Unable to create attachment", e);
     }
     return MultiBlocProvider(providers: [
-      BlocProvider<ModelEditBloc<T>>(
+      BlocProvider<ModelEditViewBloc<T>>(
         create: (context) {
-          return ModelEditBloc<T>(
+          return ModelEditViewBloc<T>(
             RepositoryProvider.of<IModelAPI<T>>(context),
             attachmentDao,
           )..add(id == null
-              ? ModelEditEventCreateNew(parentId)
-              : ModelEditEventLoad(id));
+              ? ModelEditViewEventCreateNew(parentId)
+              : ModelEditViewEventSelect(id, false));
         },
       ),
-    ], child: buildEditBlocBuilder(context, onSaved));
+    ], child: buildEditViewBlocBuilder(context, onSaved));
   }
 
-  Widget buildEditBlocBuilder(
+  Widget buildEditViewBlocBuilder(
       BuildContext context, Function(BuildContext context)? onSaved) {
-    return BlocConsumer<ModelEditBloc<T>, ModelEditState<T>>(
+    return BlocConsumer<ModelEditViewBloc<T>, ModelEditViewState<T>>(
         listener: (context, state) => {
               //TODO need to handle model saved....
-              if (state is ModelEditStateSaved<T>)
+              if (state.isSaved)
                 {
                   if (onSaved != null) {onSaved(context)}
                 }
             },
-        builder: (context, state) => buildEditBlocContent(context, state));
+        builder: (context, state) => buildEditViewBlocContent(context, state));
   }
 
-  Widget buildEditBlocContent(BuildContext context, ModelEditState<T> state) {
-    if (state is ModelEditStateSaving<T>) {
-      return buildEditBlocSaving(context, state);
-    } else if (state is ModelEditStateNotLoaded<T>) {
-      return buildEditBlocNotLoaded(context, state);
-    } else if (state is ModelEditStateLoaded<T>) {
-      return buildEditBlocLoaded(context, state);
-    } else if (state is ModelEditStateSaved<T>) {
-      return buildEditBlocSaved(context, state);
-    } else if (state is ModelEditStateError<T>) {
-      return buildEditBlocError(context, state);
+  Widget buildEditViewBlocContent(
+      BuildContext context, ModelEditViewState<T> state) {
+    if (state is ModelEditViewStateLoading<T>) {
+      return buildEditViewBlocLoading(context, state);
+    } else if (state is ModelEditViewStateNotLoaded<T>) {
+      return buildEditViewBlocNotLoaded(context, state);
+    } else if (state is ModelEditViewStateLoaded<T>) {
+      return buildEditViewBlocLoaded(context, state);
     }
     return Text("Unknown state $state");
   }
 
-  Widget buildEditBlocLoaded(
-      BuildContext context, ModelEditStateLoaded<T> state) {
+  Widget buildEditViewBlocLoading(
+      BuildContext context, ModelEditViewStateLoading<T> state) {
     return Container();
   }
 
-  Widget buildEditBlocSaving(
-      context, ModelEditStateSaving<T> modelEditStateSaving) {
+  Widget buildEditViewBlocLoaded(
+      BuildContext context, ModelEditViewStateLoaded<T> state) {
     return Container();
   }
 
-  Widget buildEditBlocNotLoaded(context, ModelEditStateNotLoaded<T> state) {
-    return Container();
-  }
-
-  Widget buildEditBlocSaved(context, ModelEditStateSaved<T> state) {
-    return Container();
-  }
-
-  Widget buildEditBlocError(context, ModelEditStateError<T> state) {
+  Widget buildEditViewBlocNotLoaded(
+      context, ModelEditViewStateNotLoaded<T> state) {
     return Container();
   }
 

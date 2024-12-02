@@ -8,14 +8,13 @@ class FormNotify extends Form {
   final Function() onSaved;
 
   const FormNotify({
-    Key? key,
+    super.key,
     required child,
     autovalidate = false,
     onWillPop,
     onChanged,
     required this.onSaved,
   }) : super(
-            key: key,
             child: child,
             //autovalidate: autovalidate,
             onWillPop: onWillPop,
@@ -46,7 +45,7 @@ abstract class ModelForm<T extends IModel> extends StatefulWidget {
   final Map<String, dynamic>? initialProperties;
   final bool includeScrollView;
   const ModelForm(
-      {Key? key,
+      {super.key,
       required this.model,
       this.isEditing = true,
       required this.formKey,
@@ -54,8 +53,7 @@ abstract class ModelForm<T extends IModel> extends StatefulWidget {
       this.onChanged,
       this.parentId,
       this.includeScrollView = true,
-      this.initialProperties})
-      : super(key: key);
+      this.initialProperties});
 }
 
 abstract class ModelFormState<T extends IModel> extends State<ModelForm<T>> {

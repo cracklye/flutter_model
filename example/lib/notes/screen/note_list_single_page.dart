@@ -1,15 +1,13 @@
 import 'package:example/notes/model_notes.dart';
 import 'package:example/notes/widget/note_display.dart';
 import 'package:example/notes/widget/note_form.dart';
-import 'package:example/routes/app_navigator.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_model/bloc/modeledit/model_edit_state.dart';
-import 'package:flutter_model/screen/model_screen_list2.dart';
+import 'package:flutter_model/screen/model_screen_list.dart';
 
-class NotesScreenListSingle extends ModelScreenListActionBar<Notes> {
-  NotesScreenListSingle({super.key})
+class NotesScreenListSinglePage extends ModelScreenListPage<Notes> {
+  NotesScreenListSinglePage({super.key})
       : super(
-          drawer: const AppDrawer(),
           title: "Notes",
         );
 

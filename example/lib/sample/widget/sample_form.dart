@@ -1,7 +1,7 @@
 import 'package:example/sample/model_sample.dart';
-import 'package:flutter/widgets.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_model/flutter_model.dart';
-import 'package:woue_components/woue_components.dart';
+
 
 class SampleForm extends ModelForm<Sample> {
   const SampleForm(

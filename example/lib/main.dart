@@ -1,16 +1,13 @@
 import 'package:example/app_settings.dart';
+import 'package:example/dailyaction/model_dailyaction.dart';
 import 'package:example/notes/model_notes.dart';
 import 'package:example/repos/notes_repo_inmemory.dart';
 import 'package:example/routes/app_router.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_model/app_environement.dart';
-import 'package:flutter_model/bloc/preferences/app_preference_storedpref.dart';
-import 'package:flutter_model/bloc/preferences/preferences_bloc.dart';
 import 'package:flutter_model/flutter_model.dart';
 import 'package:loggy/loggy.dart';
-import 'package:woue_components/woue_components.dart' as w;
-import 'package:woue_components_material/material_provider.dart' as mp;
 
 void main() async {
   Loggy.initLoggy(
@@ -29,7 +26,6 @@ void main() async {
   // Ensure the binding is initialised
   WidgetsFlutterBinding.ensureInitialized();
 
-  w.Woue.init(const mp.MaterialProvider());
   AppRouter.setupRouter();
 
   //await CouchbaseLiteFlutter.init();
@@ -54,6 +50,21 @@ class MyApp extends StatelessWidget {
           Notes(id: "5", name: "Item 5", description: "This is the first tiem"),
         ])
           ..init(),
+      ),
+      RepositoryProvider<IModelAPI<DailyAction>>(
+        create: (context) => RepositoryDailyActionMemory([
+          DailyAction(
+              id: "1", name: "daily 1", description: "This is the first daily"),
+          DailyAction(
+              id: "2", name: "daily 2", description: "This is the first tiem"),
+          DailyAction(
+              id: "3", name: "daily 3", description: "This is the first tiem"),
+          DailyAction(
+              id: "4", name: "daily 4", description: "This is the first tiem"),
+          DailyAction(
+              id: "5", name: "daily 5", description: "This is the first tiem"),
+        ])
+          ..init(),
       )
     ], child: buildProviders(context));
   }
@@ -71,7 +82,12 @@ class MyApp extends StatelessWidget {
           create: (context) => ModelsBloc<Notes>(
                 modelsRepository:
                     RepositoryProvider.of<IModelAPI<Notes>>(context),
-              )..add(const LoadModels<Notes>())),
+              )..add(const ModelsLoad<Notes>())),
+      BlocProvider<ModelsBloc<DailyAction>>(
+          create: (context) => ModelsBloc<DailyAction>(
+                modelsRepository:
+                    RepositoryProvider.of<IModelAPI<DailyAction>>(context),
+              )..add(const ModelsLoad<DailyAction>())),
     ], child: buildApp(context));
   }
 

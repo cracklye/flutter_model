@@ -1,7 +1,7 @@
 import 'package:example/notes/model_notes.dart';
-import 'package:flutter/widgets.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_model/flutter_model.dart';
-import 'package:woue_components/woue_components.dart';
+
 
 class NotesForm extends ModelForm<Notes> {
   const NotesForm(

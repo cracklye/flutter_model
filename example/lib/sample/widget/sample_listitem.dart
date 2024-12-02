@@ -1,7 +1,5 @@
 import 'package:example/sample/model_sample.dart';
-import 'package:flutter/widgets.dart';
-import 'package:woue_components/woue_components.dart';
-
+import 'package:flutter/material.dart';
 class SampleListItem extends StatelessWidget {
   final Sample note;
   final Function() onTap;

@@ -1,7 +1,6 @@
 import 'package:example/notes/model_notes.dart';
 import 'package:flutter/material.dart';
-
-import 'package:woue_components/woue_components.dart';
+import 'package:flutter_model/flutter_model.dart';
 
 class NotesDisplay extends StatelessWidget {
   const NotesDisplay({super.key, required this.model});
@@ -19,7 +18,7 @@ class NotesDisplay extends StatelessWidget {
             buildContent: Text(model.createdDate.toString())),
         LabelWidget(
             buildLabel: const Text("Description"),
-            buildContent: Text(model.description )),
+            buildContent: Text(model.description)),
       ],
     );
   }

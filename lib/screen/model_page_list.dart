@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_model/bloc/modeledit/model_edit_events.dart';
+import 'package:flutter_model/bloc/modeledit/model_edit_state.dart';
+import 'package:flutter_model/bloc/modeledit/model_edit_view2.dart';
 import 'package:flutter_model/flutter_model.dart';
 import 'package:loggy/loggy.dart';
 
@@ -12,9 +15,9 @@ abstract class ModelPageList<T extends IModel> extends ModelSinglePage<T>
       splitMinWidthEdit = 600});
 
   Widget buildListLayout2(
-      BuildContext context, ModelsListState<T> state, bool fullScreen) {
+      BuildContext context, ModelsState<T> state, editState, bool fullScreen) {
     if (fullScreen) {
-      return buildList(context, state, true);
+      return buildList(context, state, editState, true);
     }
 
     const edge = EdgeInsets.fromLTRB(5, 0, 5, 0);
@@ -26,7 +29,7 @@ abstract class ModelPageList<T extends IModel> extends ModelSinglePage<T>
             padding: edge,
             child: SizedBox(
               width: splitListWidth,
-              child: buildList(context, state, false),
+              child: buildList(context, state, editState, false),
             )),
         //buildDetail(context, state)
 
@@ -35,14 +38,14 @@ abstract class ModelPageList<T extends IModel> extends ModelSinglePage<T>
                 padding: edge,
                 child: Padding(
                     padding: const EdgeInsets.only(top: 20),
-                    child: buildDetail(context, state))))
+                    child: buildDetail(context, state, editState))))
       ],
     );
   }
 
   @override
   Widget buildListLayout(
-      BuildContext context, ModelsListState<T> state, bool fullScreen) {
+      BuildContext context, ModelsState<T> state, editState, bool fullScreen) {
     return BlocBuilder<ModelEditViewBloc<T>, ModelEditViewState<T>>(
         builder: (context, editState) {
       var fab = getFloatingActionButton(context);
@@ -54,7 +57,7 @@ abstract class ModelPageList<T extends IModel> extends ModelSinglePage<T>
                 .pushNamed(ModelRouter.routeAdd<T>(parentId)),
             child: const Text("Create")));
       } else {
-        if (editState is ModelEditViewStateView<T>) {
+        if (!editState.isEditMode) {
           rtn.add(ElevatedButton(
               onPressed: () => BlocProvider.of<ModelEditViewBloc<T>>(context)
                   .add(ModelEditViewEventCreateNew<T>()),
@@ -66,14 +69,14 @@ abstract class ModelPageList<T extends IModel> extends ModelSinglePage<T>
               child: const Text("Edit")));
           rtn.add(ElevatedButton(
               onPressed: () => BlocProvider.of<ModelEditViewBloc<T>>(context)
-                  .add(ModelEditViewEventDelete<T>()),
+                  .add(ModelEditViewEventDelete<T>(editState.model!.id)),
               child: const Text("Delete")));
         } else if (editState is ModelEditViewStateNotLoaded<T> && fab == null) {
           rtn.add(ElevatedButton(
               onPressed: () => BlocProvider.of<ModelEditViewBloc<T>>(context)
                   .add(ModelEditViewEventCreateNew<T>()),
               child: const Text("Create")));
-        } else if (editState is ModelEditViewStateEdit<T>) {
+        } else if (editState.isEditMode) {
           rtn.add(ElevatedButton(
               onPressed: () {
                 if (formKey.currentState!.validate()) {
@@ -88,7 +91,7 @@ abstract class ModelPageList<T extends IModel> extends ModelSinglePage<T>
         }
       }
 
-      return buildListLayout2(context, state, fullScreen);
+      return buildListLayout2(context, state, editState, fullScreen);
     });
   }
 
