@@ -5,6 +5,7 @@ import 'package:example/sample/model_sample.dart';
 import 'package:example/sample/widget/sample_display.dart';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_model/bloc/modeledit/model_edit_state.dart';
 import 'package:flutter_model/flutter_model.dart';
 
 class SampleDetailScreen extends ModelScreenDetail<Sample> {
@@ -15,8 +16,8 @@ class SampleDetailScreen extends ModelScreenDetail<Sample> {
 
   @override
   Widget buildDetailBlocLoaded(
-      BuildContext context, ModelsDetailLoaded<Sample> state) {
-    return SingleChildScrollView(child: SampleDisplay(model: state.model));
+      BuildContext context, ModelEditViewStateLoaded<Sample> state) {
+    return SingleChildScrollView(child: SampleDisplay(model: state.model!));
   }
 }
 

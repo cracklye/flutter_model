@@ -57,20 +57,20 @@
 
 //   @override
 //   Widget build(BuildContext context) {
-//     return BlocBuilder<ModelsListBloc<T>, ModelsListState<T>>(
+//     return BlocBuilder<ModelsBloc<T>, ModelsState<T>>(
 //       builder: ((context, state) {
 //         bool isLoading = true;
 //         List<T> items = [];
 //         List<HierarchyEntry<T>>? hierarchy;
 
-//         if (state is ModelsListLoaded<T>) {
+//         if (state is ModelsLoaded<T>) {
 //           items = state.models;
 //           hierarchy = state.hierarchy;
 //           isLoading = false;
 //         }
 //         //TODO handle error
 
-//         //if (state is ModelsListLoaded<T>) {
+//         //if (state is ModelsLoaded<T>) {
 //         return ExtendedListView<T>(
 //           items: items,
 //           hierarchy: hierarchy,
@@ -90,17 +90,17 @@
 //           onTap: onTap,
 
 //           onOrderByChange: ((orderByChange) =>
-//               BlocProvider.of<ModelsListBloc<T>>(context).add(
-//                   ModelsListChangeOrderBy<T>(orderByChange != null
+//               BlocProvider.of<ModelsBloc<T>>(context).add(
+//                   ModelsChangeOrderBy<T>(orderByChange != null
 //                       ? orderByChange.getSortOrders()
 //                       : null))),
 //           onSearchChange: ((searchString) =>
-//               BlocProvider.of<ModelsListBloc<T>>(context)
-//                   .add(ModelsListChangeSearchText<T>(searchString))),
+//               BlocProvider.of<ModelsBloc<T>>(context)
+//                   .add(ModelsChangeSearchText<T>(searchString))),
 
 //           onFilterByChange: ((filter) =>
-//               BlocProvider.of<ModelsListBloc<T>>(context).add(
-//                   ModelsListChangeFilter<T>(
+//               BlocProvider.of<ModelsBloc<T>>(context).add(
+//                   ModelsChangeFilter<T>(
 //                       filter != null ? filter.getFilters() : null))),
 
 //           selected: state.selected,

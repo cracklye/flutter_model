@@ -1,9 +1,9 @@
 import 'package:example/app_settings.dart';
+import 'package:example/dailyaction/model_dailyaction.dart';
 import 'package:example/notes/model_notes.dart';
 import 'package:example/screens/test_view.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_model/bloc/preferences/preferences_bloc.dart';
 import 'package:flutter_model/flutter_model.dart';
 
 class AppDrawer extends StatelessWidget {
@@ -50,6 +50,12 @@ class AppDrawer extends StatelessWidget {
             leading: const Icon(Icons.home),
             onTap: () => Navigator.of(context)
                 .pushReplacementNamed(ModelRouter.routeList<Notes>()),
+          ),
+          ListTile(
+            title: const Text("Actions Home"),
+            leading: const Icon(Icons.home),
+            onTap: () => Navigator.of(context)
+                .pushReplacementNamed(ModelRouter.routeList<DailyAction>()),
           ),
           ListTile(
             title: const Text("Sample Home"),

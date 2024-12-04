@@ -5,9 +5,11 @@ import 'package:example/repos/dailyaction_repo_inmemory_slow.dart';
 import 'package:example/routes/app_navigator.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_model/bloc/modeledit/model_edit_state.dart';
 import 'package:flutter_model/flutter_model.dart';
+import 'package:flutter_model/screen/model_screen_list2.dart';
 
-class DailyActionScreenListSingleSlow extends ModelScreenList<DailyAction> {
+class DailyActionScreenListSingleSlow extends ModelScreenListActionBar<DailyAction> {
   DailyActionScreenListSingleSlow({super.key})
       : super(
           drawer: const AppDrawer(),
@@ -47,7 +49,7 @@ class DailyActionScreenListSingleSlow extends ModelScreenList<DailyAction> {
 
   @override
   Widget buildDetailDisplayForModel(
-      BuildContext context, ModelEditViewStateView<DailyAction> state, DailyAction? model) {
+      BuildContext context, ModelEditViewStateLoaded<DailyAction> state, DailyAction? model) {
     if (model == null) return const Text("Model is null");
     return DailyActionDisplay(model: model);
   }
@@ -55,7 +57,7 @@ class DailyActionScreenListSingleSlow extends ModelScreenList<DailyAction> {
   @override
   Widget buildForm(
     BuildContext context,
-    ModelEditViewStateEdit<DailyAction> state,
+    ModelEditViewStateLoaded<DailyAction> state,
     DailyAction? model,
     GlobalKey<FormState> formKey,
     void Function(Map<String, dynamic>) onSave,

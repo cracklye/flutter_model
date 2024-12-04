@@ -1,16 +1,18 @@
+import 'package:example/dailyaction/model_dailyaction.dart';
+import 'package:example/dailyaction/screen/dailyaction_addedit.dart';
+import 'package:example/dailyaction/screen/dailyaction_details.dart';
+import 'package:example/dailyaction/screen/dailyaction_list_single.dart';
 import 'package:example/notes/model_notes.dart';
 import 'package:example/notes/screen/note_addedit.dart';
 import 'package:example/notes/screen/note_details.dart';
 import 'package:example/notes/screen/note_list_single.dart';
-
 import 'package:example/sample/screen/sample_addedit.dart';
 import 'package:example/sample/screen/sample_details.dart';
 import 'package:example/sample/screen/sample_list_single.dart';
 import 'package:example/screens/home.dart';
 import 'package:example/screens/test_view.dart';
-import 'package:flutter/material.dart';
 import 'package:fluro/fluro.dart';
-
+import 'package:flutter/material.dart';
 import 'package:flutter_model/flutter_model.dart';
 
 class AppRouter {
@@ -35,9 +37,28 @@ class AppRouter {
       handlerFunc: (BuildContext? context, Map<String, dynamic> params) =>
           NotesAddEditScreen(id: params["id"]?[0], parentId: params["id"]?[0]));
 
+  static final Handler _actionList = Handler(
+      handlerFunc: (BuildContext? context, Map<String, dynamic> params) =>
+          DailyActionScreenListSingle());
+
+  static final Handler _actionDetail = Handler(
+      handlerFunc: (BuildContext? context, Map<String, dynamic> params) =>
+          DailyActionDetailScreen(id: params["id"]?[0]));
+
+  static final Handler _actionEdit = Handler(
+      handlerFunc: (BuildContext? context, Map<String, dynamic> params) =>
+          DailyActionAddEditScreen(
+              id: params["id"]?[0], parentId: params["id"]?[0]));
+
   static setupRouter() {
     ModelRouter.routeSetupCRUD<Notes>(router,
         list: _noteList, detail: _noteDetail, edit: _noteEdit, add: _noteEdit);
+
+    ModelRouter.routeSetupCRUD<DailyAction>(router,
+        list: _actionList,
+        detail: _actionDetail,
+        edit: _actionEdit,
+        add: _actionEdit);
 
     ModelRouter.routeSetupCRUD<Sample>(router,
         list: Handler(

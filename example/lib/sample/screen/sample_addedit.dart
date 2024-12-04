@@ -5,6 +5,7 @@
 import 'package:example/sample/model_sample.dart';
 import 'package:example/sample/widget/sample_form.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_model/bloc/modeledit/model_edit_state.dart';
 import 'package:flutter_model/flutter_model.dart';
 
 class SampleAddEditScreen extends ModelScreenEdit<Sample> {
@@ -13,7 +14,7 @@ class SampleAddEditScreen extends ModelScreenEdit<Sample> {
   @override
   Widget buildForm(
       BuildContext context,
-      ModelEditStateEdit<Sample> state,
+      ModelEditViewStateLoaded<Sample> state,
       Sample? model,
       GlobalKey<FormState> formKey,
       void Function(Map<String, dynamic> onSave) onSave,

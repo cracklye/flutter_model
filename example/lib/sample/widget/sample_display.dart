@@ -1,7 +1,6 @@
 import 'package:example/sample/model_sample.dart';
 import 'package:flutter/material.dart';
-
-import 'package:woue_components/woue_components.dart';
+import 'package:flutter_model/flutter_model.dart';
 
 class SampleDisplay extends StatelessWidget {
   const SampleDisplay({super.key, required this.model});

@@ -5,14 +5,14 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_model/flutter_model.dart';
 
 abstract class ModelBlocWidget<T extends IModel> extends StatelessWidget {
-  const ModelBlocWidget({Key? key}) : super(key: key);
+  const ModelBlocWidget({super.key});
 
   @override
   Widget build(BuildContext context) {
     return BlocBuilder<ModelsBloc<T>, ModelsState<T>>(
         builder: (context, state) {
       if (state is ModelsLoaded<T>) {
-        return buildStateLoaded(context, state as ModelsLoaded<T>);
+        return buildStateLoaded(context, state);
       } else if (state is ModelsLoading<T>) {
         return buildStateLoading(context, state);
       } else {

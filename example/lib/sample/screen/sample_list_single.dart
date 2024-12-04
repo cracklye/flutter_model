@@ -1,21 +1,20 @@
-import 'package:example/sample/model_sample.dart';
-
 import 'package:example/routes/app_navigator.dart';
+import 'package:example/sample/model_sample.dart';
 import 'package:example/sample/sample_repo_inmemory_slow.dart';
 import 'package:example/sample/widget/sample_display.dart';
 import 'package:example/sample/widget/sample_form.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_model/bloc/modeledit/model_edit_state.dart';
 import 'package:flutter_model/flutter_model.dart';
+import 'package:flutter_model/screen/model_screen_list2.dart';
 
-class SampleScreenListSingle extends ModelScreenList<Sample> {
-  SampleScreenListSingle({Key? key})
+class SampleScreenListSingle extends ModelScreenListActionBar<Sample> {
+  SampleScreenListSingle({super.key})
       : super(
-          key: key,
           drawer: const AppDrawer(),
           title: "Sample",
         );
-
 
   @override
   Widget build(BuildContext context) {
@@ -50,7 +49,7 @@ class SampleScreenListSingle extends ModelScreenList<Sample> {
 
   @override
   Widget buildDetailDisplayForModel(BuildContext context,
-      ModelEditViewStateView<Sample> state, Sample? model) {
+      ModelEditViewStateLoaded<Sample> state, Sample? model) {
     if (model == null) return const Text("Model is null");
     return SampleDisplay(model: model);
   }
@@ -58,7 +57,7 @@ class SampleScreenListSingle extends ModelScreenList<Sample> {
   @override
   Widget buildForm(
     BuildContext context,
-    ModelEditViewStateEdit<Sample> state,
+    ModelEditViewStateLoaded<Sample> state,
     Sample? model,
     GlobalKey<FormState> formKey,
     void Function(Map<String, dynamic>) onSave,

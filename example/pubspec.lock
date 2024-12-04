@@ -217,14 +217,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "3.1.2"
-  cross_file:
-    dependency: transitive
-    description:
-      name: cross_file
-      sha256: "7caf6a750a0c04effbb52a676dce9a4a592e10ad35c34d6d2d0e4811160d5670"
-      url: "https://pub.dev"
-    source: hosted
-    version: "0.3.4+2"
   crypto:
     dependency: transitive
     description:
@@ -249,14 +241,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "2.3.2"
-  desktop_drop:
-    dependency: transitive
-    description:
-      name: desktop_drop
-      sha256: d55a010fe46c8e8fcff4ea4b451a9ff84a162217bdb3b2a0aa1479776205e15d
-      url: "https://pub.dev"
-    source: hosted
-    version: "0.4.4"
   extended_list_view:
     dependency: transitive
     description:
@@ -327,14 +311,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "8.1.6"
-  flutter_colorpicker:
-    dependency: transitive
-    description:
-      name: flutter_colorpicker
-      sha256: "969de5f6f9e2a570ac660fb7b501551451ea2a1ab9e2097e89475f60e07816ea"
-      url: "https://pub.dev"
-    source: hosted
-    version: "1.1.0"
   flutter_lints:
     dependency: "direct dev"
     description:
@@ -938,29 +914,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "2.4.5"
-  woue_components:
-    dependency: "direct main"
-    description:
-      path: "."
-      ref: HEAD
-      resolved-ref: "055d6d3bd98444dfa07d724b014d54b30cead056"
-      url: "https://github.com/cracklye/woue_components.git"
-    source: git
-    version: "0.0.1"
-  woue_components_fluent:
-    dependency: "direct main"
-    description:
-      path: "../../woue_components/woue_components_fluent"
-      relative: true
-    source: path
-    version: "0.0.1"
-  woue_components_material:
-    dependency: "direct main"
-    description:
-      path: "../../woue_components/woue_components_material"
-      relative: true
-    source: path
-    version: "0.0.1"
   xdg_directories:
     dependency: transitive
     description:

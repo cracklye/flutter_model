@@ -20,8 +20,8 @@ class DailyAction extends IModel with _$DailyAction {
     required String description,
     @Default(false) bool carryOver,
     @Default(DailyActionType.checkbox) DailyActionType dailyactionType,
-    Reminder? reminder,
-    Schedule? schedule,
+    // Reminder? reminder,
+    // Schedule? schedule,
     int? colour,
     DateTime? createdDate,
     DateTime? modifiedDate,
@@ -54,6 +54,6 @@ class DailyAction extends IModel with _$DailyAction {
   }
 }
 
-class Reminder {}
+// class Reminder {}
 
-class Schedule {}
+// class Schedule {}

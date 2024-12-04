@@ -20,9 +20,9 @@ mixin _$DailyAction {
   String get name => throw _privateConstructorUsedError;
   String get description => throw _privateConstructorUsedError;
   bool get carryOver => throw _privateConstructorUsedError;
-  DailyActionType get dailyactionType => throw _privateConstructorUsedError;
-  Reminder? get reminder => throw _privateConstructorUsedError;
-  Schedule? get schedule => throw _privateConstructorUsedError;
+  DailyActionType get dailyactionType =>
+      throw _privateConstructorUsedError; // Reminder? reminder,
+// Schedule? schedule,
   int? get colour => throw _privateConstructorUsedError;
   DateTime? get createdDate => throw _privateConstructorUsedError;
   DateTime? get modifiedDate => throw _privateConstructorUsedError;
@@ -45,8 +45,6 @@ abstract class $DailyActionCopyWith<$Res> {
       String description,
       bool carryOver,
       DailyActionType dailyactionType,
-      Reminder? reminder,
-      Schedule? schedule,
       int? colour,
       DateTime? createdDate,
       DateTime? modifiedDate,
@@ -71,8 +69,6 @@ class _$DailyActionCopyWithImpl<$Res, $Val extends DailyAction>
     Object? description = null,
     Object? carryOver = null,
     Object? dailyactionType = null,
-    Object? reminder = freezed,
-    Object? schedule = freezed,
     Object? colour = freezed,
     Object? createdDate = freezed,
     Object? modifiedDate = freezed,
@@ -99,14 +95,6 @@ class _$DailyActionCopyWithImpl<$Res, $Val extends DailyAction>
           ? _value.dailyactionType
           : dailyactionType // ignore: cast_nullable_to_non_nullable
               as DailyActionType,
-      reminder: freezed == reminder
-          ? _value.reminder
-          : reminder // ignore: cast_nullable_to_non_nullable
-              as Reminder?,
-      schedule: freezed == schedule
-          ? _value.schedule
-          : schedule // ignore: cast_nullable_to_non_nullable
-              as Schedule?,
       colour: freezed == colour
           ? _value.colour
           : colour // ignore: cast_nullable_to_non_nullable
@@ -141,8 +129,6 @@ abstract class _$$_DailyActionCopyWith<$Res>
       String description,
       bool carryOver,
       DailyActionType dailyactionType,
-      Reminder? reminder,
-      Schedule? schedule,
       int? colour,
       DateTime? createdDate,
       DateTime? modifiedDate,
@@ -165,8 +151,6 @@ class __$$_DailyActionCopyWithImpl<$Res>
     Object? description = null,
     Object? carryOver = null,
     Object? dailyactionType = null,
-    Object? reminder = freezed,
-    Object? schedule = freezed,
     Object? colour = freezed,
     Object? createdDate = freezed,
     Object? modifiedDate = freezed,
@@ -193,14 +177,6 @@ class __$$_DailyActionCopyWithImpl<$Res>
           ? _value.dailyactionType
           : dailyactionType // ignore: cast_nullable_to_non_nullable
               as DailyActionType,
-      reminder: freezed == reminder
-          ? _value.reminder
-          : reminder // ignore: cast_nullable_to_non_nullable
-              as Reminder?,
-      schedule: freezed == schedule
-          ? _value.schedule
-          : schedule // ignore: cast_nullable_to_non_nullable
-              as Schedule?,
       colour: freezed == colour
           ? _value.colour
           : colour // ignore: cast_nullable_to_non_nullable
@@ -230,8 +206,6 @@ class _$_DailyAction extends _DailyAction {
       required this.description,
       this.carryOver = false,
       this.dailyactionType = DailyActionType.checkbox,
-      this.reminder,
-      this.schedule,
       this.colour,
       this.createdDate,
       this.modifiedDate,
@@ -250,10 +224,8 @@ class _$_DailyAction extends _DailyAction {
   @override
   @JsonKey()
   final DailyActionType dailyactionType;
-  @override
-  final Reminder? reminder;
-  @override
-  final Schedule? schedule;
+// Reminder? reminder,
+// Schedule? schedule,
   @override
   final int? colour;
   @override
@@ -265,7 +237,7 @@ class _$_DailyAction extends _DailyAction {
 
   @override
   String toString() {
-    return 'DailyAction(id: $id, name: $name, description: $description, carryOver: $carryOver, dailyactionType: $dailyactionType, reminder: $reminder, schedule: $schedule, colour: $colour, createdDate: $createdDate, modifiedDate: $modifiedDate, hierarchyParentId: $hierarchyParentId)';
+    return 'DailyAction(id: $id, name: $name, description: $description, carryOver: $carryOver, dailyactionType: $dailyactionType, colour: $colour, createdDate: $createdDate, modifiedDate: $modifiedDate, hierarchyParentId: $hierarchyParentId)';
   }
 
   @override
@@ -281,10 +253,6 @@ class _$_DailyAction extends _DailyAction {
                 other.carryOver == carryOver) &&
             (identical(other.dailyactionType, dailyactionType) ||
                 other.dailyactionType == dailyactionType) &&
-            (identical(other.reminder, reminder) ||
-                other.reminder == reminder) &&
-            (identical(other.schedule, schedule) ||
-                other.schedule == schedule) &&
             (identical(other.colour, colour) || other.colour == colour) &&
             (identical(other.createdDate, createdDate) ||
                 other.createdDate == createdDate) &&
@@ -302,8 +270,6 @@ class _$_DailyAction extends _DailyAction {
       description,
       carryOver,
       dailyactionType,
-      reminder,
-      schedule,
       colour,
       createdDate,
       modifiedDate,
@@ -323,8 +289,6 @@ abstract class _DailyAction extends DailyAction {
       required final String description,
       final bool carryOver,
       final DailyActionType dailyactionType,
-      final Reminder? reminder,
-      final Schedule? schedule,
       final int? colour,
       final DateTime? createdDate,
       final DateTime? modifiedDate,
@@ -341,11 +305,8 @@ abstract class _DailyAction extends DailyAction {
   bool get carryOver;
   @override
   DailyActionType get dailyactionType;
-  @override
-  Reminder? get reminder;
-  @override
-  Schedule? get schedule;
-  @override
+  @override // Reminder? reminder,
+// Schedule? schedule,
   int? get colour;
   @override
   DateTime? get createdDate;
