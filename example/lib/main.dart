@@ -1,6 +1,9 @@
+import 'package:cbl/cbl.dart' as cbl;
+import 'package:cbl_flutter/cbl_flutter.dart';
 import 'package:example/app_settings.dart';
 import 'package:example/dailyaction/model_dailyaction.dart';
 import 'package:example/notes/model_notes.dart';
+import 'package:example/repos/notes_repo_couchbase.dart';
 import 'package:example/repos/notes_repo_inmemory.dart';
 import 'package:example/routes/app_router.dart';
 import 'package:flutter/material.dart';
@@ -8,6 +11,26 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_model/app_environement.dart';
 import 'package:flutter_model/flutter_model.dart';
 import 'package:loggy/loggy.dart';
+
+cbl.Database? database;
+
+/// This is the method that creates the indexes required by this application
+/// It should be called when starting the application, but can also
+/// be called via the bloc if that is required.
+Future<void> createFTIndexes(cbl.Database database) async {
+  var fti = cbl.FullTextIndexConfiguration([
+    "name",
+    "title",
+    "content",
+    "description",
+    "tags",
+    "text",
+    "label",
+    "properties"
+  ], language: cbl.FullTextLanguage.english);
+  await (await database.defaultCollection).deleteIndex("fti");
+  await (await database.defaultCollection).createIndex("fti", fti);
+}
 
 void main() async {
   Loggy.initLoggy(
@@ -22,6 +45,16 @@ void main() async {
       //BlacklistFilter([BlacklistedLoggy]),
     ],
   );
+
+  await CouchbaseLiteFlutter.init();
+  //cbl.Database.log.custom!.level = cbl.LogLevel.verbose;
+//cbl.Database.log.console.leve = cbl.LogDomain.replicator;
+//  cbl.Database.log.console.level = cbl.LogLevel.verbose;
+
+  String dbname = "note_dev_mobile";
+  database = await cbl.Database.openAsync(dbname);
+
+  await createFTIndexes(database!);
 
   // Ensure the binding is initialised
   WidgetsFlutterBinding.ensureInitialized();
@@ -42,14 +75,7 @@ class MyApp extends StatelessWidget {
   Widget buildRepoProviders(BuildContext context) {
     return MultiRepositoryProvider(providers: [
       RepositoryProvider<IModelAPI<Notes>>(
-        create: (context) => RepositoryNotesMemory([
-          Notes(id: "1", name: "Item 1", description: "This is the first tiem"),
-          Notes(id: "2", name: "Item 2", description: "This is the first tiem"),
-          Notes(id: "3", name: "Item 3", description: "This is the first tiem"),
-          Notes(id: "4", name: "Item 4", description: "This is the first tiem"),
-          Notes(id: "5", name: "Item 5", description: "This is the first tiem"),
-        ])
-          ..init(),
+        create: (context) => NotesDaoCouchbase(database!)..init(),
       ),
       RepositoryProvider<IModelAPI<DailyAction>>(
         create: (context) => RepositoryDailyActionMemory([

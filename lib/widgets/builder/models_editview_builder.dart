@@ -16,11 +16,15 @@ class ModelEditViewBlocWidget<T extends IModel> extends StatelessWidget {
   final Widget Function(BuildContext context, ModelEditViewState<T> state)?
       buildContent;
 
+  final void Function(BuildContext context, ModelEditViewState<T> state)?
+      buildListener;
+
   const ModelEditViewBlocWidget(
       {super.key,
       this.provideBloc = false,
       this.id,
       this.buildContent,
+      this.buildListener,
       this.buildScaffold});
 
   @override
@@ -28,15 +32,19 @@ class ModelEditViewBlocWidget<T extends IModel> extends StatelessWidget {
     if (provideBloc) {
       return _buildProvider(context);
     } else {
+      return _buildConsumerOrListener(context);
+    }
+  }
+
+  Widget _buildConsumerOrListener(context) {
+    if (buildListener != null) {
+      return _buildListener(context);
+    } else {
       return _buildConsumer(context);
     }
   }
 
   Widget _buildProvider(BuildContext context) {
-    // return BlocProvider(
-    //   create: (context) => ModelEditViewBloc<T>(dao, attachmentDao),
-    //   child: _buildConsumer(context),
-    // );
     AttachmentDAO? attachDao;
     try {
       attachDao = RepositoryProvider.of<AttachmentDAO>(context);
@@ -48,8 +56,15 @@ class ModelEditViewBlocWidget<T extends IModel> extends StatelessWidget {
             RepositoryProvider.of<IModelAPI<T>>(context), attachDao)
           ..add(id != null
               ? ModelEditViewEventSelect<T>(id, false)
-              :  ModelEditViewEventClear<T>())),
-        child: _buildConsumer(context));
+              : ModelEditViewEventClear<T>())),
+        child: _buildConsumerOrListener(context));
+  }
+
+  Widget _buildListener(BuildContext context) {
+    return BlocListener<ModelEditViewBloc<T>, ModelEditViewState<T>>(
+      listener: buildListener!,
+      child: _buildConsumer(context),
+    );
   }
 
   Widget _buildConsumer(

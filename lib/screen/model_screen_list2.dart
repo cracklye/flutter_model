@@ -24,7 +24,7 @@ abstract class ModelScreenListActionBar<T extends IModel>
         appBar: AppBar(
           actions: rtn
               .map((e) => IconButton(
-                  onPressed: () => e.onSelected(context, null),
+                  onPressed: () => e.onSelected(context, editState.model),
                   icon: Icon(e.icon)))
               .toList(),
           title: Text(title ?? ""),

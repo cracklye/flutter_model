@@ -1,7 +1,7 @@
+import 'package:cbl/cbl.dart';
 import 'package:example/routes/app_navigator.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_model/flutter_model.dart';
-import 'package:cbl/cbl.dart';
 import 'package:loggy/loggy.dart';
 
 class TestViewScreen extends StatefulWidget {
@@ -226,50 +226,50 @@ class _MyHomePageState extends State<TestViewScreen> with UiLoggy {
   }
 
   Future<void> _runDatabaseTest() async {
-    // Open the database (creating it if it doesn’t exist).
-    final database = await Database.openAsync('my-database');
+  //   // Open the database (creating it if it doesn’t exist).
+  //   final database = await Database.openAsync('my-database');
 
-    // Create a new document.
-    final mutableDocument = MutableDocument({'type': 'SDK', 'majorVersion': 2});
-    await database.saveDocument(mutableDocument);
+  //   // Create a new document.
+  //   final mutableDocument = MutableDocument({'type': 'SDK', 'majorVersion': 2});
+  //   await database.saveDocument(mutableDocument);
 
-    loggy.info(
-      'Created document with id ${mutableDocument.id} and '
-      'type ${mutableDocument.string('type')}.',
-    );
+  //   loggy.info(
+  //     'Created document with id ${mutableDocument.id} and '
+  //     'type ${mutableDocument.string('type')}.',
+  //   );
 
-    // Update the document.
-    mutableDocument.setString('Dart', key: 'language');
-    await database.saveDocument(mutableDocument);
+  //   // Update the document.
+  //   mutableDocument.setString('Dart', key: 'language');
+  //   await database.saveDocument(mutableDocument);
 
-    loggy.info(
-      'Updated document with id ${mutableDocument.id}, '
-      'adding language ${mutableDocument.string("language")!}.',
-    );
+  //   loggy.info(
+  //     'Updated document with id ${mutableDocument.id}, '
+  //     'adding language ${mutableDocument.string("language")!}.',
+  //   );
 
-    // Read the document.
-    final document = (await database.document(mutableDocument.id))!;
+  //   // Read the document.
+  //   final document = (await database.document(mutableDocument.id))!;
 
-    loggy.info(
-      'Read document with id ${document.id}, '
-      'type ${document.string('type')} and '
-      'language ${document.string('language')}.',
-    );
+  //   loggy.info(
+  //     'Read document with id ${document.id}, '
+  //     'type ${document.string('type')} and '
+  //     'language ${document.string('language')}.',
+  //   );
 
-    // Create a query to fetch documents of type SDK.
-    loggy.info('Querying Documents of type=SDK.');
-    final query = await Query.fromN1ql(database, '''
-    SELECT * FROM _
-    WHERE type = 'SDK'
-  ''');
+  //   // Create a query to fetch documents of type SDK.
+  //   loggy.info('Querying Documents of type=SDK.');
+  //   final query = await Query.fromN1ql(database, '''
+  //   SELECT * FROM _
+  //   WHERE type = 'SDK'
+  // ''');
 
-    // Run the query.
-    final result = await query.execute();
-    final results = await result.allResults();
-    loggy.info('Number of results: ${results.length}');
+  //   // Run the query.
+  //   final result = await query.execute();
+  //   final results = await result.allResults();
+  //   loggy.info('Number of results: ${results.length}');
 
-    // Close the database.
-    await database.close();
+  //   // Close the database.
+  //   await database.close();
   }
 }
 

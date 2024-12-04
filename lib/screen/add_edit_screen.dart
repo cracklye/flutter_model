@@ -25,6 +25,11 @@ class ModelScreenEdit<T extends IModel> extends StatelessWidget {
     return ModelEditViewBlocWidget<T>(
         id: id,
         provideBloc: true,
+        buildListener: (context, state) {
+          if (state.isSaved) {
+            Navigator.pop(context);
+          }
+        },
         buildScaffold: (context, state, content) => Scaffold(
               body: content(context, state),
               appBar: AppBar(
