@@ -70,42 +70,4 @@ class ModelScreenDetail<T extends IModel> extends StatelessWidget {
       BuildContext context, ModelEditViewState<T> state) {
     return const Text("Builder for content is not provided");
   }
-
-  // @override
-  // Widget buildDetailBlocContent(
-  //     BuildContext context, ModelsDetailState<T> state) {
-  //   return Scaffold(
-  //     body: super.buildDetailBlocContent(context, state),
-  //     appBar: AppBar(
-  //       centerTitle: true,
-  //       title: Text((state is ModelsDetailLoaded<T>)
-  //           ? state.model.displayLabel
-  //           : "Loading"),
-  //       actions: [
-  //         IconButton(
-  //           icon: const Icon(Icons.edit),
-  //           tooltip: 'Edit',
-  //           onPressed: () {
-  //             Navigator.of(context).pushNamed(ModelRouter.routeEdit<T>(
-  //                 (state as ModelsDetailLoaded<T>).model.id));
-  //           },
-  //         ),
-  //         IconButton(
-  //           icon: const Icon(Icons.delete),
-  //           tooltip: 'Delete',
-  //           onPressed: () {
-  //             doDelete(context, (state as ModelsDetailLoaded<T>).model);
-  //           },
-  //         ),
-  //         IconButton(
-  //           icon: const Icon(Icons.close),
-  //           tooltip: 'Close',
-  //           onPressed: () {
-  //             Navigator.of(context).pop();
-  //           },
-  //         ),
-  //       ],
-  //     ),
-  //   );
-  // }
 }
