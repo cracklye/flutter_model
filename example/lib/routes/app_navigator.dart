@@ -69,6 +69,30 @@ class AppDrawer extends StatelessWidget {
             onTap: () =>
                 Navigator.of(context).pushReplacementNamed("/testslowlist"),
           ),
+          ListTile(
+            title: const Text("_noteListDialog"),
+            leading: const Icon(Icons.slow_motion_video_sharp),
+            onTap: () =>
+                Navigator.of(context).pushReplacementNamed("/_noteListDialog"),
+          ),
+          ListTile(
+            title: const Text("_noteListPaneDialog"),
+            leading: const Icon(Icons.slow_motion_video_sharp),
+            onTap: () => Navigator.of(context)
+                .pushReplacementNamed("/_noteListPaneDialog"),
+          ),
+          ListTile(
+            title: const Text("_noteListUri"),
+            leading: const Icon(Icons.slow_motion_video_sharp),
+            onTap: () =>
+                Navigator.of(context).pushReplacementNamed("/_noteListUri"),
+          ),
+          ListTile(
+            title: const Text("_noteListPaneUri"),
+            leading: const Icon(Icons.slow_motion_video_sharp),
+            onTap: () =>
+                Navigator.of(context).pushReplacementNamed("/_noteListPaneUri"),
+          ),
           const Divider(),
         ])),
       ]));

@@ -2,7 +2,6 @@ import 'package:example/notes/model_notes.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_model/flutter_model.dart';
 
-
 class NotesForm extends ModelForm<Notes> {
   const NotesForm(
       {super.key, model, isEditing = true, formKey, onSave, onChanged})
@@ -47,11 +46,12 @@ class _ProjectFormState extends ModelFormState<Notes> {
   List<Widget> buildFormFields(context) {
     return [
       LabelWidget(
-          buildLabel: const Text("Name:"),
+          buildLabel: const Text("Namea:"),
           buildContent: TextFormField(
             scrollController: ScrollController(),
             initialValue: _name,
             autofocus: !widget.isEditing,
+            onChanged: (value) => _name = value,
             validator: (val) {
               return val!.trim().isEmpty ? 'Please enter some text' : null;
             },
@@ -64,6 +64,7 @@ class _ProjectFormState extends ModelFormState<Notes> {
             initialValue: _description,
             onSaved: (value) => _description = value!,
           )),
+          
     ];
   }
 }

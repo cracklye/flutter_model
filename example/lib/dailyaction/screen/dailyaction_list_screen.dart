@@ -4,10 +4,10 @@ import 'package:example/dailyaction/widget/dailyaction_form.dart';
 import 'package:example/routes/app_navigator.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_model/bloc/modeledit/model_edit_state.dart';
-import 'package:flutter_model/screen/model_screen_list2.dart';
+import 'package:flutter_model/flutter_model.dart';
 
-class DailyActionScreenListSingle extends ModelScreenListActionBar<DailyAction> {
-  DailyActionScreenListSingle({super.key})
+class DailyActionListScreen extends ModelScreenListScreen<DailyAction> {
+  DailyActionListScreen({super.key})
       : super(
           drawer: const AppDrawer(),
           title: "DailyAction",

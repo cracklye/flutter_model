@@ -7,9 +7,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_model/bloc/modeledit/model_edit_state.dart';
 import 'package:flutter_model/flutter_model.dart';
-import 'package:flutter_model/screen/model_screen_list2.dart';
 
-class SampleScreenListSingle extends ModelScreenListActionBar<Sample> {
+class SampleScreenListSingle extends ModelScreenListScreen<Sample> {
   SampleScreenListSingle({super.key})
       : super(
           drawer: const AppDrawer(),

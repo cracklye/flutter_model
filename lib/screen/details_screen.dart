@@ -16,6 +16,73 @@ class ModelScreenDetail<T extends IModel> extends StatelessWidget {
     super.key,
   });
 
+  List<IAction> getActions(BuildContext context, ModelEditViewState<T> state) {
+    // IconButton(
+    //               icon: const Icon(Icons.edit),
+    //               tooltip: 'Edit',
+    //               onPressed: () {
+    //                 Navigator.of(context).pushNamed(ModelRouter.routeEdit<T>(
+    //                     (state as ModelEditViewStateLoaded<T>).model!.id));
+    //               },
+    //             ),
+    //             IconButton(
+    //               icon: const Icon(Icons.delete),
+    //               tooltip: 'Delete',
+    //               onPressed: () {
+    //                 doDelete(context,
+    //                     (state as ModelEditViewStateLoaded<T>).model!);
+    //               },
+    //             ),
+    //             IconButton(
+    //               icon: const Icon(Icons.close),
+    //               tooltip: 'Close',
+    //               onPressed: () {
+    //                 Navigator.of(context).pop();
+    //               },
+    //             ),
+
+    if (state is! ModelEditViewStateLoaded<T>) {
+      return [];
+    }
+
+    return [
+      IAction(
+        icon: Icons.edit,
+        label: "Edit",
+        onSelected: (context, model) {
+          Navigator.of(context).pushNamed(ModelRouter.routeEdit<T>(
+              (state).model!.id));
+        },
+      ),
+      IAction(
+        icon: Icons.delete,
+        label: "Delete",
+        onSelected: (context, model) {
+          doDelete(context, (state).model!);
+        },
+      ),
+      IAction(
+        icon: Icons.close,
+        label: "Close",
+        onSelected: (context, model) {
+          Navigator.of(context).pop();
+        },
+      ),
+    ];
+  }
+
+  Widget getPageTitle(BuildContext context, ModelEditViewState state) {
+    if (state.isEditMode) {
+      return const Text("Edit");
+    }
+
+    if (state.model != null) {
+      return Text(state.model!.displayLabel);
+    } else {
+      return const Text("Edit");
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return ModelEditViewBlocWidget<T>(
@@ -24,36 +91,15 @@ class ModelScreenDetail<T extends IModel> extends StatelessWidget {
         buildScaffold: (context, state, content) => Scaffold(
               body: content(context, state),
               appBar: AppBar(
-                centerTitle: true,
-                title: Text((state is ModelEditViewStateLoaded<T>)
-                    ? state.model!.displayLabel
-                    : "Loading"),
-                actions: [
-                  IconButton(
-                    icon: const Icon(Icons.edit),
-                    tooltip: 'Edit',
-                    onPressed: () {
-                      Navigator.of(context).pushNamed(ModelRouter.routeEdit<T>(
-                          (state as ModelEditViewStateLoaded<T>).model!.id));
-                    },
-                  ),
-                  IconButton(
-                    icon: const Icon(Icons.delete),
-                    tooltip: 'Delete',
-                    onPressed: () {
-                      doDelete(context,
-                          (state as ModelEditViewStateLoaded<T>).model!);
-                    },
-                  ),
-                  IconButton(
-                    icon: const Icon(Icons.close),
-                    tooltip: 'Close',
-                    onPressed: () {
-                      Navigator.of(context).pop();
-                    },
-                  ),
-                ],
-              ),
+                  centerTitle: false,
+                  title: getPageTitle(context, state),
+                  actions: getActions(context, state)
+                      .map((e) => IconButton(
+                            onPressed:()=> e.onSelected(context, state.model),
+                            icon: Icon(e.icon),
+                            tooltip: e.label,
+                          ))
+                      .toList()),
             ),
         buildContent: (context, state) =>
             buildDetailBlocContent(context, state));

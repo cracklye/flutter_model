@@ -6,14 +6,17 @@ import 'package:extended_list_view/extended_list_view.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_model/bloc/modeledit/model_edit_state.dart';
 import 'package:flutter_model/flutter_model.dart';
-import 'package:flutter_model/screen/model_screen_list2.dart';
 
-class NotesScreenListSingle extends ModelScreenListActionBar<Notes> {
-  NotesScreenListSingle({super.key})
-      : super(
-          drawer: const AppDrawer(),
-          title: "Notes",
-        );
+class NotesScreenListScreen extends ModelScreenListScreen<Notes> {
+  NotesScreenListScreen({
+    super.key,
+    super.editActionStyle = ActionStyle.uri,
+    super.displayActionStyle = ActionStyle.uri,
+    super.createActionStyle = ActionStyle.uri,
+    super.drawer = const AppDrawer(),
+    super.title = "Notes",
+     super.enableSplit = true,
+  });
 
   @override
   Widget buildDetailDisplayForModel(BuildContext context,
@@ -31,22 +34,19 @@ class NotesScreenListSingle extends ModelScreenListActionBar<Notes> {
   }
 
   @override
-
   List<ListViewOrderByItem> getOrderBy() {
     return [
       ListViewOrderByItem(
           label: "Name Asc",
           value: [SortOrderByFieldName("note_name_asc", "name", true)]),
-      ListViewOrderByItem(label: "Name Desc", value: [
-        SortOrderByFieldName("note_name_desc", "name", false)
-      ]),
+      ListViewOrderByItem(
+          label: "Name Desc",
+          value: [SortOrderByFieldName("note_name_desc", "name", false)]),
       ListViewOrderByItem(label: "Modified", value: [
         SortOrderByFieldName("note_modified", "modifiedDate", false)
       ]),
     ];
   }
-
-
 
   @override
   Widget buildForm(

@@ -5,7 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_model/bloc/modeledit/model_edit_state.dart';
 import 'package:flutter_model/flutter_model.dart';
 
-class DailyActionScreenListPage extends ModelScreenListPage<DailyAction> {
+class DailyActionScreenListPage extends ModelScreenListTab<DailyAction> {
   DailyActionScreenListPage({super.key})
       : super(
           title: "DailyAction",

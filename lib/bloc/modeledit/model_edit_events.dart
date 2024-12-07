@@ -17,9 +17,10 @@ class ModelEditViewEventSave<T extends IModel> extends ModelEditViewEvent<T> {
   final Map<String, dynamic> values;
   final bool? isEditMode;
   final bool deleteAttachment;
-
+  final dynamic id; 
+  final dynamic parentId; 
   const ModelEditViewEventSave(this.values,
-      {this.isEditMode, this.deleteAttachment = false});
+      {this.isEditMode, this.deleteAttachment = false, this.id, this.parentId});
 }
 
 class ModelEditViewEventChanged<T extends IModel>

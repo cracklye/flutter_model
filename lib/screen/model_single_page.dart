@@ -20,8 +20,6 @@ class IAction<T> {
 enum ActionStyle {
   dialog,
   uri,
-  paneThenUri,
-  paneThenDialog,
 }
 
 class ModelSinglePage<T extends IModel> extends StatelessWidget
@@ -31,9 +29,19 @@ class ModelSinglePage<T extends IModel> extends StatelessWidget
   final double splitListWidth = 400;
   final dynamic parentId;
   final bool enableSplit;
-  final ActionStyle editActionStyle = ActionStyle.paneThenUri;
 
-  ModelSinglePage({super.key, this.enableSplit = true, this.parentId});
+  final ActionStyle editActionStyle;
+  final ActionStyle displayActionStyle;
+  final ActionStyle createActionStyle;
+
+  ModelSinglePage({
+    super.key,
+    this.enableSplit = true,
+    this.parentId,
+    this.editActionStyle = ActionStyle.uri,
+    this.displayActionStyle = ActionStyle.uri,
+    this.createActionStyle = ActionStyle.uri,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -106,45 +114,73 @@ class ModelSinglePage<T extends IModel> extends StatelessWidget
     }
 
     return ExtendedListView<T>(
+      buildToolbar: buildToolbar,
+      buildToolbarFooter: buildToobarFooter,
+      buildToolbarLeading: buildToolbarLeading,
+      buildToolbarSub: buildToolbarSub,
+      buildViewIcons: buildViewIcons,
+      footerText: footerText,
+      selectedFilterBy: getFilterBy(),
       listDataProviders: getListDataProviders(),
       selected:
           isFullScreen || editState.model == null ? [] : [editState.model!],
       isLoading: isLoading,
       items: items,
-
       orderBy: getOrderBy(),
       selectedOrderBy: listState.orderBy,
       onOrderByChange: (p) => BlocProvider.of<ModelsBloc<T>>(context)
           .add(ModelsChangeOrderBy<T>(p?.value)),
-
       onTap: (model) => _goDetail(context, model, isFullScreen),
       onDoubleTap: (model) => _goDetail(context, model, true),
       onSearchChange: (p0) => BlocProvider.of<ModelsBloc<T>>(context)
           .add(ModelsChangeSearchText<T>(p0)),
-
-//TODO order by and filter by
-      // onOrderByChange: (orderByItem) {
-      //     BlocProvider.of<ModelsBloc<T>>(context)
-      //     .add(ModelsChangeOrderBy<T>(orderByItem as List<SortOrderBy<T>>));
-      // },
+      onSearchClear: (p0) => BlocProvider.of<ModelsBloc<T>>(context)
+          .add(ModelsChangeSearchText<T>("")),
+      onLongTap: (p0) => onLongTap(context, p0),
+      // onFilterByChange: (p0) {
+      //   BlocProvider.of<ModelsBloc<T>>(context)
+      //       .add(ModelsChangeFilter<T>(p0)
+      //       );
+      // }
     );
   }
 
+  List<dynamic>? getFilterBy() {
+    return null;
+  }
+
+  void onLongTap(BuildContext context, T? model) {}
+  get buildToolbar => null;
+  get buildToobarFooter => null;
+  get buildToolbarLeading => null;
+  get buildToolbarSub => null;
+  get buildViewIcons => null;
+  String get footerText => "";
+
   void _goDetail(BuildContext context, T model, bool isFullScreen) {
-    if (isFullScreen) {
-      Navigator.of(context).pushNamed(ModelRouter.routeDetail<T>(model.id));
-    } else {
+    if (!isFullScreen) {
       BlocProvider.of<ModelEditViewBloc<T>>(context)
           .add(ModelEditViewEventSelect<T>(model.id, false));
+    } else if (createActionStyle == ActionStyle.dialog) {
+      ModelDialog<T>(buildDisplay: buildDetailDisplayForModel).showDetail(
+        context,
+        model,
+        formKey,
+        (p0, p1, p2) => _goEdit(context, model, isFullScreen),
+      );
+    } else {
+      Navigator.of(context).pushNamed(ModelRouter.routeDetail<T>(model.id));
     }
   }
 
   void _goEdit(BuildContext context, T model, bool isFullScreen) {
-    if (isFullScreen || editActionStyle == ActionStyle.uri) {
-      Navigator.of(context).pushNamed(ModelRouter.routeEdit<T>(model.id));
-    } else {
+    if (!isFullScreen) {
       BlocProvider.of<ModelEditViewBloc<T>>(context)
           .add(ModelEditViewEventMode<T>(true));
+    } else if (editActionStyle == ActionStyle.dialog) {
+      ModelDialog<T>(buildForm: buildForm).showAdd(context, formKey, model);
+    } else {
+      Navigator.of(context).pushNamed(ModelRouter.routeEdit<T>(model.id));
     }
   }
 
@@ -168,11 +204,13 @@ class ModelSinglePage<T extends IModel> extends StatelessWidget
   }
 
   void _goCreate(BuildContext context, bool isFullScreen) {
-    if (isFullScreen || editActionStyle == ActionStyle.uri) {
-      Navigator.of(context).pushNamed(ModelRouter.routeAdd<T>(parentId));
-    } else {
+    if (!isFullScreen) {
       BlocProvider.of<ModelEditViewBloc<T>>(context)
           .add(ModelEditViewEventCreateNew<T>());
+    } else if (createActionStyle == ActionStyle.dialog) {
+      ModelDialog<T>(buildForm: buildForm).showAdd(context, formKey);
+    } else {
+      Navigator.of(context).pushNamed(ModelRouter.routeAdd<T>(parentId));
     }
   }
 
@@ -207,46 +245,48 @@ class ModelSinglePage<T extends IModel> extends StatelessWidget
   List<IAction> getItemActions(
       ModelEditViewState<T> editState, bool fullScreen) {
     List<IAction> rtn = [];
-    if (fullScreen) {
-      rtn.add(IAction(
-        icon: Icons.add,
-        label: 'Create',
-        onSelected: (context, model) => _goCreate(context, fullScreen),
-      ));
-    } else {
-      if (!editState.isEditMode) {
-        rtn.add(IAction(
-            icon: Icons.add,
-            label: 'Create',
-            onSelected: (context, model) => _goCreate(context, fullScreen)));
-
-        rtn.add(IAction(
-            icon: Icons.edit,
-            label: 'Edit',
-            onSelected: (context, model) =>
-                _goEdit(context, model, fullScreen)));
-
-        rtn.add(IAction(
-            icon: Icons.delete,
-            label: 'Delete',
-            onSelected: (context, model) =>
-                _goDelete(context, model, fullScreen)));
-      } else if (editState is ModelEditViewStateNotLoaded<T>) {
+    if (editState is ModelEditViewStateLoaded<T>) {
+      if (fullScreen) {
         rtn.add(IAction(
           icon: Icons.add,
           label: 'Create',
           onSelected: (context, model) => _goCreate(context, fullScreen),
         ));
-      } else if (editState.isEditMode) {
-        rtn.add(IAction(
-            icon: Icons.save,
-            label: 'Save',
-            onSelected: (context, model) => _goSave(context, fullScreen)));
+      } else {
+        if (!editState.isEditMode) {
+          rtn.add(IAction(
+              icon: Icons.add,
+              label: 'Create',
+              onSelected: (context, model) => _goCreate(context, fullScreen)));
 
-        rtn.add(IAction(
-            icon: Icons.cancel,
-            label: 'Cancel',
-            onSelected: (context, model) => _goCancel(context, fullScreen)));
+          rtn.add(IAction(
+              icon: Icons.edit,
+              label: 'Edit',
+              onSelected: (context, model) =>
+                  _goEdit(context, model, fullScreen)));
+
+          rtn.add(IAction(
+              icon: Icons.delete,
+              label: 'Delete',
+              onSelected: (context, model) =>
+                  _goDelete(context, model, fullScreen)));
+        } else if (editState is ModelEditViewStateNotLoaded<T>) {
+          rtn.add(IAction(
+            icon: Icons.add,
+            label: 'Create',
+            onSelected: (context, model) => _goCreate(context, fullScreen),
+          ));
+        } else if (editState.isEditMode) {
+          rtn.add(IAction(
+              icon: Icons.save,
+              label: 'Save',
+              onSelected: (context, model) => _goSave(context, fullScreen)));
+
+          rtn.add(IAction(
+              icon: Icons.cancel,
+              label: 'Cancel',
+              onSelected: (context, model) => _goCancel(context, fullScreen)));
+        }
       }
     }
 

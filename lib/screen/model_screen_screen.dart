@@ -2,16 +2,19 @@ import 'package:flutter/material.dart';
 import 'package:flutter_model/flutter_model.dart';
 import 'package:loggy/loggy.dart';
 
-abstract class ModelScreenListActionBar<T extends IModel>
+abstract class ModelScreenListScreen<T extends IModel>
     extends ModelSinglePage<T> with UiLoggy {
   final Widget? drawer;
   final String? title;
 
-  ModelScreenListActionBar(
+  ModelScreenListScreen(
       {super.key,
       super.enableSplit = true,
       this.drawer,
       this.title,
+      super.editActionStyle = ActionStyle.uri,
+      super.displayActionStyle = ActionStyle.uri,
+      super.createActionStyle = ActionStyle.uri,
       super.parentId});
 
   @override

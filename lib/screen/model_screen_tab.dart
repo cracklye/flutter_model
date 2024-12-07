@@ -4,22 +4,26 @@ import 'package:flutter_model/flutter_model.dart';
 import 'package:flutter_model/widgets/ui/page_header.dart';
 import 'package:loggy/loggy.dart';
 
-abstract class ModelScreenListPage<T extends IModel> extends ModelSinglePage<T>
+abstract class ModelScreenListTab<T extends IModel> extends ModelSinglePage<T>
     with UiLoggy {
   // final Widget? drawer;
   final String? title;
 
   //final String? parentId;
-  ModelScreenListPage(
+  ModelScreenListTab(
       {super.key,
       //  this.drawer,
       this.title,
+      super.enableSplit = true,
+      super.editActionStyle = ActionStyle.uri,
+      super.displayActionStyle = ActionStyle.uri,
+      super.createActionStyle = ActionStyle.uri,
       super.parentId});
   @override
   Widget buildDetailDisplay(
       BuildContext context, ModelEditViewStateLoaded<T> state, T? model) {
     List<Widget> actions = getItemActions(state, false)
-        .map((e) => ElevatedButton(
+        .map((e) => TextButton(
             onPressed: () => e.onSelected(context, model),
             child: Text(e.label)))
         .toList();
@@ -37,7 +41,7 @@ abstract class ModelScreenListPage<T extends IModel> extends ModelSinglePage<T>
   Widget buildDetailEdit(
       BuildContext context, ModelEditViewStateLoaded<T> state, T? model) {
     List<Widget> actions = getItemActions(state, false)
-        .map((e) => ElevatedButton(
+        .map((e) => TextButton(
             onPressed: () => e.onSelected(context, model),
             child: Text(e.label)))
         .toList();

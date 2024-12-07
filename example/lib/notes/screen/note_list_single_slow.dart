@@ -7,15 +7,14 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_model/bloc/modeledit/model_edit_state.dart';
 import 'package:flutter_model/flutter_model.dart';
-import 'package:flutter_model/screen/model_screen_list2.dart';
 
-class NotesScreenListSingleSlow extends ModelScreenListActionBar<Notes> {
+class NotesScreenListSingleSlow extends ModelScreenListScreen<Notes> {
   NotesScreenListSingleSlow({super.key})
       : super(
           drawer: const AppDrawer(),
           title: "Notes",
         );
-        
+
   @override
   Widget build(BuildContext context) {
     return RepositoryProvider<IModelAPI<Notes>>(
@@ -48,8 +47,8 @@ class NotesScreenListSingleSlow extends ModelScreenListActionBar<Notes> {
   }
 
   @override
-  Widget buildDetailDisplayForModel(
-      BuildContext context, ModelEditViewStateLoaded<Notes> state, Notes? model) {
+  Widget buildDetailDisplayForModel(BuildContext context,
+      ModelEditViewStateLoaded<Notes> state, Notes? model) {
     if (model == null) return const Text("Model is null");
     return NotesDisplay(model: model);
   }

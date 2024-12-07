@@ -1,14 +1,15 @@
 import 'package:example/dailyaction/model_dailyaction.dart';
 import 'package:example/dailyaction/screen/dailyaction_addedit.dart';
 import 'package:example/dailyaction/screen/dailyaction_details.dart';
-import 'package:example/dailyaction/screen/dailyaction_list_single.dart';
+import 'package:example/dailyaction/screen/dailyaction_list_screen.dart';
 import 'package:example/notes/model_notes.dart';
 import 'package:example/notes/screen/note_addedit.dart';
 import 'package:example/notes/screen/note_details.dart';
-import 'package:example/notes/screen/note_list_single.dart';
+import 'package:example/notes/screen/note_list_single_screen.dart';
+import 'package:example/notes/screen/note_list_single_slow.dart';
 import 'package:example/sample/screen/sample_addedit.dart';
 import 'package:example/sample/screen/sample_details.dart';
-import 'package:example/sample/screen/sample_list_single.dart';
+import 'package:example/sample/screen/sample_list_screen.dart';
 import 'package:example/screens/home.dart';
 import 'package:example/screens/test_view.dart';
 import 'package:fluro/fluro.dart';
@@ -27,7 +28,7 @@ class AppRouter {
 
   static final Handler _noteList = Handler(
       handlerFunc: (BuildContext? context, Map<String, dynamic> params) =>
-          NotesScreenListSingle());
+          NotesScreenListScreen());
 
   static final Handler _noteDetail = Handler(
       handlerFunc: (BuildContext? context, Map<String, dynamic> params) =>
@@ -39,7 +40,7 @@ class AppRouter {
 
   static final Handler _actionList = Handler(
       handlerFunc: (BuildContext? context, Map<String, dynamic> params) =>
-          DailyActionScreenListSingle());
+          DailyActionListScreen());
 
   static final Handler _actionDetail = Handler(
       handlerFunc: (BuildContext? context, Map<String, dynamic> params) =>
@@ -49,6 +50,39 @@ class AppRouter {
       handlerFunc: (BuildContext? context, Map<String, dynamic> params) =>
           DailyActionAddEditScreen(
               id: params["id"]?[0], parentId: params["id"]?[0]));
+
+  static final Handler _noteListDialog = Handler(
+      handlerFunc: (BuildContext? context, Map<String, dynamic> params) =>
+          NotesScreenListScreen(
+            enableSplit: false,
+            editActionStyle: ActionStyle.dialog,
+            displayActionStyle: ActionStyle.dialog,
+            createActionStyle: ActionStyle.dialog,
+          ));
+
+  static final Handler _noteListPaneDialog = Handler(
+      handlerFunc: (BuildContext? context, Map<String, dynamic> params) =>
+          NotesScreenListScreen(
+            editActionStyle: ActionStyle.dialog,
+            displayActionStyle: ActionStyle.dialog,
+            createActionStyle: ActionStyle.dialog,
+          ));
+  static final Handler _noteListUri = Handler(
+      handlerFunc: (BuildContext? context, Map<String, dynamic> params) =>
+          NotesScreenListScreen(
+            enableSplit: false,
+            editActionStyle: ActionStyle.uri,
+            displayActionStyle: ActionStyle.uri,
+            createActionStyle: ActionStyle.uri,
+          ));
+
+  static final Handler _noteListPaneUri = Handler(
+      handlerFunc: (BuildContext? context, Map<String, dynamic> params) =>
+          NotesScreenListScreen(
+            editActionStyle: ActionStyle.uri,
+            displayActionStyle: ActionStyle.uri,
+            createActionStyle: ActionStyle.uri,
+          ));
 
   static setupRouter() {
     ModelRouter.routeSetupCRUD<Notes>(router,
@@ -82,7 +116,27 @@ class AppRouter {
       "/testslowlist",
       handler: Handler(
           handlerFunc: (BuildContext? context, Map<String, dynamic> params) =>
-              NotesScreenListSingle()),
+              NotesScreenListSingleSlow()),
+    );
+
+    router.define(
+      "/_noteListDialog",
+      handler: _noteListDialog,
+    );
+
+    router.define(
+      "/_noteListPaneDialog",
+      handler: _noteListPaneDialog,
+    );
+
+    router.define(
+      "/_noteListUri",
+      handler: _noteListUri,
+    );
+
+    router.define(
+      "/_noteListPaneUri",
+      handler: _noteListPaneUri,
     );
 
     router.define(

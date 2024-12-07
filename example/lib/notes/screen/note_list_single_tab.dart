@@ -3,9 +3,10 @@ import 'package:example/notes/widget/note_display.dart';
 import 'package:example/notes/widget/note_form.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_model/bloc/modeledit/model_edit_state.dart';
-import 'package:flutter_model/screen/model_screen_list.dart';
+import 'package:flutter_model/flutter_model.dart';
 
-class NotesScreenListSinglePage extends ModelScreenListPage<Notes> {
+
+class NotesScreenListSinglePage extends ModelScreenListTab<Notes> {
   NotesScreenListSinglePage({super.key})
       : super(
           title: "Notes",

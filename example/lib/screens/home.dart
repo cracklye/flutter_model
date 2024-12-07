@@ -1,5 +1,5 @@
 import 'package:example/dailyaction/screen/dailyaction_list_single_page.dart';
-import 'package:example/notes/screen/note_list_single_page.dart';
+import 'package:example/notes/screen/note_list_single_tab.dart';
 import 'package:example/routes/app_navigator.dart';
 import 'package:example/screens/size_util.dart';
 import 'package:example/screens/util_enum_ext.dart';

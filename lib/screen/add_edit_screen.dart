@@ -20,6 +20,36 @@ class ModelScreenEdit<T extends IModel> extends StatelessWidget {
     super.key,
   });
 
+  List<IAction> getActions(BuildContext context, ModelEditViewState state) {
+    return [
+      IAction(
+        icon: Icons.save,
+        label: "Save",
+        onSelected: (context, model) {
+          if (formKey.currentState!.validate()) {
+            formKey.currentState!.save();
+          }
+        },
+      ),
+      IAction(
+          icon: Icons.cancel,
+          label: "Cancel",
+          onSelected: (context, state) => Navigator.of(context).pop())
+    ];
+  }
+
+  Widget getPageTitle(BuildContext context, ModelEditViewState state) {
+    if (state.isEditMode) {
+      return const Text("Edit");
+    }
+
+    if (state.model != null) {
+      return Text(state.model!.displayLabel);
+    } else {
+      return const Text("Edit");
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return ModelEditViewBlocWidget<T>(
@@ -33,27 +63,14 @@ class ModelScreenEdit<T extends IModel> extends StatelessWidget {
         buildScaffold: (context, state, content) => Scaffold(
               body: content(context, state),
               appBar: AppBar(
-                centerTitle: true,
-                title: const Text("Edit"),
-                actions: [
-                  IconButton(
-                    icon: const Icon(Icons.save),
-                    tooltip: 'Save',
-                    onPressed: () {
-                      if (formKey.currentState!.validate()) {
-                        formKey.currentState!.save();
-                      }
-                    },
-                  ),
-                  IconButton(
-                    icon: const Icon(Icons.cancel),
-                    tooltip: 'Cancel',
-                    onPressed: () {
-                      Navigator.of(context).pop();
-                    },
-                  ),
-                ],
-              ),
+                  centerTitle: false,
+                  title: getPageTitle(context, state),
+                  actions: getActions(context, state)
+                      .map((e) => IconButton(
+                          onPressed:()=> e.onSelected(context, state.model),
+                          icon: Icon(e.icon),
+                          tooltip: e.label))
+                      .toList()),
             ),
         buildContent: (context, state) {
           if (state.isEmpty) {
