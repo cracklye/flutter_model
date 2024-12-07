@@ -4,7 +4,7 @@ import 'package:flutter_model/flutter_model.dart';
 
 class ModelListBlocWidget<T extends IModel> extends StatelessWidget {
   final bool provideBloc;
-  final dynamic id;
+  final dynamic parentId;
 
   final Widget Function(BuildContext context, ModelsState<T> state,
       Function(BuildContext context, ModelsState<T> state))? buildScaffold;
@@ -15,7 +15,7 @@ class ModelListBlocWidget<T extends IModel> extends StatelessWidget {
   const ModelListBlocWidget(
       {super.key,
       this.provideBloc = false,
-      this.id,
+      this.parentId,
       this.buildContent,
       this.buildScaffold});
 

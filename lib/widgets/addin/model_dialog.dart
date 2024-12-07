@@ -21,17 +21,6 @@ class ModelDialog<T extends IModel> {
       GlobalKey<FormState> formKey,
       void Function(Map<String, dynamic>) onSave)? buildForm;
 
-  // Widget buildDetailDisplayForModel(
-  //     BuildContext context, ModelEditViewStateLoaded<T> state, T? model) {
-
-  // Widget buildForm(
-  // BuildContext context,
-  // ModelEditViewStateLoaded<T> state,
-  // T? model,
-  // GlobalKey<FormState> formKey,
-  // void Function(Map<String, dynamic>) onSave,
-  // ) {
-
   final Widget Function(
           BuildContext context, ModelEditViewStateLoaded<T> state, T? model)?
       buildDisplay;
@@ -233,8 +222,6 @@ class ModelDialog<T extends IModel> {
                                       ),
                                     );
                                   } else {
-                                    print("saving new doc");
-
                                     BlocProvider.of<ModelEditViewBloc<T>>(
                                             context)
                                         .add(

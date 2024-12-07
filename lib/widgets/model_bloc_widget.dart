@@ -4,8 +4,8 @@ import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_model/flutter_model.dart';
 
-abstract class ModelBlocWidget<T extends IModel> extends StatelessWidget {
-  const ModelBlocWidget({super.key});
+abstract class ModelBlocEditWidget<T extends IModel> extends StatelessWidget {
+  const ModelBlocEditWidget({super.key});
 
   @override
   Widget build(BuildContext context) {
