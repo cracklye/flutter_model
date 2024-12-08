@@ -130,8 +130,8 @@ class ModelSinglePage<T extends IModel> extends StatelessWidget
       selectedOrderBy: listState.orderBy,
       onOrderByChange: (p) => BlocProvider.of<ModelsBloc<T>>(context)
           .add(ModelsChangeOrderBy<T>(p?.value)),
-      onTap: (model) => _goDetail(context, model, isFullScreen),
-      onDoubleTap: (model) => _goDetail(context, model, true),
+      onTap: (model) => goDetail(context, model, isFullScreen),
+      onDoubleTap: (model) => goDetail(context, model, true),
       onSearchChange: (p0) => BlocProvider.of<ModelsBloc<T>>(context)
           .add(ModelsChangeSearchText<T>(p0)),
       onSearchClear: (p0) => BlocProvider.of<ModelsBloc<T>>(context)
@@ -150,7 +150,7 @@ class ModelSinglePage<T extends IModel> extends StatelessWidget
   }
 
   void onLongTap(BuildContext context, T? model) {}
-  
+
   Widget Function(BuildContext)? get buildToolbar => null;
   Widget Function(BuildContext)? get buildToobarFooter => null;
   Widget Function(BuildContext)? get buildToolbarLeading => null;
@@ -159,7 +159,7 @@ class ModelSinglePage<T extends IModel> extends StatelessWidget
 
   String get footerText => "";
 
-  void _goDetail(BuildContext context, T model, bool isFullScreen) {
+  void goDetail(BuildContext context, T model, bool isFullScreen) {
     if (!isFullScreen) {
       BlocProvider.of<ModelEditViewBloc<T>>(context)
           .add(ModelEditViewEventSelect<T>(model.id, false));
@@ -168,14 +168,14 @@ class ModelSinglePage<T extends IModel> extends StatelessWidget
         context,
         model,
         formKey,
-        (p0, p1, p2) => _goEdit(context, model, isFullScreen),
+        (p0, p1, p2) => goEdit(context, model, isFullScreen),
       );
     } else {
       Navigator.of(context).pushNamed(ModelRouter.routeDetail<T>(model.id));
     }
   }
 
-  void _goEdit(BuildContext context, T model, bool isFullScreen) {
+  void goEdit(BuildContext context, T model, bool isFullScreen) {
     if (!isFullScreen) {
       BlocProvider.of<ModelEditViewBloc<T>>(context)
           .add(ModelEditViewEventMode<T>(true));
@@ -186,7 +186,7 @@ class ModelSinglePage<T extends IModel> extends StatelessWidget
     }
   }
 
-  void _goDelete(BuildContext context, T model, bool isFullScreen) {
+  void goDelete(BuildContext context, T model, bool isFullScreen) {
     BlocProvider.of<ModelEditViewBloc<T>>(context)
         .add(ModelEditViewEventDelete<T>(model.id));
     if (isFullScreen) {
@@ -194,18 +194,18 @@ class ModelSinglePage<T extends IModel> extends StatelessWidget
     }
   }
 
-  void _goCancel(BuildContext context, bool isFullScreen) {
+  void goCancel(BuildContext context, bool isFullScreen) {
     BlocProvider.of<ModelEditViewBloc<T>>(context)
         .add(ModelEditViewEventMode<T>(false));
   }
 
-  void _goSave(BuildContext context, bool isFullScreen) {
+  void goSave(BuildContext context, bool isFullScreen) {
     if (formKey.currentState!.validate()) {
       formKey.currentState!.save();
     }
   }
 
-  void _goCreate(BuildContext context, bool isFullScreen) {
+  void goCreate(BuildContext context, bool isFullScreen) {
     if (!isFullScreen) {
       BlocProvider.of<ModelEditViewBloc<T>>(context)
           .add(ModelEditViewEventCreateNew<T>());
@@ -252,42 +252,42 @@ class ModelSinglePage<T extends IModel> extends StatelessWidget
         rtn.add(IAction(
           icon: Icons.add,
           label: 'Create',
-          onSelected: (context, model) => _goCreate(context, fullScreen),
+          onSelected: (context, model) => goCreate(context, fullScreen),
         ));
       } else {
         if (!editState.isEditMode) {
           rtn.add(IAction(
               icon: Icons.add,
               label: 'Create',
-              onSelected: (context, model) => _goCreate(context, fullScreen)));
+              onSelected: (context, model) => goCreate(context, fullScreen)));
 
           rtn.add(IAction(
               icon: Icons.edit,
               label: 'Edit',
               onSelected: (context, model) =>
-                  _goEdit(context, model, fullScreen)));
+                  goEdit(context, model, fullScreen)));
 
           rtn.add(IAction(
               icon: Icons.delete,
               label: 'Delete',
               onSelected: (context, model) =>
-                  _goDelete(context, model, fullScreen)));
+                  goDelete(context, model, fullScreen)));
         } else if (editState is ModelEditViewStateNotLoaded<T>) {
           rtn.add(IAction(
             icon: Icons.add,
             label: 'Create',
-            onSelected: (context, model) => _goCreate(context, fullScreen),
+            onSelected: (context, model) => goCreate(context, fullScreen),
           ));
         } else if (editState.isEditMode) {
           rtn.add(IAction(
               icon: Icons.save,
               label: 'Save',
-              onSelected: (context, model) => _goSave(context, fullScreen)));
+              onSelected: (context, model) => goSave(context, fullScreen)));
 
           rtn.add(IAction(
               icon: Icons.cancel,
               label: 'Cancel',
-              onSelected: (context, model) => _goCancel(context, fullScreen)));
+              onSelected: (context, model) => goCancel(context, fullScreen)));
         }
       }
     }
