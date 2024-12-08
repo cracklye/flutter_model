@@ -150,11 +150,13 @@ class ModelSinglePage<T extends IModel> extends StatelessWidget
   }
 
   void onLongTap(BuildContext context, T? model) {}
-  get buildToolbar => null;
-  get buildToobarFooter => null;
-  get buildToolbarLeading => null;
-  get buildToolbarSub => null;
-  get buildViewIcons => null;
+  
+  Widget Function(BuildContext)? get buildToolbar => null;
+  Widget Function(BuildContext)? get buildToobarFooter => null;
+  Widget Function(BuildContext)? get buildToolbarLeading => null;
+  Widget Function(BuildContext)? get buildToolbarSub => null;
+  List<Widget> Function(BuildContext)? get buildViewIcons => null;
+
   String get footerText => "";
 
   void _goDetail(BuildContext context, T model, bool isFullScreen) {
