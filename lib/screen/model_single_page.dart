@@ -86,12 +86,16 @@ class ModelSinglePage<T extends IModel> extends StatelessWidget
         Expanded(
             child: Padding(
                 padding: edge,
-                child: SingleChildScrollView(
-                    controller: ScrollController(),
-                    //color: Colors.red,
-                    child: Padding(
-                        padding: const EdgeInsets.only(top: 20),
-                        child: buildDetail(context, listState, editState)))))
+                child:
+                    // SingleChildScrollView(
+                    //     controller: ScrollController(),
+                    //     //color: Colors.red,
+                    //     child: Padding(
+                    //         padding: const EdgeInsets.only(top: 20),
+                    //         child:
+                    buildDetail(context, listState, editState))
+            //  ))
+            )
       ],
     );
   }
