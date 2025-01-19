@@ -5,7 +5,7 @@ import 'package:flutter_model/flutter_model.dart';
 import 'package:loggy/loggy.dart';
 
 class ModelsBloc<T extends IModel> extends Bloc<ModelsEvent<T>, ModelsState<T>>
-    with UiLoggy {
+    with UiLoggy, HandleAttachment<T> {
   final IModelAPI<T> modelsRepository;
   StreamSubscription? _modelsSubscription;
   // final ModelsState<T> initState;
@@ -46,8 +46,8 @@ class ModelsBloc<T extends IModel> extends Bloc<ModelsEvent<T>, ModelsState<T>>
     on<ModelsChangeOrderBy<T>>(_onModelsChangeOrderBy);
     on<ModelsChangeFilter<T>>(_onModelsChangeFilter);
 
-    // on<AddModel<T>>(_onAddModel);
-    // on<UpdateModel<T>>(_onUpdateModel);
+    on<AddModel<T>>(_onAddModel);
+    on<UpdateModel<T>>(_onUpdateModel);
     // on<CreateNewModel<T>>(_onCreateNewModel);
     on<ModelsDeleteAttachment<T>>(_onModelsDeleteAttachment);
   }
@@ -197,7 +197,7 @@ class ModelsBloc<T extends IModel> extends Bloc<ModelsEvent<T>, ModelsState<T>>
 //   ));
 // }
 
-// /// Creates a new empty model and sets it to the state.selected property
+  /// Creates a new empty model and sets it to the state.selected property
 // void _onCreateNewModel(
 //     CreateNewModel<T> event, Emitter<ModelsState<T>> emit) async {
 //   var state2 = state as ModelsLoaded<T>;
@@ -207,24 +207,26 @@ class ModelsBloc<T extends IModel> extends Bloc<ModelsEvent<T>, ModelsState<T>>
 //        mode: ModelStateMode.edit));
 // }
 
-// void _onAddModel(AddModel<T> event, Emitter<ModelsState<T>> emit) async {
-//   loggy.debug("_onAddModel Returning models update $T (${event.editMode})");
+  void _onAddModel(AddModel<T> event, Emitter<ModelsState<T>> emit) async {
+    loggy.debug("_onAddModel Returning models update $T (${event.editMode})");
 
-//   var values = event.values;
+    var values = event.values;
 
-//   var newModel = await doAddModel(
-//       modelsRepository, attachmentDao, values, loggy, event.deleteAttachment);
+    var newModel = await doAddModel(
+        modelsRepository, attachmentDao, values, loggy, event.deleteAttachment);
 
-//   add(ModelSelect(newModel, ModelStateMode.edit));
-// }
+    // add(ModelSelect(newModel, ModelStateMode.edit));
+  }
 
-// void _onUpdateModel(UpdateModel<T> event, Emitter<ModelsState<T>> emit) async {
-//   loggy.debug("_onUpdateModel Returning models update $T");
-//   var values = event.values;
+  void _onUpdateModel(
+      UpdateModel<T> event, Emitter<ModelsState<T>> emit) async {
+    loggy.debug("_onUpdateModel Returning models update $T");
+    var values = event.values;
 
-//   await doUpdateModel(_modelsRepository, attachmentDao, event.id, values, loggy,
-//       event.deleteAttachment);
-// }
+    await doUpdateModel(modelsRepository, attachmentDao, event.id, values,
+        loggy, event.deleteAttachment);
+  }
+
   @override
   Future<void> close() async {
     await _modelsSubscription?.cancel();
@@ -243,45 +245,6 @@ class ModelsBloc<T extends IModel> extends Bloc<ModelsEvent<T>, ModelsState<T>>
     }
   }
 }
-
-// void _onSetEditMode(SetEditMode<T> event, Emitter<ModelsState<T>> emit) async {
-//   loggy.debug("_onSetEditMode<$T> started ${event.editMode}");
-//   var state2 = state as ModelsLoaded<T>;
-//   if (event.editMode) {
-//     emit(state2.copyWith(mode: ModelStateMode.edit));
-//   } else {
-//     emit(state2.copyWith(mode: ModelStateMode.view));
-//   }
-// }
-
-// void _onUpdateModelValue(
-//     UpdateModelValue<T> event, Emitter<ModelsState<T>> emit) async {
-//   var state2 = state as ModelsLoaded<T>;
-//   emit(state2.copyWith(selected: event.model));
-// }
-
-// void _onModelSelect(ModelSelect<T> event, Emitter<ModelsState<T>> emit) async {
-//   if (state is ModelsLoaded<T>) {
-//     var state2 = state as ModelsLoaded<T>;
-//     loggy.debug("_onModelSelect select model  $T");
-//     if (event.model == null) {
-//       emit(ModelsLoaded<T>(
-//           id: state2.id,
-//           models: state2.models,
-//           hierarchy: state2.hierarchy,
-//           parameters: state2.parameters));
-//     } else {
-//       emit(state2.copyWith(selected: event.model, mode: event.mode));
-//     }
-//   }
-// }
-
-// void _onLoadModels(LoadModels<T> event, Emitter<ModelsState<T>> emit) async {
-//   loggy.debug("_onLoadModels Returning models update $T $event");
-//   await _doLoadModels(event.parentId, event.id, emit, event.clear);
-// }
-
-
 
 // void _onDeleteModel(DeleteModel<T> event, Emitter<ModelsState<T>> emit) async {
 //   loggy.debug("_onDeleteModel Returning models update $T");
@@ -367,7 +330,7 @@ class ModelsBloc<T extends IModel> extends Bloc<ModelsEvent<T>, ModelsState<T>>
 //     }
 //   }
 // }
-        
+
 // class ModelsBloc<T extends IModel> extends Bloc<ModelsEvent<T>, ModelsState<T>>
 //     with UiLoggy, HandleAttachment<T> {
 //   final IModelAPI<T> modelsRepository;
@@ -484,31 +447,29 @@ class ModelsBloc<T extends IModel> extends Bloc<ModelsEvent<T>, ModelsState<T>>
 //     await doLoadModels(event.parentId, event.id, emit, event.clear);
 //   }
 
-//   void onAddModel(AddModel<T> event, Emitter<ModelsState<T>> emit) async {
-//     loggy.debug("_onAddModel Returning models update $T (${event.editMode})");
+// void onAddModel(AddModel<T> event, Emitter<ModelsState<T>> emit) async {
+//   loggy.debug("_onAddModel Returning models update $T (${event.editMode})");
 
-//     var values = event.values;
+//   var values = event.values;
 
-//     var newModel = await doAddModel(modelsRepository, attachmentDao, values,
-//         loggy, event.deleteAttachment);
+//   var newModel = await doAddModel(
+//       modelsRepository, attachmentDao, values, loggy, event.deleteAttachment);
 
-//     add(ModelSelect(newModel, ModelStateMode.edit));
-//   }
+//   add(ModelSelect(newModel, ModelStateMode.edit));
+// }
 
-//   void onUpdateModel(
-//       UpdateModel<T> event, Emitter<ModelsState<T>> emit) async {
-//     loggy.debug("_onUpdateModel Returning models update $T");
-//     var values = event.values;
+// void onUpdateModel(UpdateModel<T> event, Emitter<ModelsState<T>> emit) async {
+//   loggy.debug("_onUpdateModel Returning models update $T");
+//   var values = event.values;
 
-//     await doUpdateModel(modelsRepository, attachmentDao, event.id, values,
-//         loggy, event.deleteAttachment);
-//   }
+//   await doUpdateModel(modelsRepository, attachmentDao, event.id, values, loggy,
+//       event.deleteAttachment);
+// }
 
-//   void onDeleteModel(
-//       DeleteModel<T> event, Emitter<ModelsState<T>> emit) async {
-//     loggy.debug("_onDeleteModel Returning models update $T");
-//     modelsRepository.deleteModel(event.model);
-//   }
+// void onDeleteModel(DeleteModel<T> event, Emitter<ModelsState<T>> emit) async {
+//   loggy.debug("_onDeleteModel Returning models update $T");
+//   modelsRepository.deleteModel(event.model);
+// }
 
 //   void onModelsUpdated(
 //       ModelsUpdated<T> event, Emitter<ModelsState<T>> emit) async {

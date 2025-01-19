@@ -1,5 +1,5 @@
 
-class IAppEnvironment {
+class IAppPreference {
   // static bool get isDebug => !isRelease;
   // static bool get isRelease => flavour == "prod";
   // static String get flavour => const String.fromEnvironment('flavour');
@@ -7,9 +7,13 @@ class IAppEnvironment {
   // static late T pref;
 }
 
-class AppEnvironment extends IAppEnvironment{
+class AppEnvironment
+// <T as IAppPreference> 
+{
   static bool get isDebug => !isRelease;
   static bool get isRelease => flavour == "prod";
   static String get flavour => const String.fromEnvironment('flavour');
   
+
+  static IAppPreference preferences = IAppPreference();
 }
