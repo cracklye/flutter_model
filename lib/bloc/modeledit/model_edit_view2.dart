@@ -28,10 +28,11 @@ class ModelEditViewBloc<T extends IModel>
       Emitter<ModelEditViewState<T>> emit) async {
     emit(ModelEditViewStateNotLoaded<T>());
   }
+  
 
   void _onModelEditViewEventCreateNew(ModelEditViewEventCreateNew<T> event,
       Emitter<ModelEditViewState<T>> emit) async {
-    emit(ModelEditViewStateLoaded<T>(isEditMode: true));
+    emit(ModelEditViewStateLoaded<T>(isEditMode: true, isNewDoc: true));
   }
 
   void _onModelEditViewEventDelete(ModelEditViewEventDelete<T> event,

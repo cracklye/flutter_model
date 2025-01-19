@@ -67,13 +67,13 @@ class ModelScreenEdit<T extends IModel> extends StatelessWidget {
                   title: getPageTitle(context, state),
                   actions: getActions(context, state)
                       .map((e) => IconButton(
-                          onPressed:()=> e.onSelected(context, state.model),
+                          onPressed: () => e.onSelected(context, state.model),
                           icon: Icon(e.icon),
                           tooltip: e.label))
                       .toList()),
             ),
         buildContent: (context, state) {
-          if (state.isEmpty) {
+          if (state.isEmpty && !state.isNewDoc) {
             return const CircularProgressIndicator();
           }
           return Expanded(

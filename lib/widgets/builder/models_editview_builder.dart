@@ -56,7 +56,7 @@ class ModelEditViewBlocWidget<T extends IModel> extends StatelessWidget {
             RepositoryProvider.of<IModelAPI<T>>(context), attachDao)
           ..add(id != null
               ? ModelEditViewEventSelect<T>(id, false)
-              : ModelEditViewEventClear<T>())),
+              : ModelEditViewEventCreateNew<T>())),
         child: _buildConsumerOrListener(context));
   }
 
