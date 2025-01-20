@@ -67,25 +67,24 @@ class ModelScreenEdit<T extends IModel> extends StatelessWidget {
                   title: getPageTitle(context, state),
                   actions: getActions(context, state)
                       .map((e) => IconButton(
-                          onPressed: () => e.onSelected(context, state.model),
+                          onPressed:()=> e.onSelected(context, state.model),
                           icon: Icon(e.icon),
                           tooltip: e.label))
                       .toList()),
             ),
         buildContent: (context, state) {
-          if (state.isEmpty && !state.isNewDoc) {
+          if (state.isEmpty && ! state.isNewDoc) {
+            
             return const CircularProgressIndicator();
           }
-          return Expanded(
-              child: SingleChildScrollView(
-                  child: buildForm(
+          return buildForm(
                       context,
                       state as ModelEditViewStateLoaded<T>,
                       state.model,
                       formKey,
                       (values) => BlocProvider.of<ModelEditViewBloc<T>>(context)
                           .add(ModelEditViewEventSave<T>(values)),
-                      initialProperties)));
+                      initialProperties);
         });
   }
 
