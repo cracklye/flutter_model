@@ -11,12 +11,14 @@ class ModelScreenEdit<T extends IModel> extends StatelessWidget {
   final dynamic parentId;
   final Function(BuildContext context)? onSaved;
   final Map<String, dynamic>? initialProperties;
+  final bool expanded;
 
   ModelScreenEdit({
     this.id,
     this.parentId,
     this.onSaved,
     this.initialProperties,
+    this.expanded = true,
     super.key,
   });
 
@@ -67,24 +69,37 @@ class ModelScreenEdit<T extends IModel> extends StatelessWidget {
                   title: getPageTitle(context, state),
                   actions: getActions(context, state)
                       .map((e) => IconButton(
-                          onPressed:()=> e.onSelected(context, state.model),
+                          onPressed: () => e.onSelected(context, state.model),
                           icon: Icon(e.icon),
                           tooltip: e.label))
                       .toList()),
             ),
         buildContent: (context, state) {
-          if (state.isEmpty && ! state.isNewDoc) {
-            
+          if (state.isEmpty && !state.isNewDoc) {
             return const CircularProgressIndicator();
           }
-          return buildForm(
-                      context,
-                      state as ModelEditViewStateLoaded<T>,
-                      state.model,
-                      formKey,
-                      (values) => BlocProvider.of<ModelEditViewBloc<T>>(context)
-                          .add(ModelEditViewEventSave<T>(values)),
-                      initialProperties);
+          if (expanded) {
+            return Expanded(
+                child: SingleChildScrollView(
+                    child: buildForm(
+                        context,
+                        state as ModelEditViewStateLoaded<T>,
+                        state.model,
+                        formKey,
+                        (values) =>
+                            BlocProvider.of<ModelEditViewBloc<T>>(context)
+                                .add(ModelEditViewEventSave<T>(values)),
+                        initialProperties)));
+          } else {
+            return buildForm(
+                context,
+                state as ModelEditViewStateLoaded<T>,
+                state.model,
+                formKey,
+                (values) => BlocProvider.of<ModelEditViewBloc<T>>(context)
+                    .add(ModelEditViewEventSave<T>(values)),
+                initialProperties);
+          }
         });
   }
 

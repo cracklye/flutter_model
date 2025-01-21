@@ -17,8 +17,15 @@ class ModelEditViewEventSave<T extends IModel> extends ModelEditViewEvent<T> {
   final Map<String, dynamic> values;
   final bool? isEditMode;
   final bool deleteAttachment;
-  final dynamic id; 
-  final dynamic parentId; 
+  final dynamic id;
+  final dynamic parentId;
+
+  Map<String, dynamic> get valuesWithParent {
+    if (parentId == null) return values;
+    if (values.containsKey("parentId")) return values;
+    return {...values, "parentId": parentId};
+  }
+
   const ModelEditViewEventSave(this.values,
       {this.isEditMode, this.deleteAttachment = false, this.id, this.parentId});
 }

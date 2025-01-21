@@ -97,7 +97,7 @@ class ModelEditViewBloc<T extends IModel>
       if (state.model == null) {
         // var newModel = await dao.create(event.values);
         var newModel = await doAddModel(
-            dao, attachmentDao, event.values, loggy, event.deleteAttachment);
+            dao, attachmentDao, event.valuesWithParent, loggy, event.deleteAttachment);
 
         emit(stateLoaded.copyWith(
             isSaved: true, model: newModel, isEditMode: event.isEditMode));

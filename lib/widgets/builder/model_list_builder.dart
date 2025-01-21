@@ -42,8 +42,9 @@ class ModelListBlocWidget<T extends IModel> extends StatelessWidget {
     return BlocProvider<ModelsBloc<T>>(
         create: ((context) => ModelsBloc<T>(
                 initialState: ModelsNotLoaded(),
+                attachmentDao: RepositoryProvider.of<AttachmentDAO>(context),
                 modelsRepository: RepositoryProvider.of<IModelAPI<T>>(context))
-            // TODO probably need to add this back..add(initEvent)
+            ..add(ModelsLoad(parentId: parentId,))
             ),
         child: _buildConsumer(context));
   }
