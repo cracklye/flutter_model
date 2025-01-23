@@ -318,6 +318,17 @@ class ModelSinglePage<T extends IModel> extends StatelessWidget
 
   Widget buildDetailEdit(
       BuildContext context, ModelEditViewStateLoaded<T> state, T? model) {
+
+
+    return  buildForm(
+            context,
+            state,
+            model,
+            formKey,
+            (values) => BlocProvider.of<ModelEditViewBloc<T>>(context)
+                .add(ModelEditViewEventSave<T>(values, isEditMode: false)));
+
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
