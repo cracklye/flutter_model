@@ -18,14 +18,17 @@ class ModelEditViewBlocWidget<T extends IModel> extends StatelessWidget {
 
   final void Function(BuildContext context, ModelEditViewState<T> state)?
       buildListener;
+  final ModelEditViewEvent<T> initialEvent;
 
-  const ModelEditViewBlocWidget(
-      {super.key,
-      this.provideBloc = false,
-      this.id,
-      this.buildContent,
-      this.buildListener,
-      this.buildScaffold});
+  const ModelEditViewBlocWidget({
+    super.key,
+    this.provideBloc = false,
+    this.id,
+    this.buildContent,
+    this.buildListener,
+    this.buildScaffold,
+    required this.initialEvent,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -51,12 +54,13 @@ class ModelEditViewBlocWidget<T extends IModel> extends StatelessWidget {
       // ignore: empty_catches
     } catch (e) {}
 
+    ModelEditViewEvent<T> event =
+        id != null ? ModelEditViewEventSelect<T>(id, false) : initialEvent;
+
     return BlocProvider<ModelEditViewBloc<T>>(
         create: ((context) => ModelEditViewBloc<T>(
             RepositoryProvider.of<IModelAPI<T>>(context), attachDao)
-          ..add(id != null
-              ? ModelEditViewEventSelect<T>(id, false)
-              : ModelEditViewEventCreateNew<T>())),
+          ..add(event)),
         child: _buildConsumerOrListener(context));
   }
 
@@ -86,9 +90,6 @@ class ModelEditViewBlocWidget<T extends IModel> extends StatelessWidget {
     return const Text("No Default content has been provided");
   }
 }
-
-
-
 
 // class ModelEditViewBuilder<T extends IModel> extends StatelessWidget {
 //   final Function(

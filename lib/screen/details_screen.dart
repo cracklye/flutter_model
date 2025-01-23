@@ -87,6 +87,7 @@ class ModelScreenDetail<T extends IModel> extends StatelessWidget {
   Widget build(BuildContext context) {
     return ModelEditViewBlocWidget<T>(
         id: id,
+        initialEvent:  ModelEditViewEventClear<T>(),
         provideBloc: true,
         buildScaffold: (context, state, content) => Scaffold(
               body: content(context, state),

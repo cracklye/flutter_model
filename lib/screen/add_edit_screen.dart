@@ -55,6 +55,7 @@ class ModelScreenEdit<T extends IModel> extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ModelEditViewBlocWidget<T>(
+        initialEvent: ModelEditViewEventCreateNew<T>(),
         id: id,
         provideBloc: true,
         buildListener: (context, state) {

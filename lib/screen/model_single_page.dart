@@ -48,6 +48,7 @@ class ModelSinglePage<T extends IModel> extends StatelessWidget
     return ModelListBlocWidget<T>(
         provideBloc: false,
         buildContent: (context, listState) => ModelEditViewBlocWidget<T>(
+          initialEvent:  ModelEditViewEventClear<T>(),
               provideBloc: true,
               // linkToListSelection: true,
               buildContent: (context, editState) =>

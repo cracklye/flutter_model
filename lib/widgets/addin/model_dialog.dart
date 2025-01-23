@@ -65,6 +65,7 @@ class ModelDialog<T extends IModel> {
             // content: buildModelDisplay(context, model),
 
             content: ModelEditViewBlocWidget<T>(
+              initialEvent:  ModelEditViewEventClear<T>(),
               provideBloc: true,
               id: model.id,
               buildContent: (context, state) => SizedBox(
@@ -123,6 +124,7 @@ class ModelDialog<T extends IModel> {
     return (builder) {
       return ModelEditViewBlocWidget<T>(
           provideBloc: true,
+          initialEvent:  ModelEditViewEventCreateNew<T>(),
           id: model.id,
           buildContent: (context, state) => Padding(
                 padding: EdgeInsets.only(
@@ -190,6 +192,7 @@ class ModelDialog<T extends IModel> {
                 title: const Text("Edit"),
                 // content: Text("Hi"),
                 content: ModelEditViewBlocWidget<T>(
+                  initialEvent:  ModelEditViewEventCreateNew<T>(),
                   provideBloc: true,
                   id: model?.id,
                   buildContent: (context, state) => SizedBox(
@@ -284,6 +287,7 @@ class ModelDialog<T extends IModel> {
       BuildContext context, GlobalKey<FormState> formKey, T? model, parentId) {
     return (builder) {
       return ModelEditViewBlocWidget<T>(
+        initialEvent:  ModelEditViewEventCreateNew<T>(),
           provideBloc: true,
           id: model?.id,
           buildContent: (context, state) => Padding(

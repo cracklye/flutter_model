@@ -19,6 +19,8 @@ abstract class ModelScreenListTab<T extends IModel> extends ModelSinglePage<T>
       super.displayActionStyle = ActionStyle.uri,
       super.createActionStyle = ActionStyle.uri,
       super.parentId});
+
+      
   @override
   Widget buildDetailDisplay(
       BuildContext context, ModelEditViewStateLoaded<T> state, T? model) {
