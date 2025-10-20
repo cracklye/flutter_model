@@ -107,8 +107,22 @@ class ModelsBloc<T extends IModel> extends Bloc<ModelsEvent<T>, ModelsState<T>>
       hierarchy = HierarchyHelper.computeHierarchy(event.models);
     }
 
+    print("** Replacing the state");
+    List<T>? selected;
+    if (state.selected != null) {
+      selected = [];
+      for (var itm in state.selected!) {
+        try {
+          T fnd = event.models.firstWhere((e) => e.id == itm.id);
+          selected.add(fnd);
+        } catch (e) {
+          print("** Replacing the state $e");
+        }
+      }
+    }
+
     emit(ModelsLoaded<T>.fromState(state,
-        hierarchy: hierarchy, models: event.models));
+        hierarchy: hierarchy, models: event.models, selected: selected));
   }
 
   void _onModelSelect(
@@ -225,6 +239,20 @@ class ModelsBloc<T extends IModel> extends Bloc<ModelsEvent<T>, ModelsState<T>>
 
     await doUpdateModel(modelsRepository, attachmentDao, event.id, values,
         loggy, event.deleteAttachment);
+
+    // print("***** UPDATED *****");
+    // if (state.selected != null && state is ModelsLoaded<T>) {
+    //   int idx = state.selected!.indexWhere((e) => e.id == event.id);
+    //   if (idx != -1) {
+    //     //Replace the state
+    //     var stateSelect = [...state.selected!];
+    //     var mdl = await modelsRepository.getById(event.id);
+    //     if (mdl != null) {
+    //       stateSelect[idx] = mdl;
+    //       emit((state as ModelsLoaded<T>).copyWith(selected: stateSelect));
+    //     }
+    //   }
+    // }
   }
 
   @override
